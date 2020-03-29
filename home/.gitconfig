@@ -1,0 +1,18 @@
+[user]
+	name = Andreas Voigt
+	email = andreas.voigt@tretton37.com
+	signingkey = 1E62EB9A74CF9C3A
+[alias]
+	his = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	ulog = log --graph --abbrev-commit --decorate --date=relative --all
+	s = status -sb
+	l = log
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	lg-ascii = "log --color --graph --pretty=format:'%C(#dc322f)%h%C(#ffff00)%d %C(#eee8d5)%s %C(#dc322f)| %C(#586f75)%cr %C(#dc322f)| %C(#586e75)%an%Creset' --abbrev-commit"
+[color]
+	ui = true
+[commit]
+	gpsign = true
+	gpgsign = true
+[gpg]
+	program = /usr/local/bin/gpg
