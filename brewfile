@@ -1,0 +1,66 @@
+######### General #########
+tap "homebrew/bundle"
+tap "homebrew/cask-drivers"
+tap "homebrew/cask-fonts"
+tap "buo/cask-upgrade"
+tap "wagoodman/dive"                                # A tool for exploring each layer in a docker image
+tap "homebrew/cask-versions"
+
+
+######### Casks #########
+
+## Browsers ##
+cask "firefox"
+cask "google-chrome-canary"
+cask "google-chrome"
+cask "brave-browser"                                # privacy focused, performance oriented browser
+
+cask "keepassxc"                                    # a great FOSS Password Manager
+cask "dropbox"                                      # personal cloud storage service 
+cask "authy"
+cask "bartender"
+cask "disk-inventory-x"
+cask "docker"                                       # docker for mac
+cask "dropbox"                                      # personal cloud storage service 
+cask "iterm2"                                       # Terminal emulator for macOS
+cask "keybase"                                      # crypto for everyone!
+cask "postman"                                      # nice rest client
+cask "spotify"                                      # music for everyone
+cask "the-unarchiver"
+cask "visual-studio-code-insiders"                  # a great editor
+cask "visual-studio-code"                           # a great editor
+cask "google-backup-and-sync"
+
+######### Fonts #########
+cask "font-fira-code"
+cask "font-meslo-for-powerline"
+
+######### Brews #########
+brew "awscli"
+brew "bat"
+brew "curl"
+brew "dive"
+brew "exa"
+brew "git-extras"
+brew "git-gui"
+brew "git"
+brew "gnupg2"
+brew "go"
+brew "kubectl"
+brew "node"                                         # node.js
+brew "nvm"
+brew "openssl"
+brew "p7zip"
+brew "pinentry-mac"
+brew "rbenv"
+brew "rsync"
+brew "ruby-build"
+brew "shellcheck"
+brew "stow"
+brew "tmux"
+brew "vim"
+brew "wget"
+brew "zsh-completion"
+brew "zsh"
+
+mas "Slack", id: 803453959
