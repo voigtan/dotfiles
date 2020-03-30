@@ -23,6 +23,7 @@ else
   scripts/brewfile.sh
   scripts/InstallOhMyZSH.sh
   scripts/LinkDotfiles.sh
+  scripts/CleanDock.sh
   scripts/tweaks.sh
 fi
 
