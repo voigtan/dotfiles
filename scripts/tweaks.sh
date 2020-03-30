@@ -6,6 +6,8 @@
 # Use "old" scroll style
 defaults write -g com.apple.swipescrolldirection -bool false
 
+# Always display Percentage on Battery
+defaults write com.apple.menuextra.battery ShowPercent YES
 
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
@@ -34,6 +36,24 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 # Enable AirDrop over Ethernet and on unsupported Macs running Lion
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
+
+###############################################################################
+# SSD
+###############################################################################
+
+# Disable the sudden motion sensor as it’s not useful for SSDs
+sudo pmset -a sms 0
+
+###############################################################################
+# Finder                                                                      #
+###############################################################################
+
+# Always open everything in Finder's column view. This is important.
+defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+
+# Show hidden files and file extensions by default
+defaults write com.apple.finder AppleShowAllFiles -bool true
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
