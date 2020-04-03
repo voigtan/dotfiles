@@ -6,30 +6,25 @@ tap "buo/cask-upgrade"
 tap "wagoodman/dive"                                # A tool for exploring each layer in a docker image
 tap "homebrew/cask-versions"
 
-
 ######### Casks #########
-
-## Browsers ##
-cask "firefox"
-cask "google-chrome-canary"
-cask "google-chrome"
-cask "brave-browser"                                # privacy focused, performance oriented browser
-
-cask "keepassxc"                                    # a great FOSS Password Manager
-cask "dropbox"                                      # personal cloud storage service 
 cask "authy"
 cask "bartender"
+cask "brave-browser"                                # privacy focused, performance oriented browser
 cask "disk-inventory-x"
 cask "docker"                                       # docker for mac
 cask "dropbox"                                      # personal cloud storage service 
+cask "firefox"
+cask "google-backup-and-sync"
+cask "google-chrome-canary"
+cask "google-chrome"
 cask "iterm2"                                       # Terminal emulator for macOS
+cask "keepassxc"                                    # a great FOSS Password Manager
 cask "keybase"                                      # crypto for everyone!
 cask "postman"                                      # nice rest client
+cask "skype"
 cask "spotify"                                      # music for everyone
 cask "the-unarchiver"
 cask "visual-studio-code-insiders"                  # a great editor
-cask "visual-studio-code"                           # a great editor
-cask "google-backup-and-sync"
 
 ######### Fonts #########
 cask "font-fira-code"
