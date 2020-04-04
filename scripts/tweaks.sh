@@ -10,6 +10,13 @@ defaults write -g com.apple.swipescrolldirection -bool false
 defaults write com.apple.menuextra.battery ShowPercent YES
 
 ###############################################################################
+# Finder                                                                      #
+###############################################################################
+
+# Screenshots location
+defaults write com.apple.screencapture location ~/Downloads
+
+###############################################################################
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 # Enable highlight hover effect for the grid view of a stack (Dock)
