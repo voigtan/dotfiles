@@ -1,4 +1,14 @@
-#!/bin/zsh
+#!/usr/bin/env bash
+
+# Load each of the tools.
+for file in ./tools/*; do
+    [ -e "$file" ] || continue
+    # echo "Loading tool '$file'..."
+    source "$file"
+done
+
+os=$(get_os)
+echo "os identified as: $os"
 
 set -e
 # Fix permissions in cases where perhaps re-running under a different user and similar scenarios
