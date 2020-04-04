@@ -1,22 +1,19 @@
-#!/bin/bash
+#!/bin/sh
 
-dockutil --remove 'Launchpad'
-dockutil --remove 'Safari'
-dockutil --remove 'Mail'
-dockutil --remove 'FaceTime'
-dockutil --remove 'Messages'
-dockutil --remove 'Maps'
-dockutil --remove 'Contacts'
-dockutil --remove 'Calendar'
-dockutil --remove 'Reminders'
-dockutil --remove 'Notes'
-dockutil --remove 'Music'
-dockutil --remove 'Podcasts'
-dockutil --remove 'TV'
-dockutil --remove 'App Store'
-dockutil --remove 'System Preferences'
+apps=(
+	'Google Chrome Canary'
+	'Visual Studio Code - Insiders'
+	Spotify
+	Slack
+)
 
-dockutil --no-restart --add "/Applications/Google Chrome Canary.app"
-dockutil --no-restart --add "/Applications/Spotify.app"
+# Remove all apps from Dock
+dockutil --no-restart --remove all
+
+# Add all my apps to the Dock
+for app in "${apps[@]}"
+do
+	dockutil --add "/Applications/${app}.app" --no-restart
+done
 
 killall Dock
