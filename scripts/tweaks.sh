@@ -31,6 +31,9 @@ defaults write com.apple.dock mineffect -string "scale"
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool true
 
+# Remove recent a pplications in dock
+defaults write com.apple.dock show-recents -bool false
+
 ###############################################################################
 # Terminal & iTerm 2                                                          #
 ###############################################################################
