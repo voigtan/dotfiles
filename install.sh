@@ -42,9 +42,11 @@ fi
 # ###########################################################
 # /etc/hosts -- spyware/ad blocking
 # ###########################################################
-#if curl -L -O configs/hosts https://someonewhocares.org/hosts/hosts; then
-#  sudo cp /etc/hosts /etc/hosts.backup
-#  sudo cp configs/hosts /etc/hosts
-#else
-#  echo "Couldn't fetch the latest hosts file from https://someonewhocares.org/hosts/hosts #so skipping this step in order to not screw up your computer!"
-#fi
+if ask "$os: Install hosts file (spyware/ad blocking)?" N; then
+  if curl -L -o configs/hosts https://someonewhocares.org/hosts/hosts; then
+    sudo cp /etc/hosts /etc/hosts.backup
+    sudo cp configs/hosts /etc/hosts
+  else
+  echo "Couldn't fetch the latest hosts file from https://someonewhocares.org/hosts/hosts #so skipping this step in order to not screw up your computer!"
+  fi
+fi
