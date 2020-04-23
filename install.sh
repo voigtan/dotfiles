@@ -15,29 +15,34 @@ set -e
 DIRS="/usr/local/var/homebrew /usr/local/Homebrew /usr/local/Caskroom /usr/local/Cellar /usr/local/bin /usr/local/etc /usr/local/lib /usr/local/sbin /usr/local/share/aclocal /usr/local/share/doc /usr/local/share/info /usr/local/share/locale /usr/local/share/man /usr/local/share/zsh"
 
 for d in DIRS; do
-  if [ -d $d ]; then
-    sudo chown -R $(whoami) $d
-  fi
+    if [ -d $d ]; then
+        sudo chown -R $(whoami) $d
+    fi
 done
 
-# Case for running as a test user on a github runner
-chmod +x scripts/*.sh
-if id -u runner; then
-  echo "Skipping Homebrew install & tweaks for Github Workflow"
-  defaults write NSGlobalDomain AppleLanguages "(en-US)"
-  scripts/brewfile.sh
-  scripts/InstallOhMyZSH.sh
-  scripts/LinkDotfiles.sh
-else
-  scripts/InstallHomebrew.sh
-  scripts/brewfile.sh
-  scripts/InstallOhMyZSH.sh
-  scripts/LinkDotfiles.sh
-  scripts/CleanDock.sh
-  scripts/tweaks.sh
-fi
+if [[ "$os" == "osx" ]]; then
 
-### WIP : Check this code below
+    chmod +x scripts/*.sh
+    # Case for running as a test user on a github runner
+    if id -u runner; then
+        echo "Skipping Homebrew install & tweaks for Github Workflow"
+        defaults write NSGlobalDomain AppleLanguages "(en-US)"
+        scripts/brewfile.sh
+        scripts/InstallOhMyZSH.sh
+        scripts/LinkDotfiles.sh
+    else
+        scripts/InstallHomebrew.sh
+        scripts/brewfile.sh
+        scripts/InstallOhMyZSH.sh
+        scripts/LinkDotfiles.sh
+        scripts/CleanDock.sh
+        scripts/tweaks.sh
+    fi
+
+    if ask "$os: Download the Aerial screensaver?" Y; then
+        brew cask install aerial
+    fi
+fi
 
 # ###########################################################
 # /etc/hosts -- spyware/ad blocking
