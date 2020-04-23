@@ -25,6 +25,9 @@ defaults write com.apple.menuextra.battery ShowPercent YES
 # Screenshots location
 defaults write com.apple.screencapture location ~/Downloads
 
+# Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
+defaults write com.apple.screencapture type -string "png"
+
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
@@ -80,7 +83,7 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Show the ~/Library folder
-chflags nohidden ~/Library
+chflags nohidden ~/Library 
 
 # Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
