@@ -17,3 +17,8 @@ alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resource
 # Google Chrome
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
+
+# Remove all Docker Images
+alias docremimg='docker rmi $(docker images -a -q)'
+# Remove all Docker Containers
+alias docremcon='docker rm $(docker ps -a -f status=exited -q)'
