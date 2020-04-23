@@ -73,4 +73,7 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Show the ~/Library folder
 chflags nohidden ~/Library
 
+# Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+
 echo "Done. Note that some of these changes require a logout/restart to take effect."
