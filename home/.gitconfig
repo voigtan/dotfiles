@@ -27,13 +27,20 @@
 		| sort -nr \
 		| sed -Ee 's/\\(\\[0-9\\]+\\ \\)/$(tput setaf 2)\\\\1$(tput sgr0)/g' \
 		| bat -l bash --style=numbers,header,grid --file-name '⭐ Highscore ⭐' --tabs=2"
+
 	aliases = !git config -l | grep alias | cut -c 7-
 	update = !git fetch upstream main:main && git rebase main
 
-	# Useful s
-	#################
+	# Switch to a branch, creating it if necessary.
+	go = "!f() { git switch -c \"$1\" 2> /dev/null || git switch \"$1\"; }; f"
+
+	# Remove branches that have already been merged with main.
+	# a.k.a. ‘delete merged’
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+
 	# Undo the last rebase
 	undo-rebase = "! f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
+
 	# See what changed since the last rebase
 	rdiff = "!f() { : git diff ; git diff `git x-rev-before-rebase` "$@";}; f"
 	# Helpers
@@ -72,3 +79,6 @@
 	rebase = true
 [mergetool]
 	keepBackup = false
+[help]
+	# Automatically correct and execute mistyped commands.
+	autocorrect = 1
