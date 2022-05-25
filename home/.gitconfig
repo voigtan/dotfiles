@@ -5,8 +5,43 @@
 	l = log
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	lg-ascii = "log --color --graph --pretty=format:'%C(#dc322f)%h%C(#ffff00)%d %C(#eee8d5)%s %C(#dc322f)| %C(#586f75)%cr %C(#dc322f)| %C(#586e75)%an%Creset' --abbrev-commit"
+	lgg = log --graph --color --pretty=format:"%C(yellow)%H%C(green)%d%C(reset)%n%x20%cd%n%x20%cn%C(blue)%x20(%ce)%x20%C(cyan)[gpg:%GK%x20%G?]%C(reset)%x20-%x20%an%n%x20%s%n"
 	# Show the user email for the current repository.
 	whoami = config user.email
+	lg-stat = "log --pretty=format:'%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]' --decorate --stat"
+	del = branch -D
+	br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+	# Large files `lg x` where x how many files you want to list 5 is the default value
+	log-largefiles = "!f() { \
+		git rev-list --objects --all \
+		| git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+		| sed -n 's/^blob //p' \
+		| sort --numeric-sort --key=2 \
+		| tail -n ${1-5} \
+		| cut -c 1-12,41- \
+		| $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest; \
+	}; f"
+	log-highscore = "!git log --format='%an (%ae)' \
+		| sort \
+		| uniq -c \
+		| sort -nr \
+		| sed -Ee 's/\\(\\[0-9\\]+\\ \\)/$(tput setaf 2)\\\\1$(tput sgr0)/g' \
+		| bat -l bash --style=numbers,header,grid --file-name '⭐ Highscore ⭐' --tabs=2"
+	aliases = !git config -l | grep alias | cut -c 7-
+	update = !git fetch upstream main:main && git rebase main
+
+	# Useful s
+	#################
+	# Undo the last rebase
+	undo-rebase = "! f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
+	# See what changed since the last rebase
+	rdiff = "!f() { : git diff ; git diff `git x-rev-before-rebase` "$@";}; f"
+	# Helpers
+	########
+	# Get the revision before the last rebase started
+	x-rev-before-rebase = !git reflog --skip=1 -1 \"`git x-start-of-rebase`\" --format=\"%gD\"
+	# Get the revision that started the rebase
+	x-start-of-rebase = reflog --grep-reflog '^rebase (start)' -1 --format="%gD"
 [color]
 	ui = true
 	branch = auto
@@ -30,3 +65,10 @@
 	cmd = code-insiders --wait --diff $LOCAL $REMOTE
 [tag]
 	forceSignAnnotated = true
+[core]
+	excludesFile = ~/.dotfiles/.gitignore
+	editor = code-insiders --wait
+[pull]
+	rebase = true
+[mergetool]
+	keepBackup = false
