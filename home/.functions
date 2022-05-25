@@ -25,3 +25,8 @@ lg()
             rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
     fi
 }
+
+
+dockerInteract() {
+	docker exec -it $1 sh
+}
