@@ -44,6 +44,17 @@ if [[ "$os" == "osx" ]]; then
     fi
 fi
 
+# Configure Git.
+if ask "$os: Configure user for Git?" N; then
+    if [[ "$os" == "osx" ]]; then
+        # # Tell GPG to use pinentry-mac, and restart the agent.
+        echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+        gpgconf --kill gpg-agent
+
+        [ -e "./home/.extra" ] && source("./home/.extra")
+    fi
+fi
+
 # ###########################################################
 # /etc/hosts -- spyware/ad blocking
 # ###########################################################
