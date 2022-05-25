@@ -7,9 +7,23 @@ Open the terminal and start with the steps:
 
 1. Install the dotfiles and homebrew apps.
 
-        ```git clone https://github.com/voigtan/dotfiles.git ~/.dotfiles
+        ```
+        git clone https://github.com/voigtan/dotfiles.git ~/.dotfiles
         cd ~/.dotfiles
-        ./install.sh```
+        ```
+
+        After cloning add the following in the .extra file:
+        ```
+        # Git credentials
+        GIT_AUTHOR_NAME=""
+        GIT_AUTHOR_EMAIL=""
+        GIT_SIGNINGKEY=""
+        ```
+
+        and then run:
+        ```
+        ./install.sh
+        ```
 
 2. Configure iTerm2:
     * Open iTerm2.
