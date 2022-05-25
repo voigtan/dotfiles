@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 alias cat='bat -p'
+alias dotfiles='code-insiders ~/.dotfiles'
 alias ls='exa --long --git --header --all'
+alias mkdir='mkdir -p'
+alias reload='. ~/.zshrc'
+alias separator='defaults write com.apple.dock persistent-apps -array-add "{"tile-type"="spacer-tile";}" && killall Dock'
 
 # Show/hide hidden files in Finder
 alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
@@ -19,6 +23,7 @@ alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
 
 # Remove all Docker Images
-alias docremimg='docker rmi $(docker images -a -q)'
+alias dcr-ri='docker rmi $(docker images -a -q)'
 # Remove all Docker Containers
-alias docremcon='docker rm $(docker ps -a -f status=exited -q)'
+alias dcr-rc='docker rm $(docker ps -a -f status=exited -q)'
+alias dcr-ps='docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}\t{{.Ports}}"'
