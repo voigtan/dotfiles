@@ -1,62 +1,215 @@
-######### General #########
+tap "buo/cask-upgrade"
+tap "clementtsang/bottom"
+tap "fastly/tap"
 tap "homebrew/bundle"
+tap "homebrew/cask"
 tap "homebrew/cask-drivers"
 tap "homebrew/cask-fonts"
-tap "buo/cask-upgrade"
-tap "wagoodman/dive"                                # A tool for exploring each layer in a docker image
 tap "homebrew/cask-versions"
-
-######### Casks #########
+tap "homebrew/core"
+tap "kryptco/tap"
+tap "wagoodman/dive"
+# Official Amazon AWS command-line interface
+brew "awscli"
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash"
+# Programmable completion for Bash 4.2+
+brew "bash-completion@2"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Yet another cross-platform graphical process/system monitor
+brew "bottom"
+# GNU multiple precision arithmetic library
+brew "gmp"
+# Postgres C API library
+brew "libpq"
+# General-purpose scripting language
+brew "php"
+# Dependency Manager for PHP
+brew "composer"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Tool for exploring each layer in a docker image
+brew "dive"
+# Isolated development environments using Docker
+brew "docker-compose", link: false
+# Tool for managing dock items
+brew "dockutil"
+# Modern replacement for 'ls'
+brew "exa"
+# Test various flash cards
+brew "f3"
+# Collection of GNU find, xargs, and locate
+brew "findutils"
+# GitHub command-line tool
+brew "gh"
+# Distributed revision control system
+brew "git"
+# Small git utilities
+brew "git-extras"
+# Tcl/Tk UI for the git revision control system
+brew "git-gui"
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
+# Library access to GnuPG
+brew "gpgme"
+# Generate introspection data for GObject libraries
+brew "gobject-introspection"
+# OpenType text shaping engine
+brew "harfbuzz"
+# Framework for layout and rendering of i18n text
+brew "pango"
+# Command-driven, interactive function plotting
+brew "gnuplot"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
+# GNU grep, egrep and fgrep
+brew "grep"
+# World's fastest and most advanced password recovery utility
+brew "hashcat"
+# Improved top (interactive process viewer)
+brew "htop"
+# Database of common MIME types
+brew "shared-mime-info"
+# Tools and libraries to manipulate images in many formats
+brew "imagemagick"
+# Kubernetes command-line interface
+brew "kubernetes-cli", link: false
+# Lazier way to manage everything docker
+brew "lazydocker"
+# Simple terminal UI for git commands
+brew "lazygit"
+# DNS library written in C
+brew "ldns"
+# Provides library functionality for FIDO U2F & FIDO 2.0, including USB
+brew "libfido2"
+# General purpose TCP-IP emulator
+brew "libslirp"
+# Mac App Store command-line interface
+brew "mas"
+# Command-line based markdown presentation tool
+brew "mdp"
+# Terminal-based visual file manager
+brew "midnight-commander"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Collection of tools that nobody wrote when UNIX was young
+brew "moreutils"
+# Cross-platform ncurses Spotify client written in Rust
+brew "ncspot"
+# Fast, highly customisable system info script
+brew "neofetch"
+# Thread-based email index, search, and tagging
+brew "notmuch"
+# E-mail reader with support for Notmuch, NNTP and much more
+brew "neomutt"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Platform built on V8 to build network applications
+brew "node"
+# Libraries for security-enabled client and server applications
+brew "nss"
+# Manage multiple Node.js versions
+brew "nvm"
+# OpenBSD freely-licensed SSH connectivity tools
+brew "openssh"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+# Pinentry for GPG on Mac
+brew "pinentry-mac"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.10"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.8"
+# Cross-platform application and UI framework
+brew "qt"
+# Install various Ruby versions and implementations
+brew "ruby-build"
+# Ruby version manager
+brew "rbenv"
+# Utility that provides fast incremental file transfer
+brew "rsync"
+# Powerful, clean, object-oriented scripting language
+brew "ruby"
+# Terminal multiplexer with VT100/ANSI terminal emulation
+brew "screen"
+# Static analysis and lint tool, for (ba)sh scripts
+brew "shellcheck"
+# Terminal-based client for Spotify
+brew "spotify-tui"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
+brew "stow"
+# Download videos from https://www.svtplay.se/
+brew "svtplay-dl"
+# Terminal multiplexer
+brew "tmux"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# Internet file retriever
+brew "wget"
+# UNIX shell (command interpreter)
+brew "zsh"
+# Additional completion definitions for zsh
+brew "zsh-completions"
+# A CLI for interacting with the Fastly platform
+brew "fastly/tap/fastly"
+# Krypton command-line client, daemon, and SSH integration
+brew "kryptco/tap/kr"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line helper for the 1Password password manager
+cask "1password-cli"
+# Two-factor authentication software
 cask "authy"
-cask "bartender"
-cask "brave-browser"                                # privacy focused, performance oriented browser
+# Web browser focusing on privacy
+cask "brave-browser"
+# Disk usage utility
 cask "disk-inventory-x"
-cask "docker"                                       # docker for mac
-cask "dropbox"                                      # personal cloud storage service 
+# App to build and share containerized applications and microservices
+cask "docker"
+# Tool to hide status bar icons
+cask "dozer"
+# Client for the Dropbox cloud storage service
+cask "dropbox"
+# Web browser
 cask "firefox"
-cask "google-backup-and-sync"
-cask "google-chrome-canary"
-cask "google-chrome"
-cask "iterm2"                                       # Terminal emulator for macOS
-cask "keepassxc"                                    # a great FOSS Password Manager
-cask "keybase"                                      # crypto for everyone!
-cask "postman"                                      # nice rest client
-cask "skype"
-cask "spotify"                                      # music for everyone
-cask "the-unarchiver"
-cask "visual-studio-code-insiders"                  # a great editor
-
-######### Fonts #########
 cask "font-fira-code"
 cask "font-meslo-for-powerline"
-
-######### Brews #########
-brew "awscli"
-brew "bat"
-brew "curl"
-brew "dive"
-brew "dockutil"
-brew "exa"
-brew "git-extras"
-brew "git-gui"
-brew "git"
-brew "gnupg2"
-brew "go"
-brew "kubectl"
-brew "node"                                         # node.js
-brew "nvm"
-brew "openssl"
-brew "p7zip"
-brew "pinentry-mac"
-brew "rbenv"
-brew "rsync"
-brew "ruby-build"
-brew "shellcheck"
-brew "stow"
-brew "tmux"
-brew "vim"
-brew "wget"
-brew "zsh-completion"
-brew "zsh"
-
+cask "google-backup-and-sync"
+# Web browser
+cask "google-chrome"
+# Web browser
+cask "google-chrome-canary"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# Password manager app
+cask "keepassxc"
+# End-to-end encryption software
+cask "keybase"
+# Open-source software for live streaming and screen recording
+cask "obs"
+# File system integration
+cask "osxfuse"
+# Collaboration platform for API development
+cask "postman"
+# Move and resize windows using keyboard shortcuts or snap areas
+cask "rectangle"
+# Video chat, voice call and instant messaging application
+cask "skype"
+# Team communication and collaboration software
+cask "slack"
+# Music streaming service
+cask "spotify"
+# Unpacks archive files
+cask "the-unarchiver"
+# Open-source code editor
+cask "visual-studio-code"
+# Code editor
+cask "visual-studio-code-insiders"
+# Multimedia player
+cask "vlc"
+mas "Genki Arcade", id: 1555925018
+mas "Pages", id: 409201541
 mas "Slack", id: 803453959
+mas "Xcode", id: 497799835
+mas "Yubico Authenticator", id: 1497506650
