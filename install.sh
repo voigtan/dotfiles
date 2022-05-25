@@ -51,7 +51,7 @@ if ask "$os: Configure user for Git?" N; then
         echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
         gpgconf --kill gpg-agent
 
-        [ -e "./home/.extra" ] && source("./home/.extra")
+         [ -e "./home/.extra" ] && source ./home/.extra
     fi
 fi
 
