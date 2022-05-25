@@ -79,6 +79,9 @@ plugins=(
     git
     docker
     docker-compose
+    wd
+    tmux
+    fzf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -117,3 +120,27 @@ for file in ~/.{aliases,functions,extra}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
+
+# Enable colors in man command
+# https://www.howtogeek.com/683134/how-to-display-man-pages-in-color-on-linux/
+export LESS_TERMCAP_md=$'\e[0;32m'      # Start bold effect (double-bright).
+export LESS_TERMCAP_me=$'\e[0m'         # Stop bold effect.
+export LESS_TERMCAP_so=$'\e[1;32m'      # Start underline effect.
+export LESS_TERMCAP_se=$'\e[0m'         # Stop underline effect.
+export LESS_TERMCAP_us=$'\e[1;4;31m'    # Start stand-out effect (similar to reverse text).
+export LESS_TERMCAP_ue=$'\e[0m'         # Stop stand-out effect (similar to reverse text).
+
+# fzf
+# Enable using ALT+C to CD into the selected directory and customize behavior
+# https://betterprogramming.pub/boost-your-command-line-productivity-with-fuzzy-finder-985aa162ba5d
+bindkey "ç" fzf-cd-widget
+export FZF_DEFAULT_OPTS="
+    --bind '<:toggle-preview'
+    --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
+    --info=inline
+    --layout=reverse
+    --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
+    --preview-window=:hidden
+    --prompt='∼ ' --pointer='▶' --marker='✓'"
+
+export PATH="/usr/local/sbin:$PATH"
