@@ -26,6 +26,9 @@ lg()
     fi
 }
 
+batdiff() {
+    git diff --name-only --diff-filter=d | xargs bat --diff
+}
 
 dockerInteract() {
 	docker exec -it $1 sh
