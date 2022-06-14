@@ -29,8 +29,12 @@
 		| bat -l bash --style=numbers,header,grid --file-name '⭐ Highscore ⭐' --tabs=2"
 
 	aliases = !git config -l | grep alias | cut -c 7-
-	update = !git fetch upstream main:main && git rebase main
-
+	update = "!f() { git fetch upstream ${1-main}:${1-main} && git rebase ${1-main}; }; f"
+	save = stash --keep-index --include-untracked
+	fixup =! sh -c 'SHA =$git rev-parse $1) \
+		&& git commit --fixup $SHA \
+		&& git rebase -i --autosquash $SHA~ '-
+	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
 	# Switch to a branch, creating it if necessary.
 	go = "!f() { git switch -c \"$1\" 2> /dev/null || git switch \"$1\"; }; f"
 
