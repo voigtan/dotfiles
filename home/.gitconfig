@@ -35,8 +35,8 @@
 		&& git commit --fixup $SHA \
 		&& git rebase -i --autosquash $SHA~ '-
 	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
-	# Switch to a branch, creating it if necessary.
-	go = "!f() { git switch -c \"$1\" 2> /dev/null || git switch \"$1\"; }; f"
+	# Switch to a branch, creating it if necessary, if no branch is specified switch back to the previous branch.
+	go = "!f() { if [ -z \"$1\" ];then git switch -; else git switch -c \"$1\" 2> /dev/null || git switch \"$1\"; fi; }; f"
 
 	# Remove branches that have already been merged with main.
 	# a.k.a. ‘delete merged’
