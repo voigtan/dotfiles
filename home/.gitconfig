@@ -53,6 +53,13 @@
 	x-rev-before-rebase = !git reflog --skip=1 -1 \"`git x-start-of-rebase`\" --format=\"%gD\"
 	# Get the revision that started the rebase
 	x-start-of-rebase = reflog --grep-reflog '^rebase (start)' -1 --format="%gD"
+	fire = "!f() { \
+		BRANCH=\"wip/fire/$USER-$(date +%s)\"; \
+		git go $BRANCH && \
+		git stage -A && \
+		git commit -m \"WIP: fire alarm!\" && \
+		git push origin "$BRANCH"; \
+	};f"
 [color]
 	ui = true
 	branch = auto
