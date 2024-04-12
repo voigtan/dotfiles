@@ -11,7 +11,9 @@
 	lg-stat = "log --pretty=format:'%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]' --decorate --stat"
 	del = branch -D
 	br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
-	# Large files `lg x` where x how many files you want to list 5 is the default value
+
+	# Display the largest files in the repository using `git log-largefiles`.
+	# Set the number of files to display by providing the value of x (default is 5).
 	log-largefiles = "!f() { \
 		git rev-list --objects --all \
 		| git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
@@ -21,29 +23,62 @@
 		| cut -c 1-12,41- \
 		| $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest; \
 	}; f"
-	log-highscore = "!git log --format='%an (%ae)' \
-		| sort \
-		| uniq -c \
-		| sort -nr \
-		| sed -Ee 's/\\(\\[0-9\\]+\\ \\)/$(tput setaf 2)\\\\1$(tput sgr0)/g' \
+
+	log-file = "log -p -- $1"
+
+	log-highscore = "!git shortlog -e --summary --numbered --format='%an (%ae)' \
+		| sed -Ee 's/^[[:blank:]]*//g' \
 		| bat -l bash --style=numbers,header,grid --file-name '⭐ Highscore ⭐' --tabs=2"
 
+	# list all aliases in the current repository
 	aliases = !git config -l | grep alias | cut -c 7-
 	update = "!f() { git fetch upstream ${1-main}:${1-main} && git rebase ${1-main}; }; f"
+
+	# Save every file to the stash, including untracked files.
 	save = "!f() { if [ -z \"$1\" ];then git stash --keep-index --include-untracked; else git stash push -m \"$1\" --keep-index --include-untracked ; fi; }; f"
+
 	fixup =! sh -c 'SHA =$git rev-parse $1) \
 		&& git commit --fixup $SHA \
 		&& git rebase -i --autosquash $SHA~ '-
+	
 	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
+
+	coo = "!git branch --sort=-committerdate --no-color --format=\"%(refname:short)\" | fzf | xargs git switch"
+	# list branches ordered with latest changed, select with fzf, and checkout
+	# coo2 = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD) %(refname:short)|%(committerdate:relative)|%(subject)|%(authorname)'  --color=always --count=${count:=10} | column -ts'|' | fzf | awk '{print $1}' | xargs git switch"
+
+	recent = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always | column -ts'|' | fzf --ansi | awk '{print $1}' | xargs git switch"
+
+	# recent = "!r() { count=$1; git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always --count=${count:=10} | column -ts'|';}; r"
+	# dm2 = "!f() { REMOTE=${1:-origin}; BRANCH=${2:-main}; git fetch $REMOTE && git branch --merged | grep -v '^\\*\\| $BRANCH$' | xargs -n 1 git branch -d; }; f"
+
+	dm2 = "!f() { \
+		REMOTE=${1:-origin}; \
+		BRANCH=${2:-main}; \
+		git fetch $REMOTE && \
+		git branch --merged | \
+		grep -v '^\\*\\| $BRANCH$' | \
+		xargs -n 1 git branch -d; \
+	}; f"
+
 	# Switch to a branch, creating it if necessary, if no branch is specified switch back to the previous branch.
-	go = "!f() { if [ -z \"$1\" ];then git switch -; else git switch -c \"$1\" 2> /dev/null || git switch \"$1\"; fi; }; f"
+	# examples:
+	# `git go` will switch back to the previous branch (same as `git go -`).
+	# `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
+	# `git go main` will switch to the main branch.
+	go = "!f() { \
+		BRANCH=${1:-\"-\"}; \
+		git branch --list $BRANCH > /dev/null \
+			&& git switch $BRANCH \
+		|| git switch -c $BRANCH; \
+	}; f"
 
 	# Remove branches that have already been merged with main.
 	# a.k.a. ‘delete merged’
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
 	# Undo the last rebase
-	undo-rebase = "! f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
+	undo-rebase = "!f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
 
 	# See what changed since the last rebase
 	rdiff = "!f() { : git diff ; git diff `git x-rev-before-rebase` "$@";}; f"
