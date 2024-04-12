@@ -151,3 +151,6 @@ if type brew &>/dev/null; then
     autoload -Uz compinit
     compinit
 fi
+
+# Upload Service Client
+export PATH="$PATH:$HOME/usc"
