@@ -154,3 +154,6 @@ fi
 
 # Upload Service Client
 export PATH="$PATH:$HOME/usc"
+
+# Colima Docker Socket Path
+export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
