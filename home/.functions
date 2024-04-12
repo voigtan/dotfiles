@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Determine size of a file or total size of a directory
-function fs() {
+fs() {
 	if du -b /dev/null > /dev/null 2>&1; then
 		local arg=-sbh;
 	else
@@ -16,25 +16,24 @@ function fs() {
 
 lg()
 {
-    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+	export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+	lazygit "$@"
 
-    lazygit "$@"
-
-    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
-            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
-            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
-    fi
+	if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+		cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+		rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+	fi
 }
 
 batdiff() {
-    git diff --name-only --diff-filter=d | xargs bat --diff
+	git diff --name-only --diff-filter=d | xargs bat --diff
 }
 
 dockerInteract() {
 	docker exec -it $1 sh
 }
 
-function gz() {
+gz() {
 	local origsize=$(wc -c < "$1");
 	local gzipsize=$(gzip -c "$1" | wc -c);
 	local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l);
