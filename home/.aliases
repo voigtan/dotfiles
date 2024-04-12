@@ -28,6 +28,8 @@ alias dcr-ri='docker rmi $(docker images -a -q)'
 alias dcr-rc='docker rm $(docker ps -a -f status=exited -q)'
 alias dcr-ps='docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}\t{{.Ports}}"'
 
+alias chrome-extensions-disabled='open --new -a "Google Chrome" --args --disable-extensions'
+
 alias vim='nvim'
 
 alias lzd='lazydocker'
