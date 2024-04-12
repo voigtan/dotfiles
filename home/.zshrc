@@ -144,3 +144,10 @@ export FZF_DEFAULT_OPTS="
     --prompt='∼ ' --pointer='▶' --marker='✓'"
 
 export PATH="/usr/local/sbin:$PATH"
+
+if type brew &>/dev/null; then
+    FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+
+    autoload -Uz compinit
+    compinit
+fi
