@@ -2,7 +2,7 @@
 
 alias cat='bat -p'
 alias dotfiles='code-insiders ~/.dotfiles'
-alias ls='exa --long --git --header --all'
+alias ls='lsd --long --git --header --all'
 alias mkdir='mkdir -p'
 alias reload='. ~/.zshrc'
 alias separator='defaults write com.apple.dock persistent-apps -array-add "{"tile-type"="spacer-tile";}" && killall Dock'

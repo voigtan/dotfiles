@@ -4,9 +4,7 @@ tap "clementtsang/bottom"
 tap "fastly/tap"
 tap "hashicorp/tap"
 tap "homebrew/bundle"
-tap "homebrew/cask-drivers"
 tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
 tap "kryptco/tap"
 tap "wagoodman/dive"
 # Run your GitHub Actions locally
@@ -49,8 +47,6 @@ brew "docker"
 brew "docker-compose"
 # Tool for managing dock items
 brew "dockutil"
-# Modern replacement for 'ls'
-brew "exa"
 # Test various flash cards
 brew "f3"
 # OpenType text shaping engine
@@ -117,6 +113,8 @@ brew "lazygit"
 brew "ldns"
 # Provides library functionality for FIDO U2F & FIDO 2.0, including USB
 brew "libfido2"
+# Clone of ls with colorful output, file type icons, and more
+brew "lsd"
 # Mac App Store command-line interface
 brew "mas"
 # Command-line based markdown presentation tool
@@ -173,8 +171,6 @@ brew "ruby"
 brew "screen"
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
-# Terminal-based client for Spotify
-brew "spotify-tui"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Download videos from https://www.svtplay.se/
@@ -199,16 +195,12 @@ brew "zsh-completions"
 brew "fastly/tap/fastly"
 # Terraform
 brew "hashicorp/tap/terraform"
-# Krypton command-line client, daemon, and SSH integration
-brew "kryptco/tap/kr"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
 # Two-factor authentication software
 cask "authy"
-# Army list creator for tabletop wargamers
-cask "battlescribe"
 # Web browser focusing on privacy
 cask "brave-browser"
 # Disk usage utility
@@ -228,26 +220,26 @@ cask "font-hack-nerd-font"
 cask "font-meslo-for-powerline"
 # Superfamily of fonts for code
 cask "font-monaspace"
-cask "google-backup-and-sync"
 # Web browser
 cask "google-chrome"
-cask "google-chrome-canary"
-# Set of tools to manage resources and applications hosted on Google Cloud
-cask "google-cloud-sdk"
+# Web browser
+cask "google-chrome@canary"
+# Client for the Google Drive storage service
+cask "google-drive"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Password manager app
 cask "keepassxc"
 # End-to-end encryption software
 cask "keybase"
+# File system integration
+cask "macfuse"
 # Cloud gaming platform
 cask "nvidia-geforce-now"
 # Open-source software for live streaming and screen recording
 cask "obs"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# File system integration
-cask "osxfuse"
 # Collaboration platform for API development
 cask "postman"
 # Move and resize windows using keyboard shortcuts or snap areas
@@ -262,6 +254,8 @@ cask "spotify"
 cask "the-unarchiver"
 # Open-source code editor
 cask "visual-studio-code"
+# Code editor
+cask "visual-studio-code@insiders"
 # Multimedia player
 cask "vlc"
 mas "GarageBand", id: 682658836
