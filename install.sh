@@ -31,9 +31,9 @@ if [[ "$os" == "osx" ]]; then
         scripts/InstallOhMyZSH.sh
         scripts/LinkDotfiles.sh
     else
+        scripts/InstallOhMyZSH.sh
         scripts/InstallHomebrew.sh
         scripts/brewfile.sh
-        scripts/InstallOhMyZSH.sh
         scripts/LinkDotfiles.sh
         scripts/CleanDock.sh
         scripts/tweaks.sh
