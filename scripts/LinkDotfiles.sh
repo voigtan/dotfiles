@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the folder containing the files to check
-folder_path="../home"
+folder_path="home"
 
 # Check if the folder exists
 if [ ! -d "$folder_path" ]; then

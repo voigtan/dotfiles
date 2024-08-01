@@ -21,19 +21,18 @@ for d in DIRS; do
 done
 
 if [[ "$os" == "osx" ]]; then
-
     chmod +x scripts/*.sh
     # Case for running as a test user on a github runner
-    if id -u runner; then
+    if id -u runner > /dev/null 2>&1; then
         echo "Skipping Homebrew install & tweaks for Github Workflow"
         defaults write NSGlobalDomain AppleLanguages "(en-US)"
-        scripts/brewfile.sh
-        scripts/InstallOhMyZSH.sh
-        scripts/LinkDotfiles.sh
+        source scripts/brewfile.sh
+        # source scripts/InstallOhMyZSH.sh
+        source scripts/LinkDotfiles.sh
     else
-        scripts/InstallOhMyZSH.sh
-        scripts/InstallHomebrew.sh
-        scripts/brewfile.sh
+        source scripts/InstallOhMyZSH.sh
+        source scripts/InstallHomebrew.sh
+        source scripts/brewfile.sh
         scripts/LinkDotfiles.sh
         scripts/CleanDock.sh
         scripts/tweaks.sh
