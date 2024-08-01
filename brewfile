@@ -65,6 +65,8 @@ brew "findutils"
 brew "freetds"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Library for encoding and decoding .avif files
+brew "libavif"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -205,6 +207,8 @@ cask "authy"
 cask "brave-browser"
 # Disk usage utility
 cask "disk-inventory-x"
+# Drivers for DisplayLink docks, adapters and monitors
+cask "displaylink"
 # Tool to hide status bar icons
 cask "dozer"
 # Client for the Dropbox cloud storage service
@@ -213,14 +217,10 @@ cask "dropbox"
 cask "elgato-camera-hub"
 # Web browser
 cask "firefox"
-# Free monospaced font with programming ligatures
 cask "font-fira-code"
-# Developer targeted fonts with a high number of glyphs
 cask "font-fira-code-nerd-font"
-# Developer targeted fonts with a high number of glyphs
 cask "font-hack-nerd-font"
 cask "font-meslo-for-powerline"
-# Superfamily of fonts for code
 cask "font-monaspace"
 # Web browser
 cask "google-chrome"
@@ -276,6 +276,7 @@ mas "Pages", id: 409201541
 mas "Xcode", id: 497799835
 mas "Yubico Authenticator", id: 1497506650
 vscode "dbaeumer.vscode-eslint"
+vscode "dooez.alt-catppuccin-vsc"
 vscode "editorconfig.editorconfig"
 vscode "esbenp.prettier-vscode"
 vscode "ms-azuretools.vscode-docker"
