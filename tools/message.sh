@@ -11,3 +11,8 @@ msg() {
 warn() {
   echo "\e[0;33mWARN!\e[0m\t$1"
 }
+
+error_exit() {
+  echo "\e[0;31mERROR!\e[0m\t$1"
+  exit 1
+}
