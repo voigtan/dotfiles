@@ -4,7 +4,6 @@ tap "clementtsang/bottom"
 tap "fastly/tap"
 tap "hashicorp/tap"
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
 tap "kryptco/tap"
 tap "wagoodman/dive"
 # Run your GitHub Actions locally
@@ -49,6 +48,8 @@ brew "docker-compose"
 brew "dockutil"
 # Test various flash cards
 brew "f3"
+# Like neofetch, but much faster because written mostly in C
+brew "fastfetch"
 # OpenType text shaping engine
 brew "harfbuzz"
 # Multi-format archive and compression library
@@ -77,8 +78,6 @@ brew "git-extras"
 brew "git-gui"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# Library access to GnuPG
-brew "gpgme"
 # Cross-platform application and UI framework
 brew "qt"
 # Command-driven, interactive function plotting
@@ -87,6 +86,8 @@ brew "gnuplot"
 brew "go"
 # Generate introspection data for GObject libraries
 brew "gobject-introspection"
+# Library access to GnuPG
+brew "gpgme"
 # GNU grep, egrep and fgrep
 brew "grep"
 # World's fastest and most advanced password recovery utility
@@ -129,12 +130,6 @@ brew "mkcert"
 brew "moreutils"
 # Cross-platform ncurses Spotify client written in Rust
 brew "ncspot"
-# Fast, highly customisable system info script
-brew "neofetch"
-# Thread-based email index, search, and tagging
-brew "notmuch"
-# E-mail reader with support for Notmuch, NNTP and much more
-brew "neomutt"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # HTTP/2 C Library
@@ -151,14 +146,10 @@ brew "openjdk@11"
 brew "openssh"
 # 7-Zip (high compression file archiver) implementation
 brew "p7zip"
-# General-purpose scripting language
-brew "php"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.10"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.8"
 # Cross-platform application and UI framework
 brew "qt@5"
 # Install various Ruby versions and implementations
@@ -187,8 +178,8 @@ brew "tree"
 brew "wget"
 # View colored diff with side by side and auto pager support
 brew "ydiff"
-# Download YouTube videos from the command-line
-brew "youtube-dl"
+# Feature-rich command-line audio/video downloader
+brew "yt-dlp"
 # UNIX shell (command interpreter)
 brew "zsh"
 # Additional completion definitions for zsh
@@ -201,16 +192,10 @@ brew "hashicorp/tap/terraform"
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
-# Two-factor authentication software
-cask "authy"
 # Web browser focusing on privacy
 cask "brave-browser"
-# Disk usage utility
-cask "disk-inventory-x"
 # Drivers for DisplayLink docks, adapters and monitors
 cask "displaylink"
-# Tool to hide status bar icons
-cask "dozer"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
 # Elgato FACECAM configuration tool
@@ -228,6 +213,8 @@ cask "google-chrome"
 cask "google-chrome@canary"
 # Client for the Google Drive storage service
 cask "google-drive"
+# Graphically shows disk usage within a file system
+cask "grandperspective"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Password manager app
@@ -279,7 +266,11 @@ vscode "dbaeumer.vscode-eslint"
 vscode "dooez.alt-catppuccin-vsc"
 vscode "editorconfig.editorconfig"
 vscode "esbenp.prettier-vscode"
+vscode "github.copilot"
+vscode "github.copilot-chat"
 vscode "ms-azuretools.vscode-docker"
+vscode "ms-dotnettools.csharp"
+vscode "ms-dotnettools.vscode-dotnet-runtime"
 vscode "ms-vscode-remote.remote-containers"
 vscode "streetsidesoftware.code-spell-checker"
 vscode "wallabyjs.wallaby-vscode"
