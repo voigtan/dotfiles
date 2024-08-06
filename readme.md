@@ -24,7 +24,7 @@ GIT_SIGNINGKEY=""
 
 and then run:
 ```
-./install.sh
+make install
 ```
 
 2. Configure iTerm2:
