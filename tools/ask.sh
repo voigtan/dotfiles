@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ask() {
     # http://djm.me/ask
     local prompt default REPLY

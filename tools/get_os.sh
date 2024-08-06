@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Echo's the operating system, simplified to:
 # - osx
 # - ubuntu
@@ -10,7 +12,7 @@ get_os() {
     elif [[ "$un" =~ [Uu]buntu ]]; then
         echo "ubuntu"
     else
-        logger -s "Unable to idenfify operating system from uname '$un'"
+        logger -s "Unable to identify operating system from uname '$un'"
         exit 1
     fi
 }

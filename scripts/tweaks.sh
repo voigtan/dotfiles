@@ -1,4 +1,6 @@
-#! /bin/bash
+#!/usr/bin/env zsh
+
+source ./tools/scripts.sh
 
 # Handpicked tweaks from http://mths.be/osx
 
@@ -92,4 +94,4 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
 defaults write NSGlobalDomain AppleFontSmoothing -int 1
 
-echo "Done. Note that some of these changes require a logout/restart to take effect."
+ok "Changed OSX settings. Note that some of these changes require a logout/restart to take effect."

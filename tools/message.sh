@@ -16,3 +16,7 @@ error_exit() {
   echo "\e[0;31mERROR!\e[0m\t$1"
   exit 1
 }
+
+pause() {
+  read \?'Press any key to continue or Ctrl+C to exit...'
+}
