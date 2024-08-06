@@ -14,8 +14,8 @@ msg "Remember, it's always a good practice to read and verify code from the inte
 pause
 
 # sudo keep-alive, see https://gist.github.com/cowboy/3118588
-sudo -v
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# sudo -v
+# while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 os=$(get_os)
 
