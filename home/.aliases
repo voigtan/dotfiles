@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
-alias cat='bat -p'
+
+# Open the dotfiles in Visual Studio Code Insiders
 alias dotfiles='code-insiders ~/.dotfiles'
+
+# Reload .zshrc
+alias reload='. ~/.zshrc'
+
+# update cat, ls and mkdir to fit my needs
+alias cat='bat -p'
 alias ls='lsd --long --git --header --all'
 alias mkdir='mkdir -p'
-alias reload='. ~/.zshrc'
+
 alias separator='defaults write com.apple.dock persistent-apps -array-add "{"tile-type"="spacer-tile";}" && killall Dock'
 
 # Show/hide hidden files in Finder
@@ -28,10 +35,13 @@ alias dcr-ri='docker rmi $(docker images -a -q)'
 alias dcr-rc='docker rm $(docker ps -a -f status=exited -q)'
 alias dcr-ps='docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}\t{{.Ports}}"'
 
+# Open Chrome with extensions disabled
 alias chrome-extensions-disabled='open --new -a "Google Chrome" --args --disable-extensions'
 
+# override vim with nvim
 alias vim='nvim'
 
+# lazy docker shortcut
 alias lzd='lazydocker'
 
 if [ ! $(uname -s) = 'Darwin' ]; then
