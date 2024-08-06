@@ -1,50 +1,47 @@
-#!/bin/bash
+#!/usr/bin/env zsh
+
+source ./tools/scripts.sh
 
 # Define the folder containing the files to check
-folder_path="home"
+folder_path_dotfiles_home="home"
+
+# if Stow is not installed, do not proceed
+if ! appExists stow; then
+  error_exit "Stow is not installed. Please install Stow before running this script."
+fi
 
 # Check if the folder exists
-if [ ! -d "$folder_path" ]; then
-  echo "Folder $folder_path does not exist."
-  exit 1
+if [ ! -d "$folder_path_dotfiles_home" ]; then
+  error_exit "Folder $folder_path_dotfiles_home does not exist."
 fi
 
-# Print the content of the folder for debugging
-echo "Listing files in $folder_path:"
-ls -la "$folder_path"
+# msg "Setting up symlink of dotfiles"
 
-# Loop through each file in the folder, including hidden files
-files=("$folder_path"/.* "$folder_path"/*)
-
-# Remove the entries for . and .. directories
-files=("${files[@]##*/}")
-
-# Check if the array contains files
-if [ ${#files[@]} -eq 0 ] || [ \( ${#files[@]} -eq 2 -a "${files[0]}" == "." -a "${files[1]}" == ".." \) ]; then
-  echo "No files found in $folder_path."
-  exit 1
-fi
-
-for file in "${files[@]}"; do
+# Loop through each dotfile in the folder
+for file in "$folder_path_dotfiles_home"/.*(N); do
   # Ignore . and .. entries
-  if [ "$file" == "." ] || [ "$file" == ".." ]; then
+  if [ "$file" = "$folder_path_dotfiles_home/." ] || [ "$file" = "$folder_path_dotfiles_home/.." ]; then
     continue
   fi
 
   # Extract the filename from the path
-  filename=$(basename "$file")
+  filename="${file##*/}"
 
-  echo "Checking $filename"
-  
-  # Check if the file exists in the home directory and is not a symlink
-  if [ -e ~/"$filename" ] && [ ! -L ~/"$filename" ]; then
+  # Check if the file is a symlink
+  if [ -L ~/"$filename" ]; then
+    # ok "~/$filename is a symlink, skipping"
+    continue
+  fi
+
+  # Check if the file exists in the home directory
+  if [ -e ~/"$filename" ]; then
     # Rename the existing file to <filename>.bak
     mv ~/"$filename" ~/"$filename".bak
-    echo "Renamed ~/$filename to ~/$filename.bak"
-  elif [ -L ~/"$filename" ]; then
-    echo "~/$filename is a symlink, skipping"
+    varn "↔️ Renamed ~/$filename to ~/$filename.bak"
   fi
+
 done
 
-# Add your stow command here
 stow home
+
+ok "Dotfiles symlinked successfully"
