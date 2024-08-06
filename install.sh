@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+chmod +x scripts/*.sh
+
 source ./tools/scripts.sh
 
 # check if zsh is installed

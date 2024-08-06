@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-chmod +x scripts/*.sh
+chmod +x tools/*.sh
 
 # Load each of the tools.
 for file in ./tools/*; do
