@@ -14,6 +14,8 @@ else
     ok "Homebrew Already installed"
 fi
 
-brew update && brew bundle && brew cleanup -s
+brew update --quiet && brew bundle && brew cleanup -s
+
+chmod -R go-w "$(brew --prefix)/share/zsh"
 
 ok "Homebrew packages installed successfully"

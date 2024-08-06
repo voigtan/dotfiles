@@ -37,7 +37,7 @@ for file in "$folder_path_dotfiles_home"/.*(N); do
   if [ -e ~/"$filename" ]; then
     # Rename the existing file to <filename>.bak
     mv ~/"$filename" ~/"$filename".bak
-    varn "↔️ Renamed ~/$filename to ~/$filename.bak"
+    warn "↔️ Renamed ~/$filename to ~/$filename.bak"
   fi
 
 done
