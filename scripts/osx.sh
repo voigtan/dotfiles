@@ -22,6 +22,7 @@ function brew_setup() {
 
         # Setup Homebrew envvars.
         if [[ $(arch) == "arm64" ]]; then
+            (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
             eval "$(/opt/homebrew/bin/brew shellenv)"
         elif [[ $(arch) == "i386" ]]; then
             eval "$(/usr/local/bin/brew shellenv)"
