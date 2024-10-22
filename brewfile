@@ -142,6 +142,8 @@ brew "nss"
 brew "nvm"
 # Development kit for the Java programming language
 brew "openjdk@11"
+# Development kit for the Java programming language
+brew "openjdk@17"
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # 7-Zip (high compression file archiver) implementation

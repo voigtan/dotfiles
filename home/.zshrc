@@ -165,3 +165,5 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 compdef go='git'
+
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
