@@ -6,20 +6,16 @@ tap "hashicorp/tap"
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "wagoodman/dive"
-# New file format for still image compression
-brew "jpeg-xl"
-# Codec library for encoding and decoding AV1 video streams
-brew "aom"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-# Yet another cross-platform graphical process/system monitor
-brew "bottom"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
+# GNU multiple precision arithmetic library
+brew "gmp"
 # General purpose TCP-IP emulator
 brew "libslirp"
 # Container runtimes on MacOS (and Linux) with minimal setup
@@ -44,24 +40,12 @@ brew "dockutil"
 brew "f3"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
-# OpenType text shaping engine
-brew "harfbuzz"
-# Multi-format archive and compression library
-brew "libarchive"
-# Subtitle renderer for the ASS/SSA subtitle format
-brew "libass"
-# Framework for layout and rendering of i18n text
-brew "pango"
-# Play, record, convert, and stream audio and video
-brew "ffmpeg"
 # Collection of GNU find, xargs, and locate
 brew "findutils"
 # Libraries to talk to Microsoft SQL Server and Sybase databases
 brew "freetds"
 # Command-line fuzzy finder written in Go
 brew "fzf"
-# Library for encoding and decoding .avif files
-brew "libavif"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -72,10 +56,6 @@ brew "git-extras"
 brew "git-gui"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# Cross-platform application and UI framework
-brew "qt"
-# Command-driven, interactive function plotting
-brew "gnuplot"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
 # Generate introspection data for GObject libraries
@@ -84,20 +64,16 @@ brew "gobject-introspection"
 brew "gpgme"
 # GNU grep, egrep and fgrep
 brew "grep"
+# C/C++ and Java libraries for Unicode and globalization
+brew "icu4c@76"
+# OpenType text shaping engine
+brew "harfbuzz"
 # World's fastest and most advanced password recovery utility
 brew "hashcat"
 # Improved top (interactive process viewer)
 brew "htop"
 # Apache HTTP server
 brew "httpd"
-# Database of common MIME types
-brew "shared-mime-info"
-# ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
-brew "libheif"
-# Library for reading RAW files from digital photo cameras
-brew "libraw"
-# Tools and libraries to manipulate images in many formats
-brew "imagemagick"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Lazier way to manage everything docker
@@ -106,8 +82,14 @@ brew "lazydocker"
 brew "lazygit"
 # DNS library written in C
 brew "ldns"
+# Multi-format archive and compression library
+brew "libarchive"
+# Subtitle renderer for the ASS/SSA subtitle format
+brew "libass"
 # Provides library functionality for FIDO U2F & FIDO 2.0, including USB
 brew "libfido2"
+# Library for reading RAW files from digital photo cameras
+brew "libraw"
 # Clone of ls with colorful output, file type icons, and more
 brew "lsd"
 # Mac App Store command-line interface
@@ -140,10 +122,14 @@ brew "openjdk@17"
 brew "openssh"
 # 7-Zip (high compression file archiver) implementation
 brew "p7zip"
+# Framework for layout and rendering of i18n text
+brew "pango"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
 # Python version management
 brew "pyenv"
+# Cross-platform application and UI framework
+brew "qt"
 # Cross-platform application and UI framework
 brew "qt@5"
 # Install various Ruby versions and implementations
@@ -152,12 +138,16 @@ brew "ruby-build"
 brew "rbenv"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Database of common MIME types
+brew "shared-mime-info"
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Simplified and community-driven man pages
 brew "tldr"
+# Clean C library for processing UTF-8 Unicode data
+brew "utf8proc"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
@@ -180,12 +170,20 @@ brew "hashicorp/tap/terraform"
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
+# Command-line tools for building and debugging Android apps
+cask "android-commandlinetools"
+# Android SDK component
+cask "android-platform-tools"
+# Tools for building Android applications
+cask "android-studio"
 # Web browser focusing on privacy
 cask "brave-browser"
 # Voice and text chat software
 cask "discord"
 # Drivers for DisplayLink docks, adapters and monitors
 cask "displaylink"
+# Developer platform
+cask "dotnet-sdk"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
 # Elgato FACECAM configuration tool
@@ -233,8 +231,12 @@ cask "skype"
 cask "slack"
 # Music streaming service
 cask "spotify"
+# JDK from the Eclipse Foundation (Adoptium)
+cask "temurin@8"
 # Unpacks archive files
 cask "the-unarchiver"
+# Virtual machines UI using QEMU
+cask "utm"
 # Calling and messaging application focusing on security
 cask "viber"
 # Open-source code editor
@@ -255,7 +257,6 @@ mas "Pages", id: 409201541
 mas "Xcode", id: 497799835
 mas "Yubico Authenticator", id: 1497506650
 vscode "dbaeumer.vscode-eslint"
-vscode "dooez.alt-catppuccin-vsc"
 vscode "editorconfig.editorconfig"
 vscode "esbenp.prettier-vscode"
 vscode "github.copilot"
