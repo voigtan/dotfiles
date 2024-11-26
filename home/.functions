@@ -40,3 +40,10 @@ gz() {
 	printf "orig: %d bytes\n" "$origsize";
 	printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio";
 }
+rmnode() {
+    if [ "$1" = "-dry" ]; then
+        find . -name "node_modules" -type d -prune | xargs du -chs
+    else
+        find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+    fi
+}
