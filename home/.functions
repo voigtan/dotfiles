@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # Determine size of a file or total size of a directory
+# Usage: fs [path]
+# If a path is provided, it will display the size of the specified file or directory.
+# If no path is provided, it will display the size of all files and directories in the current directory.
 fs() {
 	if du -b /dev/null > /dev/null 2>&1; then
 		local arg=-sbh;
@@ -14,6 +17,9 @@ fs() {
 	fi;
 }
 
+# Launch lazygit and change directory if a new directory is specified
+# Usage: lg [options]
+# Runs lazygit with the provided options. If a new directory is specified in ~/.lazygit/newdir, it changes to that directory.
 lg()
 {
 	export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
@@ -25,14 +31,23 @@ lg()
 	fi
 }
 
+# Show git diff with bat highlighting
+# Usage: batdiff
+# Displays the names of files changed in the git diff with syntax highlighting using bat.
 batdiff() {
 	git diff --name-only --diff-filter=d | xargs bat --diff
 }
 
+# Interact with a running Docker container
+# Usage: dockerInteract <container_id>
+# Opens an interactive shell session inside the specified Docker container.
 dockerInteract() {
 	docker exec -it $1 sh
 }
 
+# Display gzip compression ratio of a file
+# Usage: gz <file>
+# Shows the original size and the gzip compressed size of the specified file, along with the compression ratio.
 gz() {
 	local origsize=$(wc -c < "$1");
 	local gzipsize=$(gzip -c "$1" | wc -c);
@@ -40,6 +55,11 @@ gz() {
 	printf "orig: %d bytes\n" "$origsize";
 	printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio";
 }
+
+# Remove node_modules directories
+# Usage: rmnode [-dry]
+# If the -dry option is provided, it displays the sizes of all node_modules directories.
+# Otherwise, it removes all node_modules directories in the current directory and its subdirectories.
 rmnode() {
     if [ "$1" = "-dry" ]; then
         find . -name "node_modules" -type d -prune | xargs du -chs
@@ -47,6 +67,10 @@ rmnode() {
         find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
     fi
 }
+
+# Generate a random password of a specified length using GPG
+# Usage: pw [length]
+# Generates a random password of the specified length. Defaults to 24 if no length is specified.
 pw() {
   local length=${1:-24}
   gpg --gen-random --armor 1 "$length"
