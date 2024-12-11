@@ -25,3 +25,5 @@ if appExists "brew" && ask "Want GPG to use pinentry-mac?" N; then
 
     ok "GPG configured to use pinentry-mac"
 fi
+
+exit 0

@@ -10,3 +10,5 @@ else
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     ok "Oh My Zsh installed successfully"
 fi
+
+exit 0

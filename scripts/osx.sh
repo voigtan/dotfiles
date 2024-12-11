@@ -46,6 +46,7 @@ function main() {
     scripts/CleanDock.sh
     scripts/tweaks.sh
     scripts/SetupPinentry.sh
+    exit 0
 }
 
 main

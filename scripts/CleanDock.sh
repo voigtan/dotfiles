@@ -33,3 +33,5 @@ done
 killall Dock
 
 ok "Cleaning the OSX dock"
+
+exit 0

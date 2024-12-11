@@ -51,4 +51,9 @@ done
 
 stow home
 
+# If .extra exists, source it
+[ -e "./$folder_path_dotfiles_home/.extra" ] && source ./$folder_path_dotfiles_home/.extra
+
 ok "Dotfiles symlinked successfully"
+
+exit 0

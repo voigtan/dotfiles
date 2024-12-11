@@ -31,5 +31,4 @@ case "$os" in
         ;;
 esac
 
-# If .extra exists, source it
-[ -e "./home/.extra" ] && source ./home/.extra
+exit 0
