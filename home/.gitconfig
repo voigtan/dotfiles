@@ -32,9 +32,11 @@
 
 	# list all aliases in the current repository
 	aliases = !git config -l | grep alias | cut -c 7-
-	update = "!f() { git fetch upstream ${1-main}:${1-main} && git rebase ${1-main}; }; f"
+	update-branch = "!f() { git fetch upstream ${1-main}:${1-main} && git rebase ${1-main}; }; f"
 
-	# Save every file to the stash, including untracked files.
+	# Save all changes to the stash, including untracked files.
+	# If a message is provided, it will be used as the stash message.
+	# Usage: git save [optional message]
 	save = "!f() { if [ -z \"$1\" ];then git stash --keep-index --include-untracked; else git stash push -m \"$1\" --keep-index --include-untracked ; fi; }; f"
 
 	fixup =! sh -c 'SHA =$git rev-parse $1) \
