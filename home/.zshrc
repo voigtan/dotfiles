@@ -11,7 +11,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+# ZSH_THEME="agnoster"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -85,6 +85,7 @@ plugins=(
     tmux
     fzf
 )
+
 
 source $ZSH/oh-my-zsh.sh
 
@@ -167,3 +168,12 @@ export NVM_DIR="$HOME/.nvm"
 compdef go='git'
 
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+
+# bun completions
+[ -s "/Users/voigtan/.bun/_bun" ] && source "/Users/voigtan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+eval "$(starship init zsh)"
