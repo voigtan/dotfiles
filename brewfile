@@ -14,12 +14,10 @@ brew "bat"
 brew "btop"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima", args: ["HEAD"], restart_service: true
 # GNU multiple precision arithmetic library
 brew "gmp"
-# General purpose TCP-IP emulator
-brew "libslirp"
-# Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima", args: ["HEAD"]
 # GNU File, Shell, and Text utilities
 brew "coreutils"
 # Get a file from an HTTP, HTTPS or FTP server
@@ -34,6 +32,8 @@ brew "docker"
 brew "docker-buildx"
 # Isolated development environments using Docker
 brew "docker-compose"
+# Minify and secure Docker images
+brew "docker-slim"
 # Tool for managing dock items
 brew "dockutil"
 # Test various flash cards
@@ -58,6 +58,8 @@ brew "git-gui"
 brew "gnupg"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
 # Generate introspection data for GObject libraries
 brew "gobject-introspection"
 # Library access to GnuPG
@@ -114,10 +116,6 @@ brew "node"
 brew "nss"
 # Manage multiple Node.js versions
 brew "nvm"
-# Development kit for the Java programming language
-brew "openjdk@11"
-# Development kit for the Java programming language
-brew "openjdk@17"
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # 7-Zip (high compression file archiver) implementation
@@ -142,6 +140,8 @@ brew "rsync"
 brew "shared-mime-info"
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
+# Cross-shell prompt for astronauts
+brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
 # Simplified and community-driven man pages
@@ -170,20 +170,12 @@ brew "hashicorp/tap/terraform"
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
-# Command-line tools for building and debugging Android apps
-cask "android-commandlinetools"
-# Android SDK component
-cask "android-platform-tools"
-# Tools for building Android applications
-cask "android-studio"
 # Web browser focusing on privacy
 cask "brave-browser"
 # Voice and text chat software
 cask "discord"
 # Drivers for DisplayLink docks, adapters and monitors
 cask "displaylink"
-# Developer platform
-cask "dotnet-sdk"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
 # Elgato FACECAM configuration tool
@@ -219,8 +211,6 @@ cask "microsoft-teams"
 cask "nvidia-geforce-now"
 # Open-source software for live streaming and screen recording
 cask "obs"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
 # Collaboration platform for API development
 cask "postman"
 # Move and resize windows using keyboard shortcuts or snap areas
@@ -245,25 +235,8 @@ cask "visual-studio-code"
 cask "visual-studio-code@insiders"
 # Multimedia player
 cask "vlc"
+# Rust-based terminal
+cask "warp"
 # Install and switch between multiple versions of Xcode
 cask "xcodes"
-mas "GarageBand", id: 682658836
-mas "Genki Arcade", id: 1555925018
-mas "iMovie", id: 408981434
-mas "Keynote", id: 409183694
-mas "Microsoft Excel", id: 462058435
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "Xcode", id: 497799835
 mas "Yubico Authenticator", id: 1497506650
-vscode "dbaeumer.vscode-eslint"
-vscode "editorconfig.editorconfig"
-vscode "esbenp.prettier-vscode"
-vscode "github.copilot"
-vscode "github.copilot-chat"
-vscode "ms-azuretools.vscode-docker"
-vscode "ms-dotnettools.csharp"
-vscode "ms-dotnettools.vscode-dotnet-runtime"
-vscode "ms-vscode-remote.remote-containers"
-vscode "streetsidesoftware.code-spell-checker"
-vscode "wallabyjs.wallaby-vscode"
