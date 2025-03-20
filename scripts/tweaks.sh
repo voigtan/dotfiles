@@ -14,6 +14,9 @@ defaults write -g com.apple.swipescrolldirection -bool false
 # Always display Percentage on Battery
 defaults write com.apple.menuextra.battery ShowPercent YES
 
+# Enable function keys (F1, F2, etc.) as standard function keys
+defaults write -g com.apple.keyboard.fnState -bool true
+
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################
