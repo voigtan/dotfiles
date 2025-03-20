@@ -44,13 +44,18 @@ batdiff() {
 dockerInteract() {
 	docker exec -it $1 sh
 }
-
-# Display gzip compression ratio of a file
-# Usage: gz <file>
-# Shows the original size and the gzip compressed size of the specified file, along with the compression ratio.
+# Display gzip compression ratio of a file or a string
+# Usage: gz <file|string>
+# If a file is specified, shows the original size and the gzip compressed size of the file, along with the compression ratio.
+# If a string is specified, shows the original size and the gzip compressed size of the string, along with the compression ratio.
 gz() {
-	local origsize=$(wc -c < "$1");
-	local gzipsize=$(gzip -c "$1" | wc -c);
+	if [ -f "$1" ]; then
+		local origsize=$(wc -c < "$1");
+		local gzipsize=$(gzip -c "$1" | wc -c);
+	else
+		local origsize=${#1};
+		local gzipsize=$(echo -n "$1" | gzip -c | wc -c);
+	fi
 	local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l);
 	printf "orig: %d bytes\n" "$origsize";
 	printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio";
