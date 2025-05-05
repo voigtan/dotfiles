@@ -104,12 +104,12 @@
 	interactive = auto
 	status = auto
 [commit]
-	gpsign = true
-	gpgsign = true
+	gpgSign = true
 [gpg]
 	program = gpg
 [branch]
 	autosetupmerge = always
+	sort = -committerdate
 [merge]
 	tool = code-insiders
 [mergetool "code-insiders"]
@@ -125,6 +125,10 @@
 	editor = code-insiders --wait
 [pull]
 	rebase = true
+	default = current
+[rebase]
+	autoStash = true
+	missingCommitsCheck = warn
 [mergetool]
 	keepBackup = false
 [help]
@@ -134,5 +138,4 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
-[include]
-	path = ~/.gitconfig.local
+	default = current
