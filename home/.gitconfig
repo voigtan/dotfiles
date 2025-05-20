@@ -32,7 +32,6 @@
 
 	# list all aliases in the current repository
 	aliases = !git config -l | grep alias | cut -c 7-
-	update-branch = "!f() { git fetch upstream ${1-main}:${1-main} && git rebase ${1-main}; }; f"
 
 	# Save all changes to the stash, including untracked files.
 	# If a message is provided, it will be used as the stash message.
@@ -45,16 +44,75 @@
 	
 	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
 
-	coo = "!git branch --sort=-committerdate --no-color --format=\"%(refname:short)\" | fzf | xargs git switch"
-	# list branches ordered with latest changed, select with fzf, and checkout
-	# coo2 = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD) %(refname:short)|%(committerdate:relative)|%(subject)|%(authorname)'  --color=always --count=${count:=10} | column -ts'|' | fzf | awk '{print $1}' | xargs git switch"
-
+	# Lists branches ordered by the latest changes, allows selection with fzf, and checks out the selected branch.
+	#
+	# Usage:
+	#   git recent
+	#
+	# Description:
+	#   This command displays all local branches sorted by the most recent commit date.
+	#   It uses `fzf` to allow interactive selection of a branch, and then checks out the selected branch.
+	#
+	# Example:
+	#   `git recent` - Opens an interactive list of branches for selection and switches to the chosen branch.
 	recent = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always | column -ts'|' | fzf --ansi | awk '{print $1}' | xargs git switch"
 
-	# recent = "!r() { count=$1; git for-each-ref --sort=-committerdate refs/heads --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always --count=${count:=10} | column -ts'|';}; r"
-	# dm2 = "!f() { REMOTE=${1:-origin}; BRANCH=${2:-main}; git fetch $REMOTE && git branch --merged | grep -v '^\\*\\| $BRANCH$' | xargs -n 1 git branch -d; }; f"
+	# Creates a new branch with the name `wip/fire/$USER-<timestamp>` and pushes it to the remote repository.
+	#
+	# Usage:
+	#   git fire
+	#
+	# Description:
+	#   This command is a "panic button" for quickly saving your work. It stages all changes, commits them with a "WIP: fire alarm!" message, 
+	#   and pushes the changes to a new branch named `wip/fire/$USER-<timestamp>` on the remote repository.
+	#
+	# Example:
+	#   `git fire` - Creates a branch like `wip/fire/username-1234567890`, stages all changes, 
+	fire = "!f() { \
+		BRANCH=\"wip/fire/$USER-$(date +%s)\"; \
+		git go $BRANCH && \
+		git stage -A && \
+		git commit -m \"WIP: fire alarm!\" && \
+		git push origin "$BRANCH"; \
+	};f"
 
-	dm2 = "!f() { \
+	# Updates the current branch by rebasing it onto the specified branch.
+	#
+	# Usage:
+	#   git update-branch [branch]
+	#   git update-branch [remote] [branch]
+	#
+	# Parameters:
+	#   [branch] - (Optional) The name of the branch to rebase onto. Defaults to the remote's default branch if not provided.
+	#   [remote] - (Optional) The name of the remote repository. Defaults to 'origin' if not provided.
+	#
+	# Example:
+	#   `git update-branch origin main` - Fetches and rebases the current branch onto the 'main' branch from the 'origin' remote.
+	#   `git update-branch main` - Fetches and rebases the current branch onto the 'main' branch locally.
+	update-branch = "!f() { \
+		if [ $# -le 1 ]; then \
+			REMOTE=origin; \
+			BRANCH=${1:-$(git remote show $REMOTE | grep 'HEAD branch' | awk '{print $NF}')}; \
+		else \
+			REMOTE=$1; \
+			BRANCH=$2; \
+		fi; \
+		git fetch $REMOTE $BRANCH && git rebase $REMOTE/$BRANCH; \
+	}; f"
+
+	# Deletes all branches that have already been merged with the main branch.
+	#
+	# Usage:
+	#   git dm [remote] [branch]
+	#   git dm [branch]
+	#
+	# Parameters:
+	#   [remote] - (Optional) The name of the remote repository. If not provided, defaults to the local repository.
+	#   [branch] - (Optional) The name of the branch on the remote or local repository to check for merged branches.
+	#
+	# Example:
+	#   `git dm origin main` - This will delete all branches that have already been merged with the 'main' branch on the 'origin' remote.
+	dm = "!f() { \
 		REMOTE=${1:-origin}; \
 		BRANCH=${2:-main}; \
 		git fetch $REMOTE && \
@@ -63,11 +121,18 @@
 		xargs -n 1 git branch -d; \
 	}; f"
 
-	# Switch to a branch, creating it if necessary, if no branch is specified switch back to the previous branch.
-	# examples:
-	# `git go` will switch back to the previous branch (same as `git go -`).
-	# `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
-	# `git go main` will switch to the main branch.
+	# Switch to a branch, creating it if necessary. If no branch is specified, switch back to the previous branch.
+	#
+	# Usage:
+	#   git go [branch-name]
+	#
+	# Parameters:
+	#   [branch-name] - (Optional) The name of the branch to switch to. If not provided, switch back to the previous branch.
+	#
+	# Example:
+	#  `git go` will switch back to the previous branch (same as `git go -`).
+	#  `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
+	#  `git go main` will switch to the main branch.
 	go = "!f() { \
 		BRANCH=${1:-\"-\"}; \
 		git branch --list $BRANCH > /dev/null \
@@ -75,28 +140,23 @@
 		|| git switch -c $BRANCH; \
 	}; f"
 
-	# Remove branches that have already been merged with main.
-	# a.k.a. ‘delete merged’
-	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+	# TODO 
+	# -------------------
+	# # Undo the last rebase
+	# undo-rebase = "!f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
 
-	# Undo the last rebase
-	undo-rebase = "!f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
-
-	# See what changed since the last rebase
-	rdiff = "!f() { : git diff ; git diff `git x-rev-before-rebase` "$@";}; f"
-	# Helpers
-	########
-	# Get the revision before the last rebase started
-	x-rev-before-rebase = !git reflog --skip=1 -1 \"`git x-start-of-rebase`\" --format=\"%gD\"
-	# Get the revision that started the rebase
-	x-start-of-rebase = reflog --grep-reflog '^rebase (start)' -1 --format="%gD"
-	fire = "!f() { \
-		BRANCH=\"wip/fire/$USER-$(date +%s)\"; \
-		git go $BRANCH && \
-		git stage -A && \
-		git commit -m \"WIP: fire alarm!\" && \
-		git push origin "$BRANCH"; \
-	};f"
+	# # See what changed since the last rebase
+	# rdiff = "!f() { : git diff ; git diff `git x-rev-before-rebase` "$@";}; f"
+	# # Helpers
+	# ########
+	# # Get the revision before the last rebase started
+	# x-rev-before-rebase = !git reflog --skip=1 -1 \"`git x-start-of-rebase`\" --format=\"%gD\"
+	# # Get the revision that started the rebase
+	# x-start-of-rebase = reflog --grep-reflog '^rebase (start)' -1 --format="%gD"
+[user]
+	name = Andreas Voigt
+	email = voigtan@users.noreply.github.com
+	signingkey = 1E62EB9A74CF9C3A
 [color]
 	ui = true
 	branch = auto
@@ -111,18 +171,22 @@
 	autosetupmerge = always
 	sort = -committerdate
 [merge]
-	tool = code-insiders
+	tool = code
+[diff]
+	tool = code
+[mergetool "code"]
+	cmd = code --wait $MERGED
+[difftool "code"]
+	cmd = code --wait --diff $LOCAL $REMOTE
 [mergetool "code-insiders"]
 	cmd = code-insiders --wait $MERGED
-[diff]
-	tool = code-insiders
 [difftool "code-insiders"]
 	cmd = code-insiders --wait --diff $LOCAL $REMOTE
 [tag]
 	forceSignAnnotated = true
 [core]
 	excludesFile = ~/.dotfiles/.gitignore
-	editor = code-insiders --wait
+	editor = code --wait
 [pull]
 	rebase = true
 	default = current
@@ -139,3 +203,5 @@
 [push]
 	autoSetupRemote = true
 	default = current
+[include]
+	path = ~/.gitconfig.local
