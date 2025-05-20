@@ -44,28 +44,33 @@ batdiff() {
 dockerInteract() {
 	docker exec -it $1 sh
 }
+
 # Display gzip compression ratio of a file or a string
 # Usage: gz <file|string>
 # If a file is specified, shows the original size and the gzip compressed size of the file, along with the compression ratio.
 # If a string is specified, shows the original size and the gzip compressed size of the string, along with the compression ratio.
 gz() {
 	if [ -f "$1" ]; then
+		# is a file
 		local origsize=$(wc -c < "$1");
 		local gzipsize=$(gzip -c "$1" | wc -c);
+		local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null);
 	else
-		local origsize=${#1};
-		local gzipsize=$(echo -n "$1" | gzip -c | wc -c);
+		# interpret as a string
+		local input="$*";
+		local origsize=${#input};
+		local gzipsize=$(printf "%s" "$input" | gzip -c | wc -c 2>/dev/null);
+		local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l);
 	fi
-	local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l);
+
 	printf "orig: %d bytes\n" "$origsize";
 	printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio";
 }
-
 # Remove node_modules directories
-# Usage: rmnode [-dry]
+# Usage: npmRemove [-dry]
 # If the -dry option is provided, it displays the sizes of all node_modules directories.
 # Otherwise, it removes all node_modules directories in the current directory and its subdirectories.
-rmnode() {
+npmRemove() {
     if [ "$1" = "-dry" ]; then
         find . -name "node_modules" -type d -prune -exec du -chs {} +
     else
