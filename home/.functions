@@ -5,16 +5,16 @@
 # If a path is provided, it will display the size of the specified file or directory.
 # If no path is provided, it will display the size of all files and directories in the current directory.
 fs() {
-	if du -b /dev/null > /dev/null 2>&1; then
-		local arg=-sbh;
-	else
-		local arg=-sh;
-	fi
-	if [[ -n "$@" ]]; then
-		du $arg -- "$@";
-	else
-		du $arg .[^.]* ./*;
-	fi;
+    if du -b /dev/null > /dev/null 2>&1; then
+        local arg=-sbh;
+    else
+        local arg=-sh;
+    fi
+    if [[ -n "$@" ]]; then
+        du $arg -- "$@";
+    else
+        du $arg .[^.]* ./*;
+    fi;
 }
 
 # Launch lazygit and change directory if a new directory is specified
@@ -22,27 +22,27 @@ fs() {
 # Runs lazygit with the provided options. If a new directory is specified in ~/.lazygit/newdir, it changes to that directory.
 lg()
 {
-	export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
-	lazygit "$@"
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+    lazygit "$@"
 
-	if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
-		cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
-		rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
-	fi
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+        cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+        rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
 }
 
 # Show git diff with bat highlighting
 # Usage: batdiff
 # Displays the names of files changed in the git diff with syntax highlighting using bat.
 batdiff() {
-	git diff --name-only --diff-filter=d | xargs bat --diff
+    git diff --name-only --diff-filter=d | xargs bat --diff
 }
 
 # Interact with a running Docker container
 # Usage: dockerInteract <container_id>
 # Opens an interactive shell session inside the specified Docker container.
 dockerInteract() {
-	docker exec -it $1 sh
+    docker exec -it $1 sh
 }
 
 # Display gzip compression ratio of a file or a string
@@ -75,6 +75,7 @@ gz() {
         rm -f "$tmpfile"
     fi
 }
+
 # Remove node_modules directories
 # Usage: npmRemove [-dry]
 # If the -dry option is provided, it displays the sizes of all node_modules directories.
@@ -91,6 +92,6 @@ npmRemove() {
 # Usage: pw [length]
 # Generates a random password of the specified length. Defaults to 24 if no length is specified.
 pw() {
-  local length=${1:-24}
-  gpg --gen-random --armor 1 "$length"
+    local length=${1:-24}
+    gpg --gen-random --armor 1 "$length"
 }
