@@ -47,33 +47,30 @@ dockerInteract() {
 
 # Display gzip compression ratio of a file or a string
 # Usage: gz <file|string>
+# If no arguments are provided, it reads from stdin.
 # If a file is specified, shows the original size and the gzip compressed size of the file, along with the compression ratio.
 # If a string is specified, shows the original size and the gzip compressed size of the string, along with the compression ratio.
 gz() {
-    _gz_calc() {
-        local inputfile="$1"
-        local origsize=$(wc -c < "$inputfile")
-        local gzipsize=$(gzip -c < "$inputfile" | wc -c)
-        local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null)
-        printf "orig: %d bytes\n" "$origsize"
-        printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
-    }
-
-    if [ -t 0 ]; then
-        if [ -f "$1" ]; then
-            _gz_calc "$1"
-        else
-            local tmpfile=$(mktemp)
-            printf "%s" "$*" > "$tmpfile"
-            _gz_calc "$tmpfile"
-            rm -f "$tmpfile"
+    local input
+    if [ -t 0 ]; then # Check if input is from a terminal
+        if [ -f "$1" ]; then # Check if the first argument is a file, use the file as input
+            input="$1"
+        else # if the first argument is not a file, treat it as a string
+            input=$(mktemp)
+            printf "%s" "$*" > "$input"
         fi
-    else
-        local tmpfile=$(mktemp)
-        cat > "$tmpfile"
-        _gz_calc "$tmpfile"
-        rm -f "$tmpfile"
+    else # if input is from a pipe read from stdin and write to the temporary file
+        input=$(mktemp) 
+        cat > "$input"
     fi
+
+    local origsize=$(wc -c < "$input")
+    local gzipsize=$(gzip -c < "$input" | wc -c)
+    local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null)
+    printf "orig: %d bytes\n" "$origsize"
+    printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
+
+    [[ "$input" == /tmp/* ]] && rm -f "$input" # Clean up temporary file
 }
 
 # Remove node_modules directories
