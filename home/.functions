@@ -50,21 +50,30 @@ dockerInteract() {
 # If a file is specified, shows the original size and the gzip compressed size of the file, along with the compression ratio.
 # If a string is specified, shows the original size and the gzip compressed size of the string, along with the compression ratio.
 gz() {
-	if [ -f "$1" ]; then
-		# is a file
-		local origsize=$(wc -c < "$1");
-		local gzipsize=$(gzip -c "$1" | wc -c);
-		local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null);
-	else
-		# interpret as a string
-		local input="$*";
-		local origsize=${#input};
-		local gzipsize=$(printf "%s" "$input" | gzip -c | wc -c 2>/dev/null);
-		local ratio=$(echo "$gzipsize * 100 / $origsize" | bc -l);
-	fi
+    _gz_calc() {
+        local inputfile="$1"
+        local origsize=$(wc -c < "$inputfile")
+        local gzipsize=$(gzip -c < "$inputfile" | wc -c)
+        local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null)
+        printf "orig: %d bytes\n" "$origsize"
+        printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
+    }
 
-	printf "orig: %d bytes\n" "$origsize";
-	printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio";
+    if [ -t 0 ]; then
+        if [ -f "$1" ]; then
+            _gz_calc "$1"
+        else
+            local tmpfile=$(mktemp)
+            printf "%s" "$*" > "$tmpfile"
+            _gz_calc "$tmpfile"
+            rm -f "$tmpfile"
+        fi
+    else
+        local tmpfile=$(mktemp)
+        cat > "$tmpfile"
+        _gz_calc "$tmpfile"
+        rm -f "$tmpfile"
+    fi
 }
 # Remove node_modules directories
 # Usage: npmRemove [-dry]
