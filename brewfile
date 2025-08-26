@@ -3,8 +3,6 @@ tap "buo/cask-upgrade"
 tap "clementtsang/bottom"
 tap "fastly/tap"
 tap "hashicorp/tap"
-tap "homebrew/bundle"
-tap "homebrew/services"
 tap "wagoodman/dive"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
@@ -12,10 +10,8 @@ brew "bash"
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.12"
 # Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima", args: ["HEAD"], restart_service: true
+brew "colima", args: ["HEAD"], restart_service: :changed
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
@@ -32,8 +28,6 @@ brew "docker"
 brew "docker-buildx"
 # Isolated development environments using Docker
 brew "docker-compose"
-# Minify and secure Docker images
-brew "docker-slim"
 # Tool for managing dock items
 brew "dockutil"
 # Test various flash cards
@@ -66,8 +60,6 @@ brew "gobject-introspection"
 brew "gpgme"
 # GNU grep, egrep and fgrep
 brew "grep"
-# C/C++ and Java libraries for Unicode and globalization
-brew "icu4c@76"
 # OpenType text shaping engine
 brew "harfbuzz"
 # World's fastest and most advanced password recovery utility
@@ -76,6 +68,8 @@ brew "hashcat"
 brew "htop"
 # Apache HTTP server
 brew "httpd"
+# C/C++ and Java libraries for Unicode and globalization
+brew "icu4c@76"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Lazier way to manage everything docker
@@ -100,12 +94,16 @@ brew "mas"
 brew "mdp"
 # Terminal-based visual file manager
 brew "midnight-commander"
+# Minify and secure Docker images
+brew "mintoolkit"
 # Simple tool to make locally trusted development certificates
 brew "mkcert"
 # Collection of tools that nobody wrote when UNIX was young
 brew "moreutils"
 # Cross-platform ncurses Spotify client written in Rust
 brew "ncspot"
+# Clean C library for processing UTF-8 Unicode data
+brew "utf8proc"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # HTTP/2 C Library
@@ -126,6 +124,8 @@ brew "pango"
 brew "pinentry-mac"
 # Python version management
 brew "pyenv"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.12"
 # Cross-platform application and UI framework
 brew "qt"
 # Cross-platform application and UI framework
@@ -146,8 +146,6 @@ brew "starship"
 brew "stow"
 # Simplified and community-driven man pages
 brew "tldr"
-# Clean C library for processing UTF-8 Unicode data
-brew "utf8proc"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
@@ -187,6 +185,8 @@ cask "font-fira-code-nerd-font"
 cask "font-hack-nerd-font"
 cask "font-meslo-for-powerline"
 cask "font-monaspace"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
 # Web browser
 cask "google-chrome"
 # Web browser
@@ -215,14 +215,10 @@ cask "obs"
 cask "postman"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
-# Video chat, voice call and instant messaging application
-cask "skype"
 # Team communication and collaboration software
 cask "slack"
 # Music streaming service
 cask "spotify"
-# JDK from the Eclipse Foundation (Adoptium)
-cask "temurin@8"
 # Unpacks archive files
 cask "the-unarchiver"
 # Virtual machines UI using QEMU
@@ -231,12 +227,17 @@ cask "utm"
 cask "viber"
 # Open-source code editor
 cask "visual-studio-code"
-# Code editor
+# Open-source code editor
 cask "visual-studio-code@insiders"
 # Multimedia player
 cask "vlc"
 # Rust-based terminal
 cask "warp"
 # Install and switch between multiple versions of Xcode
-cask "xcodes"
+cask "xcodes-app"
+mas "GarageBand", id: 682658836
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
 mas "Yubico Authenticator", id: 1497506650
