@@ -92,3 +92,8 @@ pw() {
     local length=${1:-24}
     gpg --gen-random --armor 1 "$length"
 }
+
+cal-year() {
+    local year=${1:-$(date +%Y)}
+    ncal -w ${year}
+}
