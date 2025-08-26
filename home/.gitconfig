@@ -205,3 +205,7 @@
 	default = current
 [include]
 	path = ~/.gitconfig.local
+[url "git@github.com:"]
+	insteadOf = "gh:"
+[url "git@github.com:voigtan/"]
+	insteadOf = "voigtan:"
