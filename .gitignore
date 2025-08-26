@@ -25,3 +25,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .extra
+
+# Ignore everything in home/.colima
+home/.colima/*
+# But not _templates folder and its contents
+!home/.colima/_templates/** 
+home/.docker/*
+# But not _templates folder and its contents
+!home/.docker/config.json 
