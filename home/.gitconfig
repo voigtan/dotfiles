@@ -135,6 +135,10 @@
 	#  `git go main` will switch to the main branch.
 	go = "!f() { \
 		BRANCH=${1:-\"-\"}; \
+		if [ \"$BRANCH\" = \"!\" ]; then \
+			git recent; \
+			return; \
+		fi; \
 		git branch --list $BRANCH > /dev/null 2>&1 \
 			&& git switch $BRANCH 2>/dev/null \
 		|| git switch -c $BRANCH; \
