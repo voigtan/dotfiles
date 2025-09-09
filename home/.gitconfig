@@ -133,6 +133,7 @@
 	#  `git go` will switch back to the previous branch (same as `git go -`).
 	#  `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
 	#  `git go main` will switch to the main branch.
+	#  `git go !` will list recent branches using `git recent`.
 	go = "!f() { \
 		BRANCH=${1:-\"-\"}; \
 		if [ \"$BRANCH\" = \"!\" ]; then \
