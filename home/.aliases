@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Open the dotfiles in Visual Studio Code Insiders
-alias dotfiles='code-insiders ~/.dotfiles'
+# Open the dotfiles in Visual Studio Code
+alias dotfiles='code ~/.dotfiles'
 
 # Reload .zshrc
 alias reload='. ~/.zshrc'
