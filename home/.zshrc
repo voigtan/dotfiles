@@ -169,11 +169,6 @@ compdef go='git'
 
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 
-# bun completions
-[ -s "/Users/voigtan/.bun/_bun" ] && source "/Users/voigtan/.bun/_bun"
+eval "$(starship init zsh)"export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-eval "$(starship init zsh)"
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"
