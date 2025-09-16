@@ -52,25 +52,45 @@ dockerInteract() {
 # If a string is specified, shows the original size and the gzip compressed size of the string, along with the compression ratio.
 gz() {
     local input
-    if [ -t 0 ]; then # Check if input is from a terminal
-        if [ -f "$1" ]; then # Check if the first argument is a file, use the file as input
-            input="$1"
-        else # if the first argument is not a file, treat it as a string
-            input=$(mktemp)
-            printf "%s" "$*" > "$input"
-        fi
-    else # if input is from a pipe read from stdin and write to the temporary file
-        input=$(mktemp) 
-        cat > "$input"
+    local origsize
+    local gzipsize
+    local ratio
+
+    #if there are no arguments return
+    if [ -z "$1" ]; then
+        return
     fi
 
-    local origsize=$(wc -c < "$input")
-    local gzipsize=$(gzip -c < "$input" | wc -c)
-    local ratio=$(echo "scale=2; $gzipsize * 100 / $origsize" | bc -l 2>/dev/null)
-    printf "orig: %d bytes\n" "$origsize"
-    printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
+    if [ -d "$1" ]; then # check if the argument is a directory
+        input=$(mktemp)
+        tar -cf - "$1" | gzip -c > "$input"
+        origsize=$(du -sb "$1" 2>/dev/null | awk '{print $1}')
+        if [ -z "$origsize" ]; then
+            origsize=$(du -sk "$1" | awk '{print $1}')
+            origsize=$((origsize * 1024))
+        fi
+        gzipsize=$(wc -c < "$input")
+    else
+        if [ -f "$1" ]; then # check if the argument is a file
+            input="$1"
+        else # treat the argument as a string
+            input=$(mktemp)
+            printf "%s\n" "$@" > "$input"
+        fi
+        origsize=$(wc -c < "$input")
+        gzipsize=$(gzip -c < "$input" | wc -c)
+    fi
 
-    [[ "$input" == /tmp/* ]] && rm -f "$input" # Clean up temporary file
+    ratio=$(awk "BEGIN {printf \"%.2f\", $gzipsize * 100 / $origsize}")
+    orig_human=$(numfmt --to=iec "$origsize" | xargs)
+    gzip_human=$(numfmt --to=iec "$gzipsize" | xargs)
+
+    printf "orig: %d bytes (%s)\ngzip: %d bytes (%s) (%.2f%%)\n" \
+        "$origsize" "$orig_human" \
+        "$gzipsize" "$gzip_human" \
+        "$ratio"
+
+    [[ "$input" == /tmp/* ]] && rm -f "$input"
 }
 
 # Remove node_modules directories
@@ -85,15 +105,38 @@ npmRemove() {
     fi
 }
 
-# Generate a random password of a specified length using GPG
+# Generate a random password of a specified length using OpenSSL
 # Usage: pw [length]
 # Generates a random password of the specified length. Defaults to 24 if no length is specified.
 pw() {
     local length=${1:-24}
-    gpg --gen-random --armor 1 "$length"
+    # Use base64, remove non-alphanumeric, and trim to length
+    LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c "$length"
+    echo
 }
 
 cal-year() {
     local year=${1:-$(date +%Y)}
     ncal -w ${year}
+}
+
+# This code performs operations based on the current selection.
+# It processes the selected data or code block, applying the intended logic.
+# Ensure the selection is valid before executing this code.
+add-mac-space() {
+    local size=${1:-d}
+
+    if [ ! $(uname -s) = 'Darwin' ]; then
+        case "$size" in
+            s)
+                defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="small-spacer-tile";}'; killall Dock
+                ;;
+            d)
+                defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'; killall Dock
+                ;;
+            *)
+                echo "Usage: add-mac-space [s|d]"
+                ;;
+        esac
+    fi
 }
