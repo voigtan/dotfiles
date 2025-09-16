@@ -3,6 +3,7 @@
 source ./tools/scripts.sh
 
 # Handpicked tweaks from http://mths.be/osx
+# https://macos-defaults.com/
 
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
@@ -75,14 +76,14 @@ sudo pmset -a sms 0
 ###############################################################################
 
 # Always open everything in Finder's column view. This is important.
-defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+defaults write com.apple.Finder FXPreferredViewStyle clmv
 
 # Show hidden files and file extensions by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 
 # Show the ~/Library folder
-chflags nohidden ~/Library 
+chflags nohidden ~/Library
 
 # Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
