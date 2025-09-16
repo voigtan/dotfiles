@@ -1,147 +1,226 @@
-format = """
-[](#9A348E)\
-$os\
-$username\
-[](bg:#DA627D fg:#9A348E)\
-$directory\
-[](fg:#DA627D bg:#FCA17D)\
-$git_branch\
-$git_status\
-[](fg:#FCA17D bg:#86BBD8)\
-$c\
-$elixir\
-$elm\
-$golang\
-$gradle\
-$haskell\
-$java\
-$julia\
-$nodejs\
-$nim\
-$rust\
-$scala\
-[](fg:#86BBD8 bg:#06969A)\
-$docker_context\
-[](fg:#06969A bg:#33658A)\
-$time\
-[ ](fg:#33658A)\
-"""
+[aws]
+disabled = true
+symbol = "  "
 
-# Disable the blank line at the start of the prompt
-# add_newline = false
+[buf]
+symbol = " "
 
-# You can also replace your username with a neat symbol like   or disable this ($user)
-# and use the os module below
-[username]
-show_always = true
-style_user = "bg:#9A348E"
-style_root = "bg:#9A348E"
-format = '[ ]($style)'
-disabled = false
-
-# An alternative to the username module which displays a symbol that
-# represents the current operating system
-[os]
-style = "bg:#9A348E"
-disabled = true # Disabled by default
-
-[directory]
-style = "bg:#DA627D fg:#292c3c"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
-
-# Here is how you can shorten some long paths by text replacement
-# similar to mapped_locations in Oh My Posh:
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-"~" = " "
-".dotfiles" = "󱚣 "
-
-# Keep in mind that the order matters. For example:
-# "Important Documents" = " 󰈙 "
-# will not be replaced, because "Documents" was already substituted before.
-# So either put "Important Documents" before "Documents" or use the substituted version:
-# "Important 󰈙 " = " 󰈙 "
+[bun]
+disabled = true
+symbol = " "
 
 [c]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+
+[cpp]
+disabled = true
+symbol = " "
+
+[cmake]
+disabled = true
+symbol = " "
+
+[conda]
+disabled = true
+symbol = " "
+
+[crystal]
+disabled = true
+symbol = " "
+
+[dart]
+disabled = true
+symbol = " "
+
+[deno]
+disabled = true
+symbol = " "
+
+[directory]
+read_only = " 󰌾"
 
 [docker_context]
+disabled = true
 symbol = " "
-style = "bg:#06969A"
-format = '[ $symbol $context ]($style)'
 
 [elixir]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+disabled = true
+symbol = " "
 
 [elm]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+
+[fennel]
+disabled = true
+symbol = " "
+
+[fossil_branch]
+symbol = " "
+
+[gcloud]
+disabled = true
+symbol = "  "
 
 [git_branch]
-symbol = ""
-style = "bg:#FCA17D  fg:#292c3c"
-format = '[ $symbol $branch ]($style)'
+symbol = " "
 
-[git_status]
-style = "bg:#FCA17D  fg:#292c3c"
-format = '[$all_status$ahead_behind ]($style)'
+[git_commit]
+tag_symbol = '  '
 
 [golang]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
 
-[gradle]
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+[guix_shell]
+symbol = " "
 
 [haskell]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+
+[haxe]
+symbol = " "
+
+[hg_branch]
+disabled = true
+symbol = " "
+
+[hostname]
+ssh_symbol = " "
 
 [java]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
 
 [julia]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
 
-[nodejs]
-symbol = ""
-style = "bg:#86BBD8 fg:#292c3c"
-format = '[ $symbol ($version) ]($style)'
+[kotlin]
+disabled = true
+symbol = " "
+
+[lua]
+disabled = true
+symbol = " "
+
+[memory_usage]
+symbol = "󰍛 "
+
+[meson]
+disabled = true
+symbol = "󰔷 "
 
 [nim]
+disabled = true
 symbol = "󰆥 "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+
+[nix_shell]
+symbol = " "
+
+[nodejs]
+disabled = true
+symbol = " "
+
+[ocaml]
+symbol = " "
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+Arch = " "
+Artix = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
+[package]
+disabled = true
+symbol = "󰏗 "
+
+[perl]
+disabled = true
+symbol = " "
+
+[php]
+disabled = true
+symbol = " "
+
+[pijul_channel]
+disabled = true
+symbol = " "
+
+[pixi]
+disabled = true
+symbol = "󰏗 "
+
+[python]
+symbol = " "
+
+[rlang]
+disabled = true
+symbol = "󰟔 "
+
+[ruby]
+disabled = true
+symbol = " "
 
 [rust]
-symbol = ""
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+disabled = true
+symbol = "󱘗 "
 
 [scala]
+disabled = true
 symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
 
-[time]
-disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#33658A"
-format = '[ ♥ $time ]($style)'
+[swift]
+disabled = true
+symbol = " "
+
+[zig]
+disabled = true
+symbol = " "
+
+[gradle]
+disabled = true
+symbol = " "
