@@ -133,19 +133,37 @@
 	#  `git go` will switch back to the previous branch (same as `git go -`).
 	#  `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
 	#  `git go main` will switch to the main branch.
-	#  `git go !` will list recent branches using `git recent`.
+	#  `git go !` will list recent branches using `git recent` (if the alias exists) or an interactive picker.
 	go = "!f() { \
 		BRANCH=${1:-\"-\"}; \
 		if [ \"$BRANCH\" = \"!\" ]; then \
-			git recent; \
-			return; \
+			if git config --get alias.recent > /dev/null 2>&1; then \
+				git recent; \
+			else \
+				branches=$(git branch --format='%(refname:short)' --sort=-committerdate | grep -v \"^$(git branch --show-current)$\"); \
+				if [ -z \"$branches\" ]; then \
+					echo \"No other branches to switch to.\"; \
+				else \
+					select branch in $branches; do \
+						if [ -n \"$branch\" ]; then \
+							git switch \"$branch\"; \
+							break; \
+						else \
+							echo \"Invalid selection. Please try again.\"; \
+						fi; \
+					done; \
+				fi; \
+			fi; \
+		elif [ \"$BRANCH\" = \"-\" ]; then \
+			git switch -; \
+		elif git branch --list $BRANCH | grep -q \"$BRANCH\"; then \
+			git switch $BRANCH; \
+		else \
+			git switch -c $BRANCH; \
 		fi; \
-		git branch --list $BRANCH > /dev/null 2>&1 \
-			&& git switch $BRANCH 2>/dev/null \
-		|| git switch -c $BRANCH; \
 	}; f"
 
-	# TODO 
+	# TODO
 	# -------------------
 	# # Undo the last rebase
 	# undo-rebase = "!f() { : git reset ; PREV_COMMIT=`git x-rev-before-rebase` && git reset --merge \"$PREV_COMMIT\" \"$@\";}; f"
