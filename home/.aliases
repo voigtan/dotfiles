@@ -23,9 +23,6 @@ if [ $(uname -s) = 'Darwin' ]; then
 	# Hide/show all desktop icons (useful when presenting) (macOS)
 	alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 	alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-
-	# Lock the screen (when going AFK) (macOS)
-	alias afk="/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend"
 fi
 
 # Google Chrome
@@ -34,6 +31,7 @@ alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Ch
 
 # Remove all Docker Images
 alias dcr-ri='docker rmi $(docker images -a -q)'
+
 # Remove all Docker Containers
 alias dcr-rc='docker rm $(docker ps -a -f status=exited -q)'
 alias dcr-ps='docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}\t{{.Ports}}"'
