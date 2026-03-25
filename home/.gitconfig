@@ -162,7 +162,30 @@
 	#  `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
 	#  `git go main` will switch to the main branch.
 	#  `git go !` will list recent branches using `git recent` (if the alias exists) or an interactive picker.
+	#  `git go --info` will show this help message.
 	go = "!f() { \
+		if [ \"$1\" = \"--info\" ] || [ \"$1\" = \"-i\" ]; then \
+			echo \"Usage: git go [branch-name]\"; \
+			echo \"\"; \
+			echo \"Switch to a branch, creating it if necessary.\"; \
+			echo \"If no branch is specified, switch back to the previous branch.\"; \
+			echo \"\"; \
+			echo \"Options:\"; \
+			echo \"  --info, -i               Show this help message\"; \
+			echo \"\"; \
+			echo \"Arguments:\"; \
+			echo \"  [branch-name]            Branch to switch to (or create if it does not exist)\"; \
+			echo \"  !                        Interactively pick a recent branch\"; \
+			echo \"  -                        Switch back to the previous branch (explicit)\"; \
+			echo \"\"; \
+			echo \"Examples:\"; \
+			echo \"  git go                   Switch back to the previous branch\"; \
+			echo \"  git go -                 Same as above, explicit form\"; \
+			echo \"  git go my-new-branch     Create and switch to 'my-new-branch'\"; \
+			echo \"  git go main              Switch to the 'main' branch\"; \
+			echo \"  git go !                 Opens an interactive branch picker\"; \
+			return 0; \
+		fi; \
 		BRANCH=${1:-\"-\"}; \
 		if [ \"$BRANCH\" = \"!\" ]; then \
 			if git config --get alias.recent > /dev/null 2>&1; then \
@@ -184,10 +207,10 @@
 			fi; \
 		elif [ \"$BRANCH\" = \"-\" ]; then \
 			git switch -; \
-		elif git branch --list $BRANCH | grep -q \"$BRANCH\"; then \
-			git switch $BRANCH; \
+		elif git show-ref --verify --quiet \"refs/heads/$BRANCH\"; then \
+			git switch \"$BRANCH\"; \
 		else \
-			git switch -c $BRANCH; \
+			git switch -c \"$BRANCH\"; \
 		fi; \
 	}; f"
 
