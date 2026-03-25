@@ -86,7 +86,6 @@ plugins=(
     fzf
 )
 
-
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -148,18 +147,8 @@ export FZF_DEFAULT_OPTS="
 
 export PATH="/usr/local/sbin:$PATH"
 
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
-    autoload -Uz compinit
-    compinit
-fi
-
-# Upload Service Client
-export PATH="$PATH:$HOME/usc"
-
 # Colima Docker Socket Path
-export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
+# export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
 
 export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
@@ -169,6 +158,6 @@ compdef go='git'
 
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 
-eval "$(starship init zsh)"export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+eval "$(starship init zsh)"
 
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
