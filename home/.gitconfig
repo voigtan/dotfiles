@@ -12,9 +12,9 @@
 	del = branch -D
 	br = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
 
-	# Display the largest files in the repository using `git log-largefiles`.
-	# Set the number of files to display by providing the value of x (default is 5).
-	log-largefiles = "!f() { \
+	# Display the largest files in the repository using `git log-large-files <max>`.
+	# Set the number of files to display by providing the value of <max> (default is 5).
+	log-large-files = "!f() { \
 		git rev-list --objects --all \
 		| git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
 		| sed -n 's/^blob //p' \
