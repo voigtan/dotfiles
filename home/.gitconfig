@@ -109,7 +109,12 @@
 	update-branch = "!f() { \
 		if [ $# -le 1 ]; then \
 			REMOTE=origin; \
-			BRANCH=${1:-$(git remote show $REMOTE | grep 'HEAD branch' | awk '{print $NF}')}; \
+			DEFAULT_REMOTE_REF=$(git symbolic-ref --quiet --short refs/remotes/$REMOTE/HEAD 2>/dev/null); \
+			DEFAULT_REMOTE_BRANCH=${DEFAULT_REMOTE_REF#${REMOTE}/}; \
+			if [ -z \"$DEFAULT_REMOTE_BRANCH\" ]; then \
+				DEFAULT_REMOTE_BRANCH=$(git config --get init.defaultBranch || echo main); \
+			fi; \
+			BRANCH=${1:-$DEFAULT_REMOTE_BRANCH}; \
 		else \
 			REMOTE=$1; \
 			BRANCH=$2; \
