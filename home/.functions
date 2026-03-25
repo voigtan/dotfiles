@@ -146,3 +146,8 @@ brewfile-backup() {
     brew bundle dump --file="$backup_path" --force --describe --no-vscode
     echo "Brewfile backed up to $backup_path (without VSCode extensions)"
 }
+
+http-server() {
+    local port=${1:-8000}
+    python3 -m http.server "$port"
+}
