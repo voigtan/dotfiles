@@ -72,7 +72,13 @@
 	#
 	# Example:
 	#   `git recent` - Opens an interactive list of branches for selection and switches to the chosen branch.
-	recent = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always | column -ts'|' | fzf --ansi | awk '{print $1}' | xargs git switch"
+	recent = "!f() { \
+		git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always \
+		| column -ts'|' \
+		| fzf --ansi \
+		| awk '{print $1}' \
+		| xargs git switch; \
+	}; f"
 
 	# Creates a new branch with the name `wip/fire/$USER-<timestamp>` and pushes it to the remote repository.
 	#
