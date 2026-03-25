@@ -33,6 +33,23 @@
 	# list all aliases in the current repository
 	aliases = !git config -l | grep alias | cut -c 7-
 
+	# Print a single alias as a one-liner.
+	# Usage: git alias-show <alias name>
+	alias-show = "!f() { \
+		name=$1; \
+		if [ -z \"$name\" ]; then \
+			echo \"Usage: git alias-show <alias name>\"; \
+			return 1; \
+		fi; \
+		value=$(git config --get \"alias.$name\"); \
+		if [ -z \"$value\" ]; then \
+			echo \"Alias not found: $name\"; \
+			return 1; \
+		fi; \
+		echo \"$value\" | tr '\\n' ' ' | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//'; \
+		echo; \
+	}; f"
+
 	# Save all changes to the stash, including untracked files.
 	# If a message is provided, it will be used as the stash message.
 	# Usage: git save [optional message]
