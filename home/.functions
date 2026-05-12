@@ -166,14 +166,13 @@ PYEOF
 
 _ncal_highlight() {
     python3 - "$1" "${2:-}" <<'PYEOF'
-import subprocess, sys, re, json
+import sys, json, calendar
 from datetime import date
 
-year = sys.argv[1]
+year = int(sys.argv[1])
 cache_file = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else None
 
 today = date.today()
-today_tuple = (today.month, today.day) if str(today.year) == year else None
 
 holiday_set = set()
 if cache_file:
@@ -184,85 +183,63 @@ if cache_file:
 
 RED = "\033[1;31m"
 REVERSE = "\033[7m"
+DIM = "\033[2m"
 RESET = "\033[0m"
 
-months_order = [
-    ["January", "February", "March", "April"],
-    ["May", "June", "July", "August"],
-    ["September", "October", "November", "December"],
-]
+cal = calendar.Calendar(firstweekday=0)
+mnames = calendar.month_name
+groups = [[1,2,3,4], [5,6,7,8], [9,10,11,12]]
+MONTH_W = 23
+GAP = "   "
 
-month_to_num = {m: i for i, ms in enumerate(months_order, 0) for _ in [None]
-               for m, i in []}  # replaced below
-month_to_num = {}
-for gi, group in enumerate(months_order):
-    for ci, m in enumerate(group):
-        month_to_num[m] = gi * 4 + ci + 1
+total_w = 4 * MONTH_W + 3 * len(GAP)
+print(f"{year:^{total_w}}")
 
-COL_WIDTH = 18
+for group in groups:
+    print(GAP.join(f"{mnames[m]:^{MONTH_W}}" for m in group))
+    wk_hdr = f"{DIM}Wk{RESET} Mo Tu We Th Fr Sa Su"
+    print(GAP.join([wk_hdr] * 4))
 
-result = subprocess.run(["ncal", "-w", year], capture_output=True, text=True)
-lines = result.stdout.split("\n")
-
-header_positions = {}
-for li, l in enumerate(lines):
-    names = re.findall(r'[A-Z][a-z]+', l)
-    if names and names[0] in month_to_num:
-        header_positions[li] = names
-
-for line in lines:
-    if not line.strip() or line.strip() == year:
-        print(line)
-        continue
-
-    row_label = line[:4].rstrip()
-    if row_label not in ("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"):
-        print(line)
-        continue
-
-    line_idx = lines.index(line)
-    group_idx = None
-    for hp in sorted(header_positions.keys()):
-        if hp < line_idx < hp + 10:
-            names = header_positions[hp]
-            for gi, group in enumerate(months_order):
-                if group[0] == names[0]:
-                    group_idx = gi
+    month_data = []
+    for m in group:
+        rows = []
+        for week in cal.monthdayscalendar(year, m):
+            wn = None
+            for d in week:
+                if d != 0:
+                    wn = date(year, m, d).isocalendar()[1]
                     break
-            break
+            rows.append((wn, week, m))
+        month_data.append(rows)
 
-    if group_idx is None:
-        print(line)
-        continue
+    max_rows = max(len(md) for md in month_data)
 
-    content = line[4:]
-    new_chunks = []
-    for ci in range(4):
-        start = ci * COL_WIDTH
-        end = start + COL_WIDTH
-        chunk = content[start:end] if start < len(content) else ""
-        month_num = month_to_num[months_order[group_idx][ci]]
-
-        new_chunk = chunk
-        offset = 0
-        for m in re.finditer(r'\d+', chunk):
-            day_val = int(m.group())
-            is_holiday = (month_num, day_val) in holiday_set
-            is_today = today_tuple == (month_num, day_val)
-            if is_holiday or is_today:
-                if is_holiday and is_today:
-                    fmt = f"{RED}{REVERSE}{m.group()}{RESET}"
-                elif is_holiday:
-                    fmt = f"{RED}{m.group()}{RESET}"
-                else:
-                    fmt = f"{REVERSE}{m.group()}{RESET}"
-                s = m.start() + offset
-                e = m.end() + offset
-                new_chunk = new_chunk[:s] + fmt + new_chunk[e:]
-                offset += len(fmt) - len(m.group())
-        new_chunks.append(new_chunk)
-
-    print(line[:4] + "".join(new_chunks))
+    for ri in range(max_rows):
+        parts = []
+        for mi, m in enumerate(group):
+            if ri < len(month_data[mi]):
+                wn, days, mn = month_data[mi][ri]
+                wn_s = f"{DIM}{wn:2d}{RESET}" if wn is not None else "  "
+                day_strs = []
+                for d in days:
+                    if d == 0:
+                        day_strs.append("  ")
+                    else:
+                        ds = f"{d:2d}"
+                        is_hol = (mn, d) in holiday_set
+                        is_tod = today.year == year and today.month == mn and today.day == d
+                        if is_hol and is_tod:
+                            ds = f"{RED}{REVERSE}{ds}{RESET}"
+                        elif is_hol:
+                            ds = f"{RED}{ds}{RESET}"
+                        elif is_tod:
+                            ds = f"{REVERSE}{ds}{RESET}"
+                        day_strs.append(ds)
+                parts.append(f"{wn_s} " + " ".join(day_strs))
+            else:
+                parts.append(" " * MONTH_W)
+        print(GAP.join(parts))
+    print()
 PYEOF
 }
 
