@@ -299,3 +299,19 @@ http-server() {
     local port=${1:-8000}
     python3 -m http.server "$port"
 }
+
+kill-service-with-port() {
+    local port=${1}
+    # check if port value has been provided
+    if [ -z "$port" ]; then
+        echo "Usage: kill-service-with-port <port>"
+        return 1
+    fi
+
+    local pid=$(lsof -tiTCP:"$port" -sTCP:LISTEN)
+    if [ -z "$pid" ]; then
+        echo "No process found listening on port $port"
+        return 1
+    fi
+    kill "$pid"
+}
