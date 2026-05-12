@@ -117,8 +117,156 @@ pw() {
 
 cal-year() {
     local year=${1:-$(date +%Y)}
-    ncal -w ${year}
+    _ncal_highlight "$year"
 }
+
+cal-holidays() {
+    local input=${1:-$(date +%Y)}
+    [[ "$input" == "today" ]] && input=$(date +%Y-%m-%d)
+    local year cache_dir cache_file
+
+    if [[ "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        year="${input%%-*}"
+    else
+        year="$input"
+    fi
+
+    cache_dir="$HOME/.dotfiles/.cache/holidays"
+    cache_file="$cache_dir/${year}.json"
+
+    mkdir -p "$cache_dir"
+
+    if [[ ! -f "$cache_file" ]]; then
+        curl -s "https://api.dagsmart.se/holidays?year=${year}" > "$cache_file"
+        if [[ $? -ne 0 || ! -s "$cache_file" ]]; then
+            rm -f "$cache_file"
+            echo "Failed to fetch holidays for ${year}"
+            return 1
+        fi
+    fi
+
+    if [[ "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        python3 - "$cache_file" "$input" <<'PYEOF'
+import json, sys
+cache_file, target = sys.argv[1], sys.argv[2]
+with open(cache_file) as f:
+    holidays = json.load(f)
+matches = [h for h in holidays if h["date"] == target]
+if matches:
+    for h in matches:
+        print(f"{h['date']}  {h['name']['sv']} ({h['name']['en']})")
+else:
+    print(f"No holiday on {target}")
+PYEOF
+        return
+    fi
+
+    _ncal_highlight "$year" "$cache_file"
+}
+
+_ncal_highlight() {
+    python3 - "$1" "${2:-}" <<'PYEOF'
+import subprocess, sys, re, json
+from datetime import date
+
+year = sys.argv[1]
+cache_file = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else None
+
+today = date.today()
+today_tuple = (today.month, today.day) if str(today.year) == year else None
+
+holiday_set = set()
+if cache_file:
+    with open(cache_file) as f:
+        for h in json.load(f):
+            parts = h["date"].split("-")
+            holiday_set.add((int(parts[1]), int(parts[2])))
+
+RED = "\033[1;31m"
+REVERSE = "\033[7m"
+RESET = "\033[0m"
+
+months_order = [
+    ["January", "February", "March", "April"],
+    ["May", "June", "July", "August"],
+    ["September", "October", "November", "December"],
+]
+
+month_to_num = {m: i for i, ms in enumerate(months_order, 0) for _ in [None]
+               for m, i in []}  # replaced below
+month_to_num = {}
+for gi, group in enumerate(months_order):
+    for ci, m in enumerate(group):
+        month_to_num[m] = gi * 4 + ci + 1
+
+COL_WIDTH = 18
+
+result = subprocess.run(["ncal", "-w", year], capture_output=True, text=True)
+lines = result.stdout.split("\n")
+
+header_positions = {}
+for li, l in enumerate(lines):
+    names = re.findall(r'[A-Z][a-z]+', l)
+    if names and names[0] in month_to_num:
+        header_positions[li] = names
+
+for line in lines:
+    if not line.strip() or line.strip() == year:
+        print(line)
+        continue
+
+    row_label = line[:4].rstrip()
+    if row_label not in ("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"):
+        print(line)
+        continue
+
+    line_idx = lines.index(line)
+    group_idx = None
+    for hp in sorted(header_positions.keys()):
+        if hp < line_idx < hp + 10:
+            names = header_positions[hp]
+            for gi, group in enumerate(months_order):
+                if group[0] == names[0]:
+                    group_idx = gi
+                    break
+            break
+
+    if group_idx is None:
+        print(line)
+        continue
+
+    content = line[4:]
+    new_chunks = []
+    for ci in range(4):
+        start = ci * COL_WIDTH
+        end = start + COL_WIDTH
+        chunk = content[start:end] if start < len(content) else ""
+        month_num = month_to_num[months_order[group_idx][ci]]
+
+        new_chunk = chunk
+        offset = 0
+        for m in re.finditer(r'\d+', chunk):
+            day_val = int(m.group())
+            is_holiday = (month_num, day_val) in holiday_set
+            is_today = today_tuple == (month_num, day_val)
+            if is_holiday or is_today:
+                if is_holiday and is_today:
+                    fmt = f"{RED}{REVERSE}{m.group()}{RESET}"
+                elif is_holiday:
+                    fmt = f"{RED}{m.group()}{RESET}"
+                else:
+                    fmt = f"{REVERSE}{m.group()}{RESET}"
+                s = m.start() + offset
+                e = m.end() + offset
+                new_chunk = new_chunk[:s] + fmt + new_chunk[e:]
+                offset += len(fmt) - len(m.group())
+        new_chunks.append(new_chunk)
+
+    print(line[:4] + "".join(new_chunks))
+PYEOF
+}
+
+
 
 # This code performs operations based on the current selection.
 # It processes the selected data or code block, applying the intended logic.
