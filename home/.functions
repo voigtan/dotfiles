@@ -166,7 +166,7 @@ PYEOF
 
 _ncal_highlight() {
     python3 - "$1" "${2:-}" <<'PYEOF'
-import sys, json, calendar
+import os, sys, json, calendar
 from datetime import date
 
 year = int(sys.argv[1])
@@ -185,6 +185,23 @@ RED = "\033[1;31m"
 REVERSE = "\033[7m"
 DIM = "\033[2m"
 RESET = "\033[0m"
+
+requested_links = os.environ.get("CAL_HOLIDAYS_LINKS", "0") == "1"
+link_template = os.environ.get(
+    "CAL_HOLIDAYS_LINK_TEMPLATE",
+    "https://www.google.com/search?q=Sweden+holiday+{date}",
+)
+
+safe_scheme = link_template.lower().startswith(("http://", "https://"))
+if requested_links and not safe_scheme:
+    print(
+        "cal-holidays: CAL_HOLIDAYS_LINK_TEMPLATE must use http:// or https://",
+        file=sys.stderr,
+    )
+links_enabled = requested_links and safe_scheme
+
+def osc8_link(text, url):
+    return f"\033]8;;{url}\033\\{text}\033]8;;\033\\"
 
 cal = calendar.Calendar(firstweekday=0)
 mnames = calendar.month_name
@@ -228,12 +245,17 @@ for group in groups:
                         ds = f"{d:2d}"
                         is_hol = (mn, d) in holiday_set
                         is_tod = today.year == year and today.month == mn and today.day == d
+                        if is_hol and links_enabled:
+                            full_date = f"{year:04d}-{mn:02d}-{d:02d}"
+                            link_url = link_template.replace("{date}", full_date)
                         if is_hol and is_tod:
                             ds = f"{RED}{REVERSE}{ds}{RESET}"
                         elif is_hol:
                             ds = f"{RED}{ds}{RESET}"
                         elif is_tod:
                             ds = f"{REVERSE}{ds}{RESET}"
+                        if is_hol and links_enabled:
+                            ds = osc8_link(ds, link_url)
                         day_strs.append(ds)
                 parts.append(f"{wn_s} " + " ".join(day_strs))
             else:
