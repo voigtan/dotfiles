@@ -265,6 +265,36 @@ for group in groups:
 PYEOF
 }
 
+holidays() {
+    local year=${1:-$(date +%Y)}
+    local cache_dir="$HOME/.dotfiles/.cache/holidays"
+    local cache_file="$cache_dir/${year}.json"
+
+    mkdir -p "$cache_dir"
+
+    if [[ ! -f "$cache_file" ]]; then
+        curl -s "https://api.dagsmart.se/holidays?year=${year}" > "$cache_file"
+        if [[ $? -ne 0 || ! -s "$cache_file" ]]; then
+            rm -f "$cache_file"
+            echo "Failed to fetch holidays for ${year}"
+            return 1
+        fi
+    fi
+
+    local selected
+    selected=$(python3 -c "
+import json, sys
+with open('$cache_file') as f:
+    holidays = json.load(f)
+for h in sorted(holidays, key=lambda x: x['date']):
+    print(f\"{h['date']}  {h['name']['sv']} ({h['name']['en']})\")
+" | fzf --prompt="Holiday ($year) > " --header="Select a holiday")
+
+    [[ -z "$selected" ]] && return
+
+    local date="${selected%% *}"
+    cal-holidays "$date"
+}
 
 
 # This code performs operations based on the current selection.
