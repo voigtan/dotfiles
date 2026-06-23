@@ -55,6 +55,7 @@
 	# If a message is provided, it will be used as the stash message.
 	# Usage: git save [optional message]
 	save = "!f() { if [ -z \"$1\" ];then git stash --keep-index --include-untracked; else git stash push -m \"$1\" --keep-index --include-untracked ; fi; }; f"
+	save-all = "!f() { if [ -z \"$1\" ];then git stash --include-untracked; else git stash push -m \"$1\" --include-untracked ; fi; }; f"
 
 	fixup =! sh -c 'SHA =$git rev-parse $1) \
 		&& git commit --fixup $SHA \
