@@ -1,17 +1,15 @@
-tap "1password/tap"
-tap "buo/cask-upgrade"
-tap "clementtsang/bottom"
-tap "fastly/tap"
-tap "hashicorp/tap"
-tap "wagoodman/dive"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# Console Bonsai is a bonsai tree generator, written in C using ncurses
+brew "cbonsai"
 # Container runtimes on MacOS (and Linux) with minimal setup
 brew "colima", args: ["HEAD"], restart_service: :changed
+# Create and run Linux containers using lightweight virtual machines
+brew "container"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
@@ -20,20 +18,18 @@ brew "coreutils"
 brew "curl"
 # Tool for exploring each layer in a docker image
 brew "dive"
-# Bash, Zsh and Fish completion for Docker
-brew "docker-completion"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Docker CLI plugin for extended build capabilities with BuildKit
 brew "docker-buildx"
+# Bash, Zsh and Fish completion for Docker
+brew "docker-completion"
 # Isolated development environments using Docker
 brew "docker-compose"
 # Tool for managing dock items
 brew "dockutil"
 # Test various flash cards
 brew "f3"
-# Like neofetch, but much faster because written mostly in C
-brew "fastfetch"
 # Collection of GNU find, xargs, and locate
 brew "findutils"
 # Libraries to talk to Microsoft SQL Server and Sybase databases
@@ -48,12 +44,10 @@ brew "git"
 brew "git-extras"
 # Tcl/Tk UI for the git revision control system
 brew "git-gui"
-# GNU Pretty Good Privacy (PGP) package
+# GNU Privacy Guard (OpenPGP)
 brew "gnupg"
-# Open source programming language to build simple/reliable/efficient software
-brew "go"
-# Package compiler and linker metadata toolkit
-brew "pkgconf"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.14"
 # Generate introspection data for GObject libraries
 brew "gobject-introspection"
 # Library access to GnuPG
@@ -86,6 +80,10 @@ brew "libass"
 brew "libfido2"
 # Library for reading RAW files from digital photo cameras
 brew "libraw"
+# General purpose TCP-IP emulator
+brew "libslirp"
+# Additional guest agents for Lima
+brew "lima-additional-guestagents"
 # Clone of ls with colorful output, file type icons, and more
 brew "lsd"
 # Mac App Store command-line interface
@@ -108,12 +106,16 @@ brew "utf8proc"
 brew "neovim"
 # HTTP/2 C Library
 brew "nghttp2"
-# Platform built on V8 to build network applications
+# Open-source, cross-platform JavaScript runtime environment
 brew "node"
 # Libraries for security-enabled client and server applications
 brew "nss"
 # Manage multiple Node.js versions
 brew "nvm"
+# Development kit for the Java programming language
+brew "openjdk@11"
+# Development kit for the Java programming language
+brew "openjdk@17"
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # 7-Zip (high compression file archiver) implementation
@@ -124,8 +126,6 @@ brew "pango"
 brew "pinentry-mac"
 # Python version management
 brew "pyenv"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.12"
 # Cross-platform application and UI framework
 brew "qt"
 # Cross-platform application and UI framework
@@ -144,8 +144,8 @@ brew "shellcheck"
 brew "starship"
 # Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
-# Simplified and community-driven man pages
-brew "tldr"
+# Official tldr client written in Rust
+brew "tlrc"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
@@ -160,14 +160,16 @@ brew "yt-dlp"
 brew "zsh"
 # Additional completion definitions for zsh
 brew "zsh-completions"
-# A CLI for interacting with the Fastly platform
-brew "fastly/tap/fastly"
-# Terraform
-brew "hashicorp/tap/terraform"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
 cask "1password-cli"
+# Android SDK component
+cask "android-platform-tools"
+# Tools for building Android applications
+cask "android-studio"
+# 3D model slicing software for 3D printers, maintained by Bambu Lab
+cask "bambu-studio"
 # Web browser focusing on privacy
 cask "brave-browser"
 # Voice and text chat software
@@ -189,12 +191,10 @@ cask "font-monaspace"
 cask "ghostty"
 # Web browser
 cask "google-chrome"
-# Web browser
-cask "google-chrome@canary"
 # Client for the Google Drive storage service
 cask "google-drive"
-# Graphically shows disk usage within a file system
-cask "grandperspective"
+# Utility to hide menu bar items
+cask "hiddenbar"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Password manager app
@@ -207,10 +207,10 @@ cask "macfuse"
 cask "microsoft-auto-update"
 # Meet, chat, call, and collaborate in just one place
 cask "microsoft-teams"
-# Cloud gaming platform
-cask "nvidia-geforce-now"
 # Open-source software for live streaming and screen recording
 cask "obs"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
 # Collaboration platform for API development
 cask "postman"
 # Move and resize windows using keyboard shortcuts or snap areas
@@ -219,6 +219,8 @@ cask "rectangle"
 cask "slack"
 # Music streaming service
 cask "spotify"
+# JDK from the Eclipse Foundation (Adoptium)
+cask "temurin@8"
 # Unpacks archive files
 cask "the-unarchiver"
 # Virtual machines UI using QEMU
@@ -227,17 +229,20 @@ cask "utm"
 cask "viber"
 # Open-source code editor
 cask "visual-studio-code"
-# Open-source code editor
-cask "visual-studio-code@insiders"
 # Multimedia player
 cask "vlc"
+# Resources for Wacom tablets
+cask "wacom-tablet"
 # Rust-based terminal
 cask "warp"
 # Install and switch between multiple versions of Xcode
 cask "xcodes-app"
 mas "GarageBand", id: 682658836
+mas "Genki Arcade", id: 1555925018
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
+mas "Microsoft Excel", id: 462058435
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
+mas "Xcode", id: 497799835
 mas "Yubico Authenticator", id: 1497506650
