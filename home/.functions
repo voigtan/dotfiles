@@ -320,7 +320,7 @@ add-mac-space() {
 
 brewfile-backup() {
     local backup_path=${1:-~/.dotfiles/brewfile}
-    brew bundle dump --file="$backup_path" --force --describe --no-vscode
+    brew bundle dump --file="$backup_path" --force --no-vscode
     echo "Brewfile backed up to $backup_path (without VSCode extensions)"
 }
 
