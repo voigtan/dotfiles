@@ -16,14 +16,14 @@ brew "gmp"
 brew "coreutils"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
+# TIFF library and utilities
+brew "libtiff"
 # Tool for exploring each layer in a docker image
 brew "dive"
 # Pack, ship and run any application as a lightweight container
 brew "docker"
 # Docker CLI plugin for extended build capabilities with BuildKit
 brew "docker-buildx"
-# Bash, Zsh and Fish completion for Docker
-brew "docker-completion"
 # Isolated development environments using Docker
 brew "docker-compose"
 # Tool for managing dock items
@@ -180,6 +180,8 @@ cask "displaylink"
 cask "dropbox"
 # Elgato FACECAM configuration tool
 cask "elgato-camera-hub"
+# Assign keys, and then decorate and label them
+cask "elgato-stream-deck"
 # Web browser
 cask "firefox"
 cask "font-fira-code"
