@@ -159,6 +159,9 @@ _git_go() { _git_switch }
 
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 
+# Don't upgrade casks that manage their own updates (e.g. Chrome, Discord)
+export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
+
 eval "$(starship init zsh)"
 
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
