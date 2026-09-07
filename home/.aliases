@@ -23,11 +23,18 @@ if [ $(uname -s) = 'Darwin' ]; then
 	# Hide/show all desktop icons (useful when presenting) (macOS)
 	alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 	alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
-fi
 
-# Google Chrome
-alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
-alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
+	# Google Chrome
+	alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
+	alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
+else
+	if grep -q Microsoft /proc/version; then
+		# Ubuntu on Windows using the Linux subsystem
+		alias open='explorer.exe';
+	else
+		alias open='xdg-open';
+	fi
+fi
 
 # Remove all Docker Images
 alias dcr-ri='docker rmi $(docker images -a -q)'
@@ -44,15 +51,6 @@ alias vim='nvim'
 
 # lazy docker shortcut
 alias lzd='lazydocker'
-
-if [ ! $(uname -s) = 'Darwin' ]; then
-	if grep -q Microsoft /proc/version; then
-		# Ubuntu on Windows using the Linux subsystem
-		alias open='explorer.exe';
-	else
-		alias open='xdg-open';
-	fi
-fi
 
 # Get week number
 alias week='date +%V'
