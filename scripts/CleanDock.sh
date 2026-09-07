@@ -16,7 +16,7 @@ fi
 # Define the apps to be added to the Dock
 apps=(
 	'KeePassXC'
-	'Visual Studio Code - Insiders'
+	'Visual Studio Code'
 	'Google Chrome'
 	Spotify
 	Slack
