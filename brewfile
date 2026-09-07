@@ -134,6 +134,8 @@ brew "qt@5"
 brew "ruby-build"
 # Ruby version manager
 brew "rbenv"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Database of common MIME types
