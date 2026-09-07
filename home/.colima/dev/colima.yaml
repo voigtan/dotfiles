@@ -1,0 +1,11 @@
+cpu: 4
+memory: 8
+disk: 100
+vmType: vz
+mountType: virtiofs
+mountInotify: true
+forwardAgent: true
+
+docker:
+  features:
+    buildkit: true

@@ -30,7 +30,7 @@ Temporary Items
 # Ignore everything in home/.colima
 home/.colima/*
 # But not dev folder and its contents
-!home/.colima/dev/**
+!home/.colima/dev
 
 home/.docker/*
 # But not config.json folder and its contents
