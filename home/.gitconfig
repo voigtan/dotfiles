@@ -254,10 +254,6 @@
 	cmd = code --wait $MERGED
 [difftool "code"]
 	cmd = code --wait --diff $LOCAL $REMOTE
-[mergetool "code-insiders"]
-	cmd = code-insiders --wait $MERGED
-[difftool "code-insiders"]
-	cmd = code-insiders --wait --diff $LOCAL $REMOTE
 [tag]
 	forceSignAnnotated = true
 [core]
