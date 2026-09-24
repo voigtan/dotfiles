@@ -269,6 +269,8 @@
 [rebase]
 	autoStash = true
 	missingCommitsCheck = warn
+[rerere]
+	enabled = true
 [mergetool]
 	keepBackup = false
 [help]
