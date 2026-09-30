@@ -1,5 +1,33 @@
 #!/usr/bin/env bash
 
+# Enable colors in man command
+# https://www.howtogeek.com/683134/how-to-display-man-pages-in-color-on-linux/
+man() {
+    # local -x LESS_TERMCAP_me=$'\e[0m'          # Reset all text attributes.
+    # local -x LESS_TERMCAP_so=$'\e[1;32m'       # Start standout text (bold green).
+    # local -x LESS_TERMCAP_md=$'\e[0;32m'       # Color bold text green.
+    # local -x LESS_TERMCAP_se=$'\e[0m'          # End standout text.
+    # local -x LESS_TERMCAP_us=$'\e[1;4;31m'     # Start underlined text (bold red).
+    # local -x LESS_TERMCAP_ue=$'\e[0m'          # End underlined text.
+    # command man "$@"
+
+    LESS_TERMCAP_mb=$(tput bold; tput setaf 1) \
+    LESS_TERMCAP_md=$(tput bold; tput setaf 1) \
+    LESS_TERMCAP_me=$(tput sgr0) \
+    LESS_TERMCAP_se=$(tput sgr0) \
+    LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4) \
+    LESS_TERMCAP_ue=$(tput sgr0) \
+    LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 2) \
+    LESS_TERMCAP_mr=$(tput rev) \
+    LESS_TERMCAP_mh=$(tput dim) \
+    LESS_TERMCAP_ZN=$(tput ssubm) \
+    LESS_TERMCAP_ZV=$(tput rsubm) \
+    LESS_TERMCAP_ZO=$(tput ssupm) \
+    LESS_TERMCAP_ZW=$(tput rsupm) \
+    GROFF_NO_SGR=1 \
+    command man "$@"
+}
+
 # Determine size of a file or total size of a directory
 # Usage: fs [path]
 # If a path is provided, it will display the size of the specified file or directory.
@@ -98,6 +126,15 @@ gz() {
 # If the -dry option is provided, it displays the sizes of all node_modules directories.
 # Otherwise, it removes all node_modules directories in the current directory and its subdirectories.
 npmRemove() {
+    if [ "$1" = "--help" ]; then
+        echo "Remove node_modules directories"
+        echo ""
+        echo "Usage: npmRemove [-dry]"
+        echo "If the -dry option is provided, it displays the sizes of all node_modules directories."
+        echo "Otherwise, it removes all node_modules directories in the current directory and its subdirectories."
+        return
+    fi
+
     if [ "$1" = "-dry" ]; then
         find . -name "node_modules" -type d -prune -exec du -chs {} +
     else
