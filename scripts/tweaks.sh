@@ -18,6 +18,9 @@ defaults write com.apple.menuextra.battery ShowPercent YES
 # Enable function keys (F1, F2, etc.) as standard function keys
 defaults write -g com.apple.keyboard.fnState -bool true
 
+# Disable the Mission Control "Show Desktop" keyboard shortcut
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 '{ enabled = 0; value = { parameters = (65535, 65535, 0); type = "standard"; }; }'
+
 # Disable F11 show desktop shortcut from mission control
 defaults write com.apple.dock showDesktop -bool false
 
