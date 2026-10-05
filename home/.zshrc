@@ -28,6 +28,7 @@ plugins=(
     git
     docker
     docker-compose
+    wd
     fzf
 )
 
