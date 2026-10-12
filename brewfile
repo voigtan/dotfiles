@@ -199,6 +199,8 @@ cask "google-chrome"
 cask "google-drive"
 # Utility to hide menu bar items
 cask "hiddenbar"
+# Open source API development ecosystem
+cask "hoppscotch"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Password manager app
@@ -241,9 +243,7 @@ cask "wacom-tablet"
 cask "warp"
 # Install and switch between multiple versions of Xcode
 cask "xcodes-app"
-mas "GarageBand", id: 682658836
 mas "Genki Arcade", id: 1555925018
-mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Microsoft Excel", id: 462058435
 mas "Numbers", id: 409203825
