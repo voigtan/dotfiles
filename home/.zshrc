@@ -1,8 +1,5 @@
 export GPG_TTY=$(tty)
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 DEFAULT_USER="$(whoami)"
 export ZSH="$HOME/.oh-my-zsh"
@@ -10,8 +7,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="false"
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
+# Set up Homebrew Zsh completion if available
 if type brew &>/dev/null; then
     FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 
@@ -31,13 +27,12 @@ plugins=(
     wd
     fzf
 )
-
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
 # NVM
-export NVM_DIR=~/.nvm
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 source $(brew --prefix nvm)/nvm.sh
 
 for file in ~/.{aliases,functions,extra}; do
@@ -46,7 +41,7 @@ done;
 unset file;
 
 # fzf
-# Enable using ALT+C to CD into the selected directory and customize behavior
+# Enable using ALT(CMD)+C to CD into the selected directory and customize behaviour
 # https://betterprogramming.pub/boost-your-command-line-productivity-with-fuzzy-finder-985aa162ba5d
 bindkey "ç" fzf-cd-widget
 
@@ -60,17 +55,9 @@ export FZF_DEFAULT_OPTS="
     --prompt='∼ ' --pointer='▶' --marker='✓'"
 
 export PATH="/usr/local/sbin:$PATH"
-
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-
+# Add Homebrew curl to PATH
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-
-# Colima Docker Socket Path
-# export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
-
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # Make `git go` complete like `git switch`
 _git_go() { _git_switch }
