@@ -380,3 +380,17 @@ kill-service-with-port() {
     fi
     kill "$pid"
 }
+
+git() {
+    if command git config --get "alias.$1" >/dev/null 2>&1; then
+        local arg
+
+        for arg in "$@"; do
+            if [[ $arg == "--help" || $arg == "-h" ]]; then
+                command git "$1" --info
+                return
+            fi
+        done
+    fi
+    command git "$@"
+}
