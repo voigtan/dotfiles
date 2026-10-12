@@ -48,8 +48,7 @@ fs() {
 # Launch lazygit and change directory if a new directory is specified
 # Usage: lg [options]
 # Runs lazygit with the provided options. If a new directory is specified in ~/.lazygit/newdir, it changes to that directory.
-lg()
-{
+lg() {
     export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
     lazygit "$@"
 
