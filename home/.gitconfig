@@ -27,6 +27,32 @@
 
 	log-file = "log -p -- $1"
 
+	# Display the documentation comments immediately above a Git alias.
+	#
+	# Usage:
+	#   git alias-help <alias name>
+	#
+	# Example:
+	#   git alias-help dm - Displays the documentation for the `dm` alias.
+	alias-help = "!f() { \
+		NAME=$1; \
+		if [ -z \"$NAME\" ]; then \
+			echo \"Usage: git alias-help <alias name>\" >&2; \
+			return 2; \
+		fi; \
+		CONFIG_FILE=${GIT_CONFIG_GLOBAL:-$HOME/.gitconfig}; \
+		if [ ! -r \"$CONFIG_FILE\" ]; then \
+			echo \"Cannot read Git config: $CONFIG_FILE\" >&2; \
+			return 1; \
+		fi; \
+		DOCUMENTATION=$(awk -v alias=\"$NAME\" '/^[[:space:]]*#/ { line=$0; sub(/^[[:space:]]*#[[:space:]]?/, \"\", line); comments=comments line ORS; next } { key=$0; sub(/^[[:space:]]*/, \"\", key); sub(/[[:space:]]*=.*/, \"\", key); if (key == alias) { printf \"%s\", comments; exit } comments=\"\" }' \"$CONFIG_FILE\"); \
+		if [ -z \"$DOCUMENTATION\" ]; then \
+			echo \"No documentation found for alias: $NAME\" >&2; \
+			return 1; \
+		fi; \
+		printf '%s\\n' \"$DOCUMENTATION\"; \
+	}; f"
+
 	log-highscore = "!git shortlog -e --summary --numbered --format='%an (%ae)' \
 		| sed -Ee 's/^[[:blank:]]*//g' \
 		| bat -l bash --style=numbers,header,grid --file-name '⭐ Highscore ⭐' --tabs=2"
@@ -51,11 +77,42 @@
 		echo; \
 	}; f"
 
-	# Save all changes to the stash, including untracked files.
-	# If a message is provided, it will be used as the stash message.
-	# Usage: git save [optional message]
-	save = "!f() { if [ -z \"$1\" ];then git stash --keep-index --include-untracked; else git stash push -m \"$1\" --keep-index --include-untracked ; fi; }; f"
-	save-all = "!f() { if [ -z \"$1\" ];then git stash --include-untracked; else git stash push -m \"$1\" --include-untracked ; fi; }; f"
+	# Save changes to the stash, including untracked files, while keeping staged changes.
+	# An optional message can be used for the stash.
+	#
+	# Usage:
+	#   git save
+	#   git save [<message>]
+	#   git save [-i | --info]
+	#
+	# Arguments:
+	#   <message>  Optional message used as the stash message.
+	#
+	# Options:
+	#   -i, --info  Display this help text and exit. Must be the first argument.
+	#
+	# Examples:
+	#   git save                  Stash changes without a custom message.
+	#   git save "before rebase"  Stash changes with a custom message.
+	save = "!f() { \
+		if [ \"$1\" = \"--info\" ] || [ \"$1\" = \"-i\" ]; then \
+			git alias-help save; \
+			return 0; \
+		fi; \
+		if [ -z \"$1\" ]; then \
+			git stash --keep-index --include-untracked; \
+		else \
+			git stash push -m \"$1\" --keep-index --include-untracked; \
+		fi; \
+	}; f"
+
+	save-all = "!f() { \
+		if [ -z \"$1\" ];then \
+			git stash --include-untracked; \
+		else \
+			git stash push -m \"$1\" --include-untracked ; \
+		fi; \
+	}; f"
 
 	fixup =! sh -c 'SHA =$git rev-parse $1) \
 		&& git commit --fixup $SHA \
@@ -63,18 +120,25 @@
 
 	branches = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/remotes
 
-	# Lists branches ordered by the latest changes, allows selection with fzf, and checks out the selected branch.
+	# List local branches by most recent commit and switch to the selected branch.
 	#
 	# Usage:
 	#   git recent
+	#   git recent [-i | --info]
 	#
-	# Description:
-	#   This command displays all local branches sorted by the most recent commit date.
-	#   It uses `fzf` to allow interactive selection of a branch, and then checks out the selected branch.
+	# Arguments:
+	#   None.
 	#
-	# Example:
-	#   `git recent` - Opens an interactive list of branches for selection and switches to the chosen branch.
+	# Options:
+	#   -i, --info  Display this help text and exit. Must be the first argument.
+	#
+	# Examples:
+	#   git recent   Select a branch interactively with fzf and switch to it.
 	recent = "!f() { \
+		if [ \"$1\" = \"--info\" ] || [ \"$1\" = \"-i\" ]; then \
+			git alias-help recent; \
+			return 0; \
+		fi; \
 		git for-each-ref --sort=-committerdate refs/heads/ --format='%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always \
 		| column -ts'|' \
 		| fzf --ansi \
@@ -82,18 +146,25 @@
 		| xargs git switch; \
 	}; f"
 
-	# Creates a new branch with the name `wip/fire/$USER-<timestamp>` and pushes it to the remote repository.
+	# Create a timestamped WIP branch, commit all changes, and push it to origin.
 	#
 	# Usage:
 	#   git fire
+	#   git fire [-i | --info]
 	#
-	# Description:
-	#   This command is a "panic button" for quickly saving your work. It stages all changes, commits them with a "WIP: fire alarm!" message, 
-	#   and pushes the changes to a new branch named `wip/fire/$USER-<timestamp>` on the remote repository.
+	# Arguments:
+	#   None.
 	#
-	# Example:
-	#   `git fire` - Creates a branch like `wip/fire/username-1234567890`, stages all changes, 
+	# Options:
+	#   -i, --info  Display this help text and exit. Must be the first argument.
+	#
+	# Examples:
+	#   git fire   Create and push a timestamped WIP branch containing all changes.
 	fire = "!f() { \
+		if [ \"$1\" = \"--info\" ] || [ \"$1\" = \"-i\" ]; then \
+			git alias-help fire; \
+			return 0; \
+		fi; \
 		BRANCH=\"wip/fire/$USER-$(date +%s)\"; \
 		git go $BRANCH && \
 		git stage -A && \
@@ -101,20 +172,31 @@
 		git push origin "$BRANCH"; \
 	};f"
 
-	# Updates the current branch by rebasing it onto the specified branch.
+	# Update the current branch by rebasing it onto a specified branch.
+	# With no branch argument, use the default branch of origin.
 	#
 	# Usage:
-	#   git update-branch [branch]
-	#   git update-branch [remote] [branch]
+	#   git update-branch
+	#   git update-branch [<branch-name>]
+	#   git update-branch <remote> <branch-name>
 	#
-	# Parameters:
-	#   [branch] - (Optional) The name of the branch to rebase onto. Defaults to the remote's default branch if not provided.
-	#   [remote] - (Optional) The name of the remote repository. Defaults to 'origin' if not provided.
+	# Arguments:
+	#   <branch-name>  Branch to rebase onto; the remote defaults to origin.
+	#   <remote>       Remote repository to use with <branch-name>.
 	#
-	# Example:
-	#   `git update-branch origin main` - Fetches and rebases the current branch onto the 'main' branch from the 'origin' remote.
-	#   `git update-branch main` - Fetches and rebases the current branch onto the 'main' branch locally.
+	# Options:
+	#   -i, --info     Display this help text and exit. Must be the first argument.
+	#
+	# Examples:
+	#   git update-branch                 Rebase onto origin's default branch.
+	#   git update-branch main             Rebase onto origin/main.
+	#   git update-branch upstream main    Rebase onto upstream/main.
+	#   git update-branch -i               Display this documentation.
 	update-branch = "!f() { \
+		if [ "$1" = "--info" ] || [ "$1" = "-i" ]; then \
+			git alias-help update-branch; \
+			return 0; \
+		fi; \
 		if [ $# -le 1 ]; then \
 			REMOTE=origin; \
 			DEFAULT_REMOTE_REF=$(git symbolic-ref --quiet --short refs/remotes/$REMOTE/HEAD 2>/dev/null); \
@@ -130,62 +212,105 @@
 		git fetch $REMOTE $BRANCH && git rebase $REMOTE/$BRANCH; \
 	}; f"
 
-	# Deletes all branches that have already been merged with the main branch.
+	# Deletes local branches that have already been merged into a remote branch.
 	#
 	# Usage:
-	#   git dm [remote] [branch]
-	#   git dm [branch]
+	#   git dm
+	#   git dm [branch-name]
+	#   git dm <remote> <branch-name>
 	#
 	# Parameters:
-	#   [remote] - (Optional) The name of the remote repository. If not provided, defaults to the local repository.
-	#   [branch] - (Optional) The name of the branch on the remote or local repository to check for merged branches.
+	#   [remote]                 The name of the remote repository. Defaults to 'origin'.
+	#   [branch-name]            The remote branch to check for merged local branches. Defaults to 'main'.
 	#
-	# Example:
-	#   `git dm origin main` - This will delete all branches that have already been merged with the 'main' branch on the 'origin' remote.
+	# Options:
+	#   --info, -i               Show this help message
+	#   --dry-run, -n            Show what would be deleted without actually deleting branches
+	#
+	# Examples:
+	#   'git dm'                 Deletes local branches merged into 'origin/main'.
+	#   'git dm develop'         Deletes local branches merged into 'origin/develop'.
+	#   'git dm upstream main'   Deletes local branches merged into 'upstream/main'.
+	#   'git dm --dry-run'       Shows local branches that would be deleted from 'origin/main'.
+	#   'git dm -n develop'      Shows local branches that would be deleted from 'origin/develop'.
+	#   'git dm -i'              Displays this documentation.
 	dm = "!f() { \
-		REMOTE=${1:-origin}; \
-		BRANCH=${2:-main}; \
-		git fetch $REMOTE && \
-		git branch --merged | \
-		grep -v '^\\*\\| $BRANCH$' | \
-		xargs -n 1 git branch -d; \
+		DRY_RUN=false; \
+		ARG1=; \
+		ARG2=; \
+		POSITIONAL_COUNT=0; \
+		while [ $# -gt 0 ]; do \
+			case \"$1\" in \
+				--info|-i) \
+					git alias-help dm; \
+					return 0; \
+					;; \
+				--dry-run|-n) \
+					DRY_RUN=true; \
+					;; \
+				*) \
+					POSITIONAL_COUNT=$((POSITIONAL_COUNT + 1)); \
+					if [ \"$POSITIONAL_COUNT\" -eq 1 ]; then \
+						ARG1=$1; \
+					elif [ \"$POSITIONAL_COUNT\" -eq 2 ]; then \
+						ARG2=$1; \
+					else \
+						echo \"Usage: git dm [--dry-run|-n] [branch] | git dm [--dry-run|-n] [remote] [branch]\" >&2; \
+						return 2; \
+					fi; \
+					;; \
+			esac; \
+			shift; \
+		done; \
+		if [ \"$POSITIONAL_COUNT\" -eq 0 ]; then \
+			REMOTE=origin; \
+			BRANCH=main; \
+		elif [ \"$POSITIONAL_COUNT\" -eq 1 ]; then \
+			REMOTE=origin; \
+			BRANCH=$ARG1; \
+		else \
+			REMOTE=$ARG1; \
+			BRANCH=$ARG2; \
+		fi; \
+		TARGET=$REMOTE/$BRANCH; \
+		CURRENT=$(git branch --show-current); \
+		git fetch \"$REMOTE\" \"$BRANCH\" && \
+		git for-each-ref --merged \"$TARGET\" --format='%(refname:short)' refs/heads/ | \
+		while IFS= read -r CANDIDATE; do \
+			[ \"$CANDIDATE\" = \"$CURRENT\" ] && continue; \
+			[ \"$CANDIDATE\" = \"$BRANCH\" ] && continue; \
+			if [ \"$DRY_RUN\" = true ]; then \
+				printf 'Would delete %s\\n' \"$CANDIDATE\"; \
+			else \
+				git branch -d -- \"$CANDIDATE\" || exit; \
+			fi; \
+		done; \
 	}; f"
 
-	# Switch to a branch, creating it if necessary. If no branch is specified, switch back to the previous branch.
+	# Switch to a branch, creating it if needed.
+	# With no argument, switch back to the previously checked-out branch.
 	#
 	# Usage:
-	#   git go [branch-name]
+	#   git go [<branch-name> | - | !]
+	#   git go [-i | --info]
 	#
-	# Parameters:
-	#   [branch-name] - (Optional) The name of the branch to switch to. If not provided, switch back to the previous branch.
+	# Arguments:
+	#   <branch-name>  Switch to the branch, creating it if needed.
+	#   -              Switch back to the previous branch.
+	#   !              Select a recent branch interactively.
 	#
-	# Example:
-	#  `git go` will switch back to the previous branch (same as `git go -`).
-	#  `git go my-new-branch` will create a new branch called my-new-branch and switch to it.
-	#  `git go main` will switch to the main branch.
-	#  `git go !` will list recent branches using `git recent` (if the alias exists) or an interactive picker.
-	#  `git go --info` will show this help message.
+	# Options:
+	#   -i, --info   Show this help message and exit.
+	#
+	# Examples:
+	#   git go                   Switch back to the previous branch.
+	#   git go -                 Switch back explicitly.
+	#   git go main              Switch to an existing branch.
+	#   git go feature/example   Switch to or create a branch.
+	#   git go !                 Pick a branch interactively.
 	go = "!f() { \
 		if [ \"$1\" = \"--info\" ] || [ \"$1\" = \"-i\" ]; then \
-			echo \"Usage: git go [branch-name]\"; \
-			echo \"\"; \
-			echo \"Switch to a branch, creating it if necessary.\"; \
-			echo \"If no branch is specified, switch back to the previous branch.\"; \
-			echo \"\"; \
-			echo \"Options:\"; \
-			echo \"  --info, -i               Show this help message\"; \
-			echo \"\"; \
-			echo \"Arguments:\"; \
-			echo \"  [branch-name]            Branch to switch to (or create if it does not exist)\"; \
-			echo \"  !                        Interactively pick a recent branch\"; \
-			echo \"  -                        Switch back to the previous branch (explicit)\"; \
-			echo \"\"; \
-			echo \"Examples:\"; \
-			echo \"  git go                   Switch back to the previous branch\"; \
-			echo \"  git go -                 Same as above, explicit form\"; \
-			echo \"  git go my-new-branch     Create and switch to 'my-new-branch'\"; \
-			echo \"  git go main              Switch to the 'main' branch\"; \
-			echo \"  git go !                 Opens an interactive branch picker\"; \
+			git alias-help go; \
 			return 0; \
 		fi; \
 		BRANCH=${1:-\"-\"}; \
