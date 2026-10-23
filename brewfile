@@ -138,6 +138,8 @@ brew "rbenv"
 brew "ripgrep"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Command-line program to manage files on cloud storage
+brew "rclone"
 # Database of common MIME types
 brew "shared-mime-info"
 # Static analysis and lint tool, for (ba)sh scripts
