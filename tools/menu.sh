@@ -28,15 +28,28 @@ _interactive_menu_render() {
 }
 
 interactive_menu() {
-    local -n _menu_out="${@: -1}"
+    if (( $# == 0 )); then
+        printf 'interactive_menu: expected an output variable name\n' >&2
+        return 2
+    fi
+
+    local _menu_output_name="${!#}"
+    case $_menu_output_name in
+        ''|[!a-zA-Z_]*|*[!a-zA-Z0-9_]*)
+            printf 'interactive_menu: output variable name must be a valid identifier\n' >&2
+            return 2
+            ;;
+    esac
+
     local options=("${@:1:$#-1}")
     local count=${#options[@]}
-    _menu_out=()
+    # Bash 3.2 lacks namerefs, so validate the target name and quote values before eval.
+    eval "$_menu_output_name=()"
     (( count == 0 )) && return 1
 
     local cursor=0
     local checked=()
-    local i key seq
+    local i key seq _menu_quoted selected_count=0
     for ((i = 0; i < count; i++)); do checked[i]=0; done
 
     printf "↑/k ↓/j move   space toggle   enter confirm   q/esc cancel\n" > /dev/tty
@@ -74,9 +87,16 @@ interactive_menu() {
     printf "\033[%dA\033[J" "$((count + 1))" > /dev/tty
 
     for ((i = 0; i < count; i++)); do
-        (( checked[i] == 1 )) && _menu_out+=("${options[i]}")
+        if (( checked[i] == 1 )); then
+            printf -v _menu_quoted '%q' "${options[i]}"
+            eval "$_menu_output_name+=( $_menu_quoted )"
+            selected_count=$((selected_count + 1))
+        fi
     done
-    (( ${#_menu_out[@]} == 0 )) && _menu_out=("${options[cursor]}")
+    if (( selected_count == 0 )); then
+        printf -v _menu_quoted '%q' "${options[cursor]}"
+        eval "$_menu_output_name+=( $_menu_quoted )"
+    fi
 }
 
 # Example usage (uncomment to test)
