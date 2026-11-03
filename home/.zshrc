@@ -35,9 +35,10 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 source $(brew --prefix nvm)/nvm.sh
 
-for file in ~/.{aliases,functions,extra}; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file";
-done;
+# Load aliases and functions when present
+for file in ~/.aliases ~/.functions; do
+    [[ -r "$file" && -f "$file" ]] && source "$file"
+done
 unset file;
 
 # fzf
@@ -58,6 +59,7 @@ export PATH="/usr/local/sbin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 # Add Homebrew curl to PATH
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+export PATH=/opt/homebrew/share/google-cloud-sdk/bin:"$PATH"
 
 # Make `git go` complete like `git switch`
 _git_go() { _git_switch }
