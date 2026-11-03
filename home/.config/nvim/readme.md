@@ -1,0 +1,152 @@
+# Neovim 0.12 Configuration
+
+A modular **Neovim 0.12+** configuration migrated from VS Code (`settings.json`), prioritizing native Neovim 0.12 features (`vim.pack`, `vim.lsp.config`, `vim.lsp.completion`, `vim.lsp.inline_completion`, `vim.lsp.codelens`, `vim.lsp.inlay_hint`, and `vim.filetype.add`).
+
+---
+
+## Directory Structure
+
+Each feature is self-contained in its own module (configuration, autocommands, user commands, and keymaps are colocated together):
+
+```text
+home/.config/nvim/
+├── init.lua                        # Entrypoint: leader keys, core imports, vim.pack.add(), plugin loader
+├── nvim-pack-lock.json             # Native Neovim 0.12 plugin lockfile
+├── readme.md                       # Documentation & keymap reference
+├── spell/
+│   └── en.utf-8.add                # Custom dictionary words ("cSpell.userWords")
+└── lua/
+    ├── core/
+    │   ├── options.lua             # Core options, whitespace, control chars, diffopt, en_gb spell, yank highlight
+    │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
+    │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
+    │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr
+    │   └── terminals.lua           # :TermZsh/Bash/Tmux/Pwsh, TermOpen/TermClose, <Space>tz/tb/tt/tp
+    └── plugins/
+        ├── init.lua                # Loads all plugin modules in order
+        ├── theme.lua               # Catppuccin Frappé + nvim-web-devicons
+        ├── treesitter.lua          # Treesitter parsers/highlighting + sticky scroll (treesitter-context)
+        ├── lsp.lua                 # Mason + native Nvim 0.12 LSP, Copilot inline completion & IntelliSense keys
+        ├── formatting.lua          # Conform.nvim (Prettier / LSP formatOnSave) + <Space>f
+        ├── git.lua                 # Gitsigns (blame & inline diffs), git.autofetch, floating :LazyGit (<Space>gg)
+        ├── neo-tree.lua            # Neo-tree (file nesting, rename fix, :restart restore) + <Space>e / <Space>o
+        ├── bufferline.lua          # Bufferline file tabs, window-safe tab closing + <S-h>/<S-l>/<Space>b*
+        ├── telescope.lua           # Telescope fuzzy finder + <C-p> / <Space>ff / <Space>fg / gd / gr
+        ├── lualine.lua             # Statusbar (Catppuccin Frappé + active LSP indicator)
+        └── which-key.lua           # Which-Key popup guide + group labels + <Space>?
+```
+
+---
+
+## Keymaps Reference
+
+> **Leader Key:** `<Space>`
+
+### Window & Pane Navigation (`lua/core/navigation.lua`)
+Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` first):
+
+| Keymap | Equivalent Arrow | Action |
+| :--- | :--- | :--- |
+| `<C-h>` | `<C-Left>` | Focus **Neo-tree sidebar** (left) |
+| `<C-l>` | `<C-Right>` | Focus **Code Editor** (right) |
+| `<C-j>` | `<C-Down>` | Focus **Integrated Terminal** (bottom) |
+| `<C-k>` | `<C-Up>` | Focus **Code Editor** (up from terminal) |
+| `:q` / `:wq` | — | Quits Neovim cleanly (automatically closes Neo-tree/Terminal if closing the last file) |
+
+### File Tabs / Bufferline (`lua/plugins/bufferline.lua`)
+| Keymap | Action |
+| :--- | :--- |
+| `<S-h>` (`Shift + h`) or `[b` | Previous file tab |
+| `<S-l>` (`Shift + l`) or `]b` | Next file tab |
+| `<Space>bd` | Close current file tab (without closing the window split or quitting Neovim) |
+| `<Space>bo` | Close all other file tabs |
+| `<Space>bp` | Pin / unpin current file tab |
+
+### File Explorer / Neo-tree (`lua/plugins/neo-tree.lua`)
+| Keymap | Where | Action |
+| :--- | :--- | :--- |
+| `<Space>e` | Global | Toggle Neo-tree sidebar |
+| `<Space>o` | Global | Reveal current file in Neo-tree |
+| `Right Click` | Inside Neo-tree | Open file explorer context menu (*New File*, *New Folder*, *Rename*, *Move*, *Copy/Cut/Paste*, *Delete*, *Expand Nested*) |
+| `<Tab>` / `<Right>` / `za` / `zo` | Inside Neo-tree | **Expand** `<file>.ts` to view nested `<file>.test.ts` / `<file>.test.tsx` |
+| `<Left>` / `zc` | Inside Neo-tree | **Collapse** nested file or directory |
+| `Z` (`Shift + z`) | Inside Neo-tree | Expand all nested files/subfolders under current node |
+| `z` | Inside Neo-tree | Collapse all nodes |
+| `r` | Inside Neo-tree | Rename file/folder (`<Esc>` once enters Normal mode inside popup; `<Enter>` confirms) |
+| `b` | Inside Neo-tree | Rename basename only (without extension) |
+| `m` | Inside Neo-tree | Move file/folder (automatically updates TypeScript/JS imports via `vtsls`) |
+| `a` | Inside Neo-tree | Create new file or directory (end with `/` for folder) |
+| `d` | Inside Neo-tree | Delete file/folder immediately (`confirmDelete: false`) |
+| `?` | Inside Neo-tree | Show all Neo-tree shortcuts |
+
+### Fuzzy Finder / Telescope (`lua/plugins/telescope.lua`)
+| Keymap | Action |
+| :--- | :--- |
+| `<C-p>` or `<Space>ff` | Find files across project (includes dotfiles, excludes `.git/`) |
+| `<Space>fF` | Find **ALL** files (includes dotfiles + `.gitignore`d files) |
+| `<Space>fg` | Live grep text across project (includes dotfiles, excludes `.git/`) |
+| `<Space>fG` | Live grep **ALL** files (includes dotfiles + `.gitignore`d files) |
+| `<C-h>` or `<M-h>` *(inside Telescope)* | **Live-toggle dotfiles** on/off while keeping your current search text |
+| `<Space>fb` | Switch open buffers |
+| `<Space>fs` | Search LSP document symbols |
+
+### TypeScript, LSP IntelliSense & Copilot (`lua/plugins/lsp.lua`)
+| Keymap | Mode | Action |
+| :--- | :--- | :--- |
+| `K` | Normal | Show TypeScript type / JSDoc hover popup |
+| `Ctrl + Left Click` | Normal / Insert | Show TypeScript type / hover popup at mouse position |
+| `Right Click` | Normal / Visual / Insert | Open context menu (*Show Type/Hover*, *Find All References*, *Go to Type Definition*, *Code Action*, *Rename*) |
+| `<M-i>` (`Alt + i`) or `<Space>ci` / `<Space>ti` | Normal / Insert / Visual | Toggle Inline Type Hints (Inlay Hints) |
+| `<C-k>` | Insert | Show function parameter signature help |
+| `<C-Space>` | Insert | Manually trigger LSP IntelliSense completion menu |
+| `<C-n>` / `<C-p>` / `<C-y>` | Insert | Next item / Previous item / Confirm completion item |
+| `<Tab>` | Insert | Accept GitHub Copilot inline ghost-text suggestion |
+| `<M-]>` / `<M-[>` | Insert | Cycle next / previous Copilot inline suggestion |
+| `gd` | Normal | Go to Definition — works on symbols **and** `import ... from "./path"` strings |
+| `gD` or `<Space>cs` | Normal | **Go to Source Definition** (jumps past `.d.ts` declarations to the real `.ts`/`.js` implementation) |
+| `gy` or `<Space>ct` | Normal | Go to Type Definition (Telescope) |
+| `gi` | Normal | Go to Implementation (Telescope) |
+| `gr` | Normal | Find all References (Telescope) |
+| `<Space>ca` | Normal / Visual | Code Action / Quick Fix / Auto-import symbol under cursor |
+| `<Space>cm` | Normal | **Add All Missing Imports** in current file |
+| `<Space>co` | Normal | **Organize Imports** (sorts & removes unused imports) |
+| `<Space>cr` | Normal | Rename symbol across project |
+| `<Space>cd` | Normal | Show line type error / diagnostic float |
+| `<Space>cl` | Normal | Run LSP CodeLens |
+
+### Formatting (`lua/plugins/formatting.lua`)
+- **Format on Save**: Enabled automatically for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `css`, `scss` (via `prettier`) and `html` (via HTML LSP).
+- **Manual Format**: Press **`<Space>f`** in Normal or Visual mode (e.g., to format `json` via JSON LSP).
+
+### Git & LazyGit (`lua/plugins/git.lua`)
+| Keymap / Command | Action |
+| :--- | :--- |
+| `<Space>gg` or `:LazyGit` | Open **LazyGit** in a centered floating modal window (`q` to close) |
+| `<Space>gd` | Toggle full inline Git diff (word diff + modified line highlight + deleted lines) |
+| `<Space>gw` | Toggle intra-line Git word diff only |
+| `<Space>gp` | Preview current Git hunk inline |
+| `<Space>gb` | Toggle end-of-line Git blame decoration |
+
+### Terminals & Rulers (`lua/core/terminals.lua`, `lua/core/rulers.lua`)
+| Keymap / Command | Action |
+| :--- | :--- |
+| `<Space>tz` or `:TermZsh` | Open bottom terminal with `/bin/zsh -l` |
+| `<Space>tb` or `:TermBash` | Open bottom terminal with `bash -l` |
+| `<Space>tt` or `:TermTmux` | Open bottom terminal with `tmux` |
+| `<Space>tp` or `:TermPwsh` | Open bottom terminal with `pwsh` |
+| `<Esc><Esc>` | Exit Terminal mode into Normal mode |
+| `<Space>tr` or `:ToggleRulers` | Toggle 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers on/off |
+
+---
+
+## Managing Plugins & LSP Servers
+
+- **Update Neovim 0.12 Plugins (`vim.pack`)**:
+  ```vim
+  :lua vim.pack.update()
+  ```
+  *(Opens a review tab showing incoming changes; run `:write` to confirm or `:quit` to cancel).*
+- **Inspect Installed LSPs & Formatters (`mason.nvim`)**:
+  ```vim
+  :Mason
+  ```
