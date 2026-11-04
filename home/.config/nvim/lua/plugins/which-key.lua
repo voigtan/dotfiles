@@ -9,6 +9,20 @@ if ok_wk then
   wk.setup({
     preset = "modern",
     delay = 200,
+    icons = {
+      group = "", -- Default is "+" (use "" to remove the +, or "+ " to add a space)
+    },
+    sort = {
+      "local",
+      "order",
+      "group",
+      function(node)
+        -- Group items with the same action verb together (e.g. "Open Terminal..." together, "Toggle..." together)
+        return (node.desc or ""):match("^(%S+)") or ""
+      end,
+      "alphanum",
+      "mod",
+    },
   })
 end
 

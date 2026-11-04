@@ -18,6 +18,7 @@ home/.config/nvim/
 └── lua/
     ├── core/
     │   ├── options.lua             # Core options, whitespace, control chars, diffopt, en_gb spell, yank highlight
+    │   ├── state.lua               # Persistent on-disk UI toggles per-folder (~/.local/state/nvim/ui-toggles.json)
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
     │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr
@@ -30,7 +31,7 @@ home/.config/nvim/
         ├── formatting.lua          # Conform.nvim (Prettier / LSP formatOnSave) + <Space>f
         ├── git.lua                 # Gitsigns (blame & inline diffs), git.autofetch, floating :LazyGit (<Space>gg)
         ├── neo-tree.lua            # Neo-tree (file nesting, rename fix, :restart restore) + <Space>e / <Space>o
-        ├── bufferline.lua          # Bufferline file tabs, window-safe tab closing + <S-h>/<S-l>/<Space>b*
+        ├── tabs.lua                # File tabs bar, toggle (:ToggleTabs), window-safe tab closing + <S-h>/<S-l>/<Space>b*
         ├── telescope.lua           # Telescope fuzzy finder + <C-p> / <Space>ff / <Space>fg / gd / gr
         ├── testing.lua             # Vitest (neotest-vitest) pass/fail/watch + inline coverage (nvim-coverage)
         ├── lualine.lua             # Statusbar (Catppuccin Frappé + active LSP indicator)
@@ -54,11 +55,12 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<C-k>` | `<C-Up>` | Focus **Code Editor** (up from terminal) |
 | `:q` / `:wq` | — | Quits Neovim cleanly (automatically closes Neo-tree/Terminal if closing the last file) |
 
-### File Tabs / Bufferline (`lua/plugins/bufferline.lua`)
-| Keymap | Action |
+### File Tabs (`lua/plugins/tabs.lua`)
+| Keymap / Command | Action |
 | :--- | :--- |
 | `<S-h>` (`Shift + h`) or `[b` | Previous file tab |
 | `<S-l>` (`Shift + l`) or `]b` | Next file tab |
+| `<Space>bt` or `<Space>tf` (or `:ToggleTabs`) | **Toggle top File Tabs bar** on/off |
 | `<Space>bd` | Close current file tab (without closing the window split or quitting Neovim) |
 | `<Space>bo` | Close all other file tabs |
 | `<Space>bp` | Pin / unpin current file tab |

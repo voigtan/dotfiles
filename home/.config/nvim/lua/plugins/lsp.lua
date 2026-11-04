@@ -95,9 +95,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
     end
 
-    -- "editor.inlayHints.enabled": "offUnlessPressed"
+    -- "editor.inlayHints.enabled": "offUnlessPressed" (restored from per-folder state)
     if client:supports_method("textDocument/inlayHint") then
-      vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+      local saved_inlay = require("core.state").get("inlay_hints", false)
+      vim.lsp.inlay_hint.enable(saved_inlay, { bufnr = bufnr })
     end
   end,
 })
@@ -206,8 +207,11 @@ map("i", "<M-[>", function()
 end, { desc = "Previous Copilot inline suggestion" })
 
 local function toggle_inlay_hints()
-  local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
-  vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+  local state = require("core.state")
+  local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+  vim.lsp.inlay_hint.enable(enabled, { bufnr = 0 })
+  state.set("inlay_hints", enabled)
+  vim.notify("Inlay Hints: " .. (enabled and "ON" or "OFF") .. " (saved for " .. state.get_project_key() .. ")")
 end
 map({ "n", "i", "v" }, "<M-i>", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })
 map("n", "<leader>ci", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })

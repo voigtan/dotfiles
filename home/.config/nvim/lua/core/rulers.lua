@@ -2,11 +2,12 @@
 -- Rulers (Columns 80 & 120 with VS Code colors #ff9900 & #9f0af5 + Toggle)
 -- ============================================================================
 
+local state = require("core.state")
 local augroup = vim.api.nvim_create_augroup("CoreRulers", { clear = true })
 local ruler_ns = vim.api.nvim_create_namespace("vscode_rulers")
 
-vim.g.rulers_enabled = true
-vim.opt.colorcolumn = "80,120"
+vim.g.rulers_enabled = state.get("rulers", true)
+vim.opt.colorcolumn = vim.g.rulers_enabled and "80,120" or ""
 
 local function set_ruler_highlights()
   vim.api.nvim_set_hl(0, "VSCodeRuler80", { fg = "#ff9900", nocombine = true })
@@ -66,6 +67,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinScrolled", "TextChanged", "Text
 
 vim.api.nvim_create_user_command("ToggleRulers", function()
   vim.g.rulers_enabled = not vim.g.rulers_enabled
+  state.set("rulers", vim.g.rulers_enabled)
   vim.opt.colorcolumn = vim.g.rulers_enabled and "80,120" or ""
   for _, winid in ipairs(vim.api.nvim_list_wins()) do
     local bufnr = vim.api.nvim_win_get_buf(winid)
@@ -74,7 +76,13 @@ vim.api.nvim_create_user_command("ToggleRulers", function()
     end
     update_rulers(winid)
   end
-  vim.notify("Rulers (80, 120): " .. (vim.g.rulers_enabled and "ON" or "OFF"))
+  vim.notify(
+    string.format(
+      "Rulers (80, 120): %s (saved for %s)",
+      vim.g.rulers_enabled and "ON" or "OFF",
+      state.get_project_key()
+    )
+  )
 end, { desc = "Toggle 80/120 column rulers and highlights" })
 
 vim.keymap.set("n", "<leader>tr", "<cmd>ToggleRulers<CR>", { desc = "Toggle 80/120 Rulers & Highlights" })

@@ -1,10 +1,11 @@
 -- ============================================================================
--- Bufferline (File Tabs, Window-safe Tab Close, <S-h>/<S-l> Tab Cycling)
+-- File Tabs (Top Tab Bar, Window-safe Tab Close, <S-h>/<S-l> Cycling & Toggle)
 -- ============================================================================
 
 local map = vim.keymap.set
+local state = require("core.state")
 
--- Helper to close a buffer tab without collapsing the editor split or quitting Neovim
+-- Helper to close a file tab without collapsing the editor split or quitting Neovim
 _G.close_buffer_tab = function(bufnr)
   bufnr = (bufnr and bufnr > 0) and bufnr or vim.api.nvim_get_current_buf()
   if vim.bo[bufnr].filetype == "neo-tree" then
@@ -49,6 +50,7 @@ if ok_bufferline then
       end,
       diagnostics = "nvim_lsp",
       always_show_bufferline = true,
+      auto_toggle_bufferline = false, -- Allow manual :ToggleTabs without auto-reopening
       show_buffer_close_icons = true,
       show_close_icon = false,
       separator_style = "thin",
@@ -63,13 +65,29 @@ if ok_bufferline then
       },
     },
   })
+  vim.o.showtabline = state.get("tabs", true) and 2 or 0
 end
+
+-- Command & helper to toggle the top File Tabs bar on/off (persisted per-folder on disk)
+vim.api.nvim_create_user_command("ToggleTabs", function()
+  if vim.o.showtabline == 0 then
+    vim.o.showtabline = 2
+    state.set("tabs", true)
+    vim.notify("File Tabs Bar: ON (saved for " .. state.get_project_key() .. ")")
+  else
+    vim.o.showtabline = 0
+    state.set("tabs", false)
+    vim.notify("File Tabs Bar: OFF (saved for " .. state.get_project_key() .. ")")
+  end
+end, { desc = "Toggle top File Tabs bar on/off" })
 
 -- Keymaps & Which-Key Group
 local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
-    { "<leader>b", group = "Buffers / File Tabs" },
+    { "<leader>b", group = "File Tabs" },
+    { "<leader>bt", icon = { icon = " ", color = "yellow" } },
+    { "<leader>tf", icon = { icon = " ", color = "yellow" } },
   })
 end
 
@@ -96,6 +114,8 @@ end, { desc = "Previous file tab" })
 map("n", "]b", function()
   cycle_buffer_tab(1)
 end, { desc = "Next file tab" })
+map("n", "<leader>bt", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
+map("n", "<leader>tf", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
 map("n", "<leader>bp", "<cmd>BufferLineTogglePin<CR>", { desc = "Pin / unpin file tab" })
 map("n", "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close all other file tabs" })
 map("n", "<leader>bd", function()
