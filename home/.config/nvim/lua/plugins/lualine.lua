@@ -6,7 +6,6 @@ local ok_lualine, lualine = pcall(require, "lualine")
 if ok_lualine then
   lualine.setup({
     options = {
-      theme = "catppuccin-frappe",
       globalstatus = true,
       component_separators = { left = "│", right = "│" },
       section_separators = { left = "", right = "" },
@@ -34,7 +33,9 @@ if ok_lualine then
         "encoding",
         "filetype",
       },
-      lualine_y = { "progress" },
+      -- Note: In Lualine, commenting out a section falls back to Lualine's default.
+      -- Set a section to `{}` to empty/disable it:
+      lualine_y = {},
       lualine_z = { "location" },
     },
   })
