@@ -85,11 +85,9 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 ### Fuzzy Finder / Telescope (`lua/plugins/telescope.lua`)
 | Keymap | Action |
 | :--- | :--- |
-| `<C-p>` or `<Space>ff` | Find files across project (includes dotfiles, excludes `.git/`) |
-| `<Space>fF` | Find **ALL** files (includes dotfiles + `.gitignore`d files) |
-| `<Space>fg` | Live grep text across project (includes dotfiles, excludes `.git/`) |
-| `<Space>fG` | Live grep **ALL** files (includes dotfiles + `.gitignore`d files) |
-| `<C-h>` or `<M-h>` *(inside Telescope)* | **Live-toggle dotfiles** on/off while keeping your current search text |
+| `<C-p>` or `<Space>ff` | Find files across project |
+| `<Space>fg` | Live grep text across project |
+| `<C-h>` *(inside Telescope)* | **Live-toggle dotfiles** on/off while keeping your current search text |
 | `<Space>fb` | Switch open buffers |
 | `<Space>fs` | Search LSP document symbols |
 
@@ -115,6 +113,8 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>cm` | Normal | **Add All Missing Imports** in current file |
 | `<Space>co` | Normal | **Organize Imports** (sorts & removes unused imports) |
 | `<Space>cr` | Normal | Rename symbol across project |
+| `gcc` / `<Space>/` / `<C-k><C-c>` | Normal / Insert | **Toggle comment** on current line (also in Right-Click menu) |
+| `gc` / `<Space>/` / `<C-k><C-c>` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
 | `<Space>cd` | Normal | Show line type error / diagnostic float |
 | `<Space>cl` | Normal | Run LSP CodeLens |
 

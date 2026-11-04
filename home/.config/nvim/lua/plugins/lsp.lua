@@ -59,6 +59,13 @@ local copilot_filetypes = {
   javascript = true,
   typescriptreact = true,
   javascriptreact = true,
+  lua = true,
+  html = true,
+  css = true,
+  scss = true,
+  json = true,
+  sh = true,
+  zsh = true,
   text = true,
   markdown = true,
   yaml = false,
@@ -169,6 +176,13 @@ vim.lsp.config("copilot", {
     "javascript",
     "typescriptreact",
     "javascriptreact",
+    "lua",
+    "html",
+    "css",
+    "scss",
+    "json",
+    "sh",
+    "zsh",
     "text",
     "markdown",
   },
@@ -326,6 +340,8 @@ _G.setup_lsp_popup_menu = function()
     anoremenu 100.60 PopUp.Code\ Action\ /\ Auto-Import    <Cmd>lua vim.lsp.buf.code_action()<CR>
     anoremenu 100.70 PopUp.Organize\ Imports               <Cmd>lua _G.lsp_organize_imports()<CR>
     anoremenu 100.80 PopUp.Rename\ Symbol                  <Cmd>lua vim.lsp.buf.rename()<CR>
+    nmenu     100.82 PopUp.Toggle\ Comment\ (gcc)          gcc
+    vmenu     100.82 PopUp.Toggle\ Comment\ (gc)           gc
     anoremenu 100.85 PopUp.-test-sep-                      <Nop>
     anoremenu 100.90 PopUp.Run\ Nearest\ Test\ (Vitest)    <Cmd>lua _G.vitest_actions.run_nearest()<CR>
     anoremenu 100.95 PopUp.Toggle\ Test\ Watch\ (Vitest)   <Cmd>lua _G.vitest_actions.toggle_watch()<CR>
@@ -343,6 +359,8 @@ _G.clear_lsp_popup_menu = function()
     silent! aunmenu PopUp.Code\ Action\ /\ Auto-Import
     silent! aunmenu PopUp.Organize\ Imports
     silent! aunmenu PopUp.Rename\ Symbol
+    silent! aunmenu PopUp.Toggle\ Comment\ (gcc)
+    silent! aunmenu PopUp.Toggle\ Comment\ (gc)
     silent! aunmenu PopUp.-test-sep-
     silent! aunmenu PopUp.Run\ Nearest\ Test\ (Vitest)
     silent! aunmenu PopUp.Toggle\ Test\ Watch\ (Vitest)

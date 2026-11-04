@@ -13,7 +13,7 @@ opt.termguicolors = true
 opt.showmode = false
 opt.laststatus = 3 -- Global statusbar at the bottom (like VS Code)
 opt.updatetime = 250
-opt.timeoutlen = 300
+opt.timeoutlen = 500
 opt.splitright = true
 opt.splitbelow = true
 opt.scrolloff = 8
@@ -78,6 +78,16 @@ opt.guifont = "Monaspace Neon:h13"
 
 -- Clear search highlight on <Esc>
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+
+-- Commenting shortcuts: Ctrl+k, Ctrl+c (works in Normal, Visual, and Insert mode, plus <leader>/ and gcc/gc)
+-- vim.keymap.set("n", "<C-k><C-c>", "gcc", { remap = true, desc = "Toggle comment on line" })
+-- vim.keymap.set("x", "<C-k><C-c>", "gc", { remap = true, desc = "Toggle comment on selection" })
+-- vim.keymap.set("i", "<C-k><C-c>", "<Cmd>normal gcc<CR>", { desc = "Toggle comment on line" })
+-- vim.keymap.set("n", "<C-k>c", "gcc", { remap = true, desc = "Toggle comment on line" })
+-- vim.keymap.set("x", "<C-k>c", "gc", { remap = true, desc = "Toggle comment on selection" })
+-- vim.keymap.set("i", "<C-k>c", "<Cmd>normal gcc<CR>", { desc = "Toggle comment on line" })
+vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment on line" })
+vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on selection" })
 
 -- Highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {

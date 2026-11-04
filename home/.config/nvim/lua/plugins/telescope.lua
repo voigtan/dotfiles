@@ -20,14 +20,12 @@ if ok_telescope then
       require("telescope.builtin").live_grep({
         default_text = prompt,
         additional_args = hidden_enabled and { "--hidden", "--glob", "!**/.git/*" } or {},
-        prompt_title = hidden_enabled and "Live Grep (with dotfiles)" or "Live Grep (no dotfiles)",
       })
     else
       require("telescope.builtin").find_files({
         default_text = prompt,
         hidden = hidden_enabled,
         file_ignore_patterns = { "^%.git/", "/%.git/" },
-        prompt_title = hidden_enabled and "Find Files (with dotfiles)" or "Find Files (no dotfiles)",
       })
     end
   end
@@ -42,12 +40,13 @@ if ok_telescope then
       file_ignore_patterns = { "^%.git/", "/%.git/" },
       mappings = {
         i = {
-          ["<C-h>"] = toggle_hidden_files,
-          ["<M-h>"] = toggle_hidden_files,
+          ["<C-h>"] = { toggle_hidden_files, type = "action", opts = { desc = "Toggle dotfiles (hidden files)" } },
+          ["<F1>"] = "which_key",
         },
         n = {
-          ["<C-h>"] = toggle_hidden_files,
-          ["<M-h>"] = toggle_hidden_files,
+          ["<C-h>"] = { toggle_hidden_files, type = "action", opts = { desc = "Toggle dotfiles (hidden files)" } },
+          ["?"] = "which_key",
+          ["<F1>"] = "which_key",
         },
       },
     },
@@ -69,30 +68,20 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>f", group = "Find / Format" },
-    { "<leader>fF", icon = { icon = " ", color = "yellow" } },
-    { "<leader>fg", icon = { icon = " ", color = "yellow" } },
-    { "<leader>fG", icon = { icon = " ", color = "yellow" } },
-    { "<leader>fs", icon = { icon = " ", color = "yellow" } },
+    { "<leader>fg", icon = { icon = " ", color = "green" } },
+    { "<leader>fs", icon = { icon = " ", color = "green" } },
   })
 end
 
 map("n", "<C-p>", function()
   require("telescope.builtin").find_files()
-end, { desc = "Find files (includes dotfiles)" })
+end, { desc = "Find files" })
 map("n", "<leader>ff", function()
   require("telescope.builtin").find_files()
-end, { desc = "Find files (includes dotfiles)" })
-map("n", "<leader>fF", function()
-  require("telescope.builtin").find_files({ hidden = true, no_ignore = true })
-end, { desc = "Find ALL files (dotfiles + gitignored)" })
+end, { desc = "Find files" })
 map("n", "<leader>fg", function()
   require("telescope.builtin").live_grep()
-end, { desc = "Live grep (includes dotfiles)" })
-map("n", "<leader>fG", function()
-  require("telescope.builtin").live_grep({
-    additional_args = { "--hidden", "--no-ignore", "--glob", "!**/.git/*" },
-  })
-end, { desc = "Live grep ALL (dotfiles + gitignored)" })
+end, { desc = "Live grep across project" })
 map("n", "<leader>fb", function()
   require("telescope.builtin").buffers()
 end, { desc = "Switch open buffers" })

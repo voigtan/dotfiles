@@ -24,6 +24,21 @@ if ok_wk then
       "mod",
     },
   })
+
+  -- Allow <C-c> as a second chord key inside Which-Key (e.g. <C-k><C-c> to comment lines)
+  -- Normally Neovim's `getcharstr()` throws `Vim:Interrupt` on Ctrl+C, causing Which-Key to abort.
+  -- local ok_state, wk_state = pcall(require, "which-key.state")
+  -- if ok_state then
+  --   wk_state.getchar = function()
+  --     local ok, char = pcall(vim.fn.getcharstr)
+  --     if not ok and tostring(char):find("Interrupt") then
+  --       if wk_state.state and wk_state.state.node and wk_state.state.node:find("<C-C>") then
+  --         return true, "\x03"
+  --       end
+  --     end
+  --     return ok, char
+  --   end
+  -- end
 end
 
 vim.keymap.set("n", "<leader>?", function()
