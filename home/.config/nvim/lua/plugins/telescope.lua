@@ -64,7 +64,18 @@ if ok_telescope then
   })
 end
 
--- Keymaps
+-- Keymaps & Which-Key Group + Icons
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>f", group = "Find / Format" },
+    { "<leader>fF", icon = { icon = " ", color = "yellow" } },
+    { "<leader>fg", icon = { icon = " ", color = "yellow" } },
+    { "<leader>fG", icon = { icon = " ", color = "yellow" } },
+    { "<leader>fs", icon = { icon = " ", color = "yellow" } },
+  })
+end
+
 map("n", "<C-p>", function()
   require("telescope.builtin").find_files()
 end, { desc = "Find files (includes dotfiles)" })

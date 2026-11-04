@@ -22,12 +22,14 @@ if ok_mti then
   mason_tool_installer.setup({
     ensure_installed = {
       "vtsls",
+      "biome",
       "html-lsp",
       "css-lsp",
       "json-lsp",
       "yaml-language-server",
       "copilot-language-server",
       "prettier",
+      "tree-sitter-cli",
     },
     auto_update = false,
     run_on_start = true,
@@ -173,6 +175,7 @@ vim.lsp.config("copilot", {
 
 vim.lsp.enable({
   "vtsls",
+  "biome",
   "html",
   "cssls",
   "jsonls",
@@ -180,7 +183,14 @@ vim.lsp.enable({
   "copilot",
 })
 
--- 5. LSP, Copilot & IntelliSense Keymaps
+-- 5. LSP, Copilot & IntelliSense Keymaps + Which-Key Group
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>c", group = "Code / TypeScript LSP" },
+  })
+end
+
 map("i", "<Tab>", function()
   if not vim.lsp.inline_completion.get() then
     return "<Tab>"
@@ -212,10 +222,10 @@ map("n", "K", function()
 end, { desc = "Show Type / Hover Info" })
 
 map({ "n", "i" }, "<C-LeftMouse>", "<LeftMouse><cmd>lua vim.lsp.buf.hover()<CR>", {
-  desc = "Show Type / Hover Info at mouse click",
+  desc = "Show Type / Hover Info at mouse click (Ctrl+Click)",
 })
-map({ "n", "i" }, "<D-LeftMouse>", "<LeftMouse><cmd>lua vim.lsp.buf.hover()<CR>", {
-  desc = "Show Type / Hover Info at mouse click (Cmd+Click)",
+map({ "n", "i" }, "<M-LeftMouse>", "<LeftMouse><cmd>lua require('telescope.builtin').lsp_definitions()<CR>", {
+  desc = "Go to Definition / Reference at mouse click (Alt/Option+Click)",
 })
 
 map("i", "<C-k>", function()
@@ -312,7 +322,10 @@ _G.setup_lsp_popup_menu = function()
     anoremenu 100.60 PopUp.Code\ Action\ /\ Auto-Import    <Cmd>lua vim.lsp.buf.code_action()<CR>
     anoremenu 100.70 PopUp.Organize\ Imports               <Cmd>lua _G.lsp_organize_imports()<CR>
     anoremenu 100.80 PopUp.Rename\ Symbol                  <Cmd>lua vim.lsp.buf.rename()<CR>
-    anoremenu 100.90 PopUp.-lsp-sep-                       <Nop>
+    anoremenu 100.85 PopUp.-test-sep-                      <Nop>
+    anoremenu 100.90 PopUp.Run\ Nearest\ Test\ (Vitest)    <Cmd>lua _G.vitest_actions.run_nearest()<CR>
+    anoremenu 100.95 PopUp.Toggle\ Test\ Watch\ (Vitest)   <Cmd>lua _G.vitest_actions.toggle_watch()<CR>
+    anoremenu 100.99 PopUp.-lsp-sep-                       <Nop>
   ]])
 end
 
@@ -326,6 +339,9 @@ _G.clear_lsp_popup_menu = function()
     silent! aunmenu PopUp.Code\ Action\ /\ Auto-Import
     silent! aunmenu PopUp.Organize\ Imports
     silent! aunmenu PopUp.Rename\ Symbol
+    silent! aunmenu PopUp.-test-sep-
+    silent! aunmenu PopUp.Run\ Nearest\ Test\ (Vitest)
+    silent! aunmenu PopUp.Toggle\ Test\ Watch\ (Vitest)
     silent! aunmenu PopUp.-lsp-sep-
   ]])
 end

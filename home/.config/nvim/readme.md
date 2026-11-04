@@ -32,6 +32,7 @@ home/.config/nvim/
         ├── neo-tree.lua            # Neo-tree (file nesting, rename fix, :restart restore) + <Space>e / <Space>o
         ├── bufferline.lua          # Bufferline file tabs, window-safe tab closing + <S-h>/<S-l>/<Space>b*
         ├── telescope.lua           # Telescope fuzzy finder + <C-p> / <Space>ff / <Space>fg / gd / gr
+        ├── testing.lua             # Vitest (neotest-vitest) pass/fail/watch + inline coverage (nvim-coverage)
         ├── lualine.lua             # Statusbar (Catppuccin Frappé + active LSP indicator)
         └── which-key.lua           # Which-Key popup guide + group labels + <Space>?
 ```
@@ -94,7 +95,8 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | Keymap | Mode | Action |
 | :--- | :--- | :--- |
 | `K` | Normal | Show TypeScript type / JSDoc hover popup |
-| `Ctrl + Left Click` | Normal / Insert | Show TypeScript type / hover popup at mouse position |
+| `Ctrl + Left Click` (`<C-LeftMouse>`) | Normal / Insert | Show TypeScript type / hover popup at mouse position |
+| `Option/Alt + Left Click` (`<M-LeftMouse>`) | Normal / Insert | Go to Definition / Reference at mouse position |
 | `Right Click` | Normal / Visual / Insert | Open context menu (*Show Type/Hover*, *Find All References*, *Go to Type Definition*, *Code Action*, *Rename*) |
 | `<M-i>` (`Alt + i`) or `<Space>ci` / `<Space>ti` | Normal / Insert / Visual | Toggle Inline Type Hints (Inlay Hints) |
 | `<C-k>` | Insert | Show function parameter signature help |
@@ -115,8 +117,21 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>cl` | Normal | Run LSP CodeLens |
 
 ### Formatting (`lua/plugins/formatting.lua`)
-- **Format on Save**: Enabled automatically for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `css`, `scss` (via `prettier`) and `html` (via HTML LSP).
-- **Manual Format**: Press **`<Space>f`** in Normal or Visual mode (e.g., to format `json` via JSON LSP).
+- **Format on Save**: Enabled automatically for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `css`, `scss` (automatically uses **Biome** if `biome.json`/`biome.jsonc` is present in the project, otherwise falls back to **Prettier**) and `html` (via HTML LSP).
+- **Manual Format**: Press **`<Space>f`** in Normal or Visual mode (e.g., to format `json`/`jsonc` via Biome or JSON LSP).
+
+### Vitest & Code Coverage (`lua/plugins/testing.lua`)
+| Keymap / Mouse | Action |
+| :--- | :--- |
+| `<Space>vr` (or Right-Click $\to$ *Run Nearest Test*) | Run the single `it()` / `test()` block under cursor (or companion `.test.ts` if in a source `.ts` file) |
+| `<Space>vf` | Run all Vitest tests in the current file (or companion `.test.ts`) |
+| `<Space>va` | Run **ALL** Vitest tests in the entire project |
+| `<Space>vw` (or Right-Click $\to$ *Toggle Test Watch*) | Toggle **Vitest Watch Mode** (auto-reruns tests on save) |
+| `<Space>vs` | Toggle the **Vitest Test Explorer** summary sidebar |
+| `<Space>vo` | Open floating popup showing the failure diff / console output of the test |
+| `<Space>vO` | Toggle the full Vitest output panel |
+| `<Space>vc` | Load & toggle **inline code coverage** bars (`▎` green = covered, `▎` red = uncovered) |
+| `<Space>vC` | Open **Coverage Summary** popup with per-file coverage percentages |
 
 ### Git & LazyGit (`lua/plugins/git.lua`)
 | Keymap / Command | Action |

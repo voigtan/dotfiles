@@ -12,12 +12,9 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- 1. Core Native Modules
+-- 1. Core Native Options & Filetypes
 require("core.options")
 require("core.filetypes")
-require("core.navigation")
-require("core.rulers")
-require("core.terminals")
 
 -- 2. Native Neovim 0.12 Package Manager (vim.pack.add)
 local gh = function(repo)
@@ -55,7 +52,17 @@ vim.pack.add({
   gh("folke/which-key.nvim"),
   gh("nvim-lualine/lualine.nvim"),
   gh("akinsho/bufferline.nvim"),
+
+  -- Vitest Test Runner & Inline Code Coverage
+  gh("nvim-neotest/nvim-nio"),
+  gh("antoinemadec/FixCursorHold.nvim"),
+  gh("nvim-neotest/neotest"),
+  gh("marilari88/neotest-vitest"),
+  gh("andythigpen/nvim-coverage"),
 }, { confirm = false })
 
--- 3. Feature Plugin Modules
+-- 3. Core Feature Modules & Plugin Feature Modules
+require("core.navigation")
+require("core.rulers")
+require("core.terminals")
 require("plugins")

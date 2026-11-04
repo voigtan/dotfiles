@@ -22,7 +22,8 @@ local function focus_window_by(predicate, fallback_wincmd)
 end
 
 local function is_editor_buf(buf)
-  return vim.bo[buf].filetype ~= "neo-tree" and vim.bo[buf].buftype ~= "terminal"
+  local ft = vim.bo[buf].filetype
+  return ft ~= "neo-tree" and ft ~= "neotest-summary" and vim.bo[buf].buftype ~= "terminal"
 end
 
 _G.win_nav = {
@@ -34,6 +35,13 @@ _G.win_nav = {
   end,
   left = function()
     if vim.bo.filetype == "neo-tree" then
+      return
+    end
+    -- If on the right-hand Neotest Summary sidebar, move left into the Code Editor first
+    if vim.bo.filetype == "neotest-summary" then
+      focus_window_by(function(_, buf)
+        return is_editor_buf(buf)
+      end, "h")
       return
     end
     focus_window_by(function(_, buf)
@@ -98,7 +106,8 @@ vim.api.nvim_create_autocmd("QuitPre", {
       if not cfg.relative or cfg.relative == "" then
         table.insert(non_floating_wins, win)
         local buf = vim.api.nvim_win_get_buf(win)
-        if vim.bo[buf].filetype == "neo-tree" or vim.bo[buf].buftype == "terminal" then
+        local ft = vim.bo[buf].filetype
+        if ft == "neo-tree" or ft == "neotest-summary" or vim.bo[buf].buftype == "terminal" then
           table.insert(aux_wins, win)
         end
       end

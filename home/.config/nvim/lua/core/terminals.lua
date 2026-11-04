@@ -54,7 +54,14 @@ for cmd_name, shell_cmd in pairs(term_profiles) do
   end, { desc = "Open integrated terminal: " .. shell_cmd })
 end
 
--- Keymaps
+-- Keymaps & Which-Key Group
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>t", group = "Terminal / Toggles" },
+  })
+end
+
 map("n", "<leader>tz", "<cmd>TermZsh<CR>", { desc = "Open Terminal (zsh -l)" })
 map("n", "<leader>tb", "<cmd>TermBash<CR>", { desc = "Open Terminal (bash -l)" })
 map("n", "<leader>tt", "<cmd>TermTmux<CR>", { desc = "Open Terminal (tmux)" })

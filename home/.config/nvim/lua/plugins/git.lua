@@ -85,7 +85,14 @@ vim.api.nvim_create_user_command("LazyGit", function()
   vim.cmd("startinsert")
 end, { desc = "Open LazyGit in a floating modal window" })
 
--- 4. Keymaps
+-- 4. Keymaps & Which-Key Group
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>g", group = "Git / Inline Diffs" },
+  })
+end
+
 map("n", "<leader>gg", "<cmd>LazyGit<CR>", { desc = "Open LazyGit floating window" })
 
 map("n", "<leader>gd", function()

@@ -32,15 +32,15 @@ if ok_neotree then
         ["Z"] = "expand_all_subnodes",
       },
     },
-    -- "explorer.fileNesting.patterns": { "*.ts": "${capture}.test.tsx, ${capture}.test.ts" }
+    -- "explorer.fileNesting.patterns": { "*.ts": "${capture}.test.tsx, ${capture}.test.ts" } (+ .spec.ts / .spec.tsx)
     nesting_rules = {
       ["ts"] = {
         pattern = "^(.+)%.ts$",
-        files = { "%1.test.ts", "%1.test.tsx" },
+        files = { "%1.test.ts", "%1.test.tsx", "%1.spec.ts", "%1.spec.tsx" },
       },
       ["tsx"] = {
         pattern = "^(.+)%.tsx$",
-        files = { "%1.test.tsx", "%1.test.ts" },
+        files = { "%1.test.tsx", "%1.test.ts", "%1.spec.tsx", "%1.spec.ts" },
       },
     },
     filesystem = {

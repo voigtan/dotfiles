@@ -16,15 +16,21 @@ if ok_conform then
   }
 
   conform.setup({
+    formatters = {
+      biome = {
+        require_cwd = true, -- Only use Biome when biome.json / biome.jsonc is in the project
+      },
+    },
     formatters_by_ft = {
-      javascript = { "prettier" },
-      javascriptreact = { "prettier" },
-      typescript = { "prettier" },
-      typescriptreact = { "prettier" },
-      css = { "prettier" },
+      javascript = { "biome", "prettier", stop_after_first = true },
+      javascriptreact = { "biome", "prettier", stop_after_first = true },
+      typescript = { "biome", "prettier", stop_after_first = true },
+      typescriptreact = { "biome", "prettier", stop_after_first = true },
+      css = { "biome", "prettier", stop_after_first = true },
       scss = { "prettier" },
       html = { lsp_format = "prefer" },
-      json = { lsp_format = "prefer" },
+      json = { "biome", lsp_format = "fallback", stop_after_first = true },
+      jsonc = { "biome", lsp_format = "fallback", stop_after_first = true },
     },
     format_on_save = function(bufnr)
       local ft = vim.bo[bufnr].filetype

@@ -65,7 +65,14 @@ if ok_bufferline then
   })
 end
 
--- Keymaps
+-- Keymaps & Which-Key Group
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>b", group = "Buffers / File Tabs" },
+  })
+end
+
 local function cycle_buffer_tab(direction)
   if _G.win_nav and not _G.win_nav.is_editor_buf(0) then
     _G.win_nav.focus_editor()

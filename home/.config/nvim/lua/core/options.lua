@@ -7,7 +7,7 @@ local opt = vim.opt
 -- UI & General
 opt.number = true
 opt.relativenumber = true
-opt.signcolumn = "yes"
+opt.signcolumn = "yes:2" -- 2 sign slots so Neotest (✔/✖), Coverage (▎), and Git/LSP signs never collide
 opt.cursorline = true
 opt.termguicolors = true
 opt.showmode = false
