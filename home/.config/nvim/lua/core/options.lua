@@ -12,6 +12,21 @@ opt.cursorline = true
 opt.termguicolors = true
 opt.showmode = false
 opt.laststatus = 3 -- Global statusbar at the bottom (like VS Code)
+opt.cmdheight = 0 -- Push Lualine to the very bottom edge of the screen
+
+-- Native Neovim 0.12 UI2: floating notification/message window above Lualine for cmdheight = 0
+pcall(function()
+  require("vim._core.ui2").enable({
+    enable = true,
+    msg = {
+      targets = "msg",
+      msg = {
+        height = 0.5,
+        timeout = 4000,
+      },
+    },
+  })
+end)
 opt.updatetime = 250
 opt.timeoutlen = 500
 opt.splitright = true
@@ -88,6 +103,12 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 -- vim.keymap.set("i", "<C-k>c", "<Cmd>normal gcc<CR>", { desc = "Toggle comment on line" })
 vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment on line" })
 vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on selection" })
+
+-- Right-Click Context Menu: Toggle Comment
+require("core.context-menu").register("editor", {
+  { priority = "100.82", label = "Toggle Comment (gcc)", cmd = "gcc", mode = "n", remap = true },
+  { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
+})
 
 -- Highlight yanked text
 vim.api.nvim_create_autocmd("TextYankPost", {

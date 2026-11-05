@@ -111,7 +111,7 @@ vim.api.nvim_create_autocmd("SessionLoadPost", {
 map("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle File Explorer (Neo-tree)" })
 map("n", "<leader>o", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file in Explorer" })
 
--- Right-Click Context Menu inside Neo-tree (Create File/Folder, Rename, Move, Copy/Paste, Delete, Expand)
+-- Right-Click Context Menu inside Neo-tree
 _G.neotree_ctx_action = function(action_name)
   local state = require("neo-tree.sources.manager").get_state("filesystem")
   if not state then
@@ -125,61 +125,20 @@ _G.neotree_ctx_action = function(action_name)
   end
 end
 
-local function clear_neotree_popup_menu()
-  vim.cmd([[
-    silent! aunmenu PopUp.Open\ File\ /\ Folder
-    silent! aunmenu PopUp.Expand\ /\ Collapse\ Nested
-    silent! aunmenu PopUp.-nt-sep1-
-    silent! aunmenu PopUp.New\ File\ (a)
-    silent! aunmenu PopUp.New\ Folder\ (A)
-    silent! aunmenu PopUp.Rename\ (r)
-    silent! aunmenu PopUp.Rename\ Basename\ (b)
-    silent! aunmenu PopUp.Move\ (m)
-    silent! aunmenu PopUp.-nt-sep2-
-    silent! aunmenu PopUp.Copy\ File\ (y)
-    silent! aunmenu PopUp.Cut\ File\ (x)
-    silent! aunmenu PopUp.Paste\ File\ (p)
-    silent! aunmenu PopUp.-nt-sep3-
-    silent! aunmenu PopUp.Delete\ (d)
-    silent! aunmenu PopUp.-nt-sep4-
-  ]])
-end
-
-local function setup_neotree_popup_menu()
-  vim.cmd([[
-    anoremenu 100.05 PopUp.Open\ File\ /\ Folder            <Cmd>lua _G.neotree_ctx_action("open")<CR>
-    anoremenu 100.10 PopUp.Expand\ /\ Collapse\ Nested      <Cmd>lua _G.neotree_ctx_action("toggle_node")<CR>
-    anoremenu 100.15 PopUp.-nt-sep1-                        <Nop>
-    anoremenu 100.20 PopUp.New\ File\ (a)                   <Cmd>lua _G.neotree_ctx_action("add")<CR>
-    anoremenu 100.25 PopUp.New\ Folder\ (A)                 <Cmd>lua _G.neotree_ctx_action("add_directory")<CR>
-    anoremenu 100.30 PopUp.Rename\ (r)                      <Cmd>lua _G.neotree_ctx_action("rename")<CR>
-    anoremenu 100.35 PopUp.Rename\ Basename\ (b)            <Cmd>lua _G.neotree_ctx_action("rename_basename")<CR>
-    anoremenu 100.40 PopUp.Move\ (m)                        <Cmd>lua _G.neotree_ctx_action("move")<CR>
-    anoremenu 100.45 PopUp.-nt-sep2-                        <Nop>
-    anoremenu 100.50 PopUp.Copy\ File\ (y)                  <Cmd>lua _G.neotree_ctx_action("copy_to_clipboard")<CR>
-    anoremenu 100.55 PopUp.Cut\ File\ (x)                   <Cmd>lua _G.neotree_ctx_action("cut_to_clipboard")<CR>
-    anoremenu 100.60 PopUp.Paste\ File\ (p)                 <Cmd>lua _G.neotree_ctx_action("paste_from_clipboard")<CR>
-    anoremenu 100.65 PopUp.-nt-sep3-                        <Nop>
-    anoremenu 100.70 PopUp.Delete\ (d)                      <Cmd>lua _G.neotree_ctx_action("delete")<CR>
-    anoremenu 100.75 PopUp.-nt-sep4-                        <Nop>
-  ]])
-end
-
-vim.api.nvim_create_autocmd("MenuPopup", {
-  group = vim.api.nvim_create_augroup("NeoTreeContextMenu", { clear = true }),
-  desc = "Switch right-click PopUp menu between Neo-tree actions and Editor LSP actions",
-  callback = function()
-    local ft = vim.bo.filetype
-    if ft == "neo-tree" then
-      if _G.clear_lsp_popup_menu then
-        _G.clear_lsp_popup_menu()
-      end
-      setup_neotree_popup_menu()
-    else
-      clear_neotree_popup_menu()
-      if _G.setup_lsp_popup_menu then
-        _G.setup_lsp_popup_menu()
-      end
-    end
-  end,
+require("core.context-menu").register("neo-tree", {
+  { priority = "100.05", label = "Open File / Folder", cmd = '<Cmd>lua _G.neotree_ctx_action("open")<CR>' },
+  { priority = "100.10", label = "Expand / Collapse Nested", cmd = '<Cmd>lua _G.neotree_ctx_action("toggle_node")<CR>' },
+  { priority = "100.15", sep = "-nt-sep1-" },
+  { priority = "100.20", label = "New File (a)", cmd = '<Cmd>lua _G.neotree_ctx_action("add")<CR>' },
+  { priority = "100.25", label = "New Folder (A)", cmd = '<Cmd>lua _G.neotree_ctx_action("add_directory")<CR>' },
+  { priority = "100.30", label = "Rename (r)", cmd = '<Cmd>lua _G.neotree_ctx_action("rename")<CR>' },
+  { priority = "100.35", label = "Rename Basename (b)", cmd = '<Cmd>lua _G.neotree_ctx_action("rename_basename")<CR>' },
+  { priority = "100.40", label = "Move (m)", cmd = '<Cmd>lua _G.neotree_ctx_action("move")<CR>' },
+  { priority = "100.45", sep = "-nt-sep2-" },
+  { priority = "100.50", label = "Copy File (y)", cmd = '<Cmd>lua _G.neotree_ctx_action("copy_to_clipboard")<CR>' },
+  { priority = "100.55", label = "Cut File (x)", cmd = '<Cmd>lua _G.neotree_ctx_action("cut_to_clipboard")<CR>' },
+  { priority = "100.60", label = "Paste File (p)", cmd = '<Cmd>lua _G.neotree_ctx_action("paste_from_clipboard")<CR>' },
+  { priority = "100.65", sep = "-nt-sep3-" },
+  { priority = "100.70", label = "Delete (d)", cmd = '<Cmd>lua _G.neotree_ctx_action("delete")<CR>' },
+  { priority = "100.75", sep = "-nt-sep4-" },
 })

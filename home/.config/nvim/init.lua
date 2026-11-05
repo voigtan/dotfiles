@@ -12,9 +12,10 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- 1. Core Native Options, State & Filetypes
+-- 1. Core Native Options, State, Context Menu & Filetypes
 require("core.options")
 require("core.state")
+require("core.context-menu")
 require("core.filetypes")
 
 -- 2. Native Neovim 0.12 Package Manager (vim.pack.add)

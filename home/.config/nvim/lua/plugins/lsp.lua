@@ -322,53 +322,23 @@ map("n", "<leader>cl", function()
   vim.lsp.codelens.run()
 end, { desc = "Run LSP CodeLens" })
 
--- 6. Right-Click Context Menu (PopUp) for TypeScript / LSP (active in code buffers)
+-- 6. Right-Click Context Menu (PopUp) for TypeScript / LSP
 _G.lsp_go_to_source_def = go_to_source_definition
 _G.lsp_organize_imports = function()
   ts_code_action_by_kind("source.organizeImports")
 end
 
-_G.setup_lsp_popup_menu = function()
-  vim.cmd([[
-    silent! aunmenu PopUp.How-to\ disable\ mouse
-
-    anoremenu 100.10 PopUp.Show\ Type\ /\ Hover\ Info      <Cmd>lua vim.lsp.buf.hover()<CR>
-    anoremenu 100.20 PopUp.Go\ to\ Source\ Definition      <Cmd>lua _G.lsp_go_to_source_def()<CR>
-    anoremenu 100.30 PopUp.Go\ to\ Type\ Definition        <Cmd>lua require("telescope.builtin").lsp_type_definitions()<CR>
-    anoremenu 100.40 PopUp.Go\ to\ Implementation          <Cmd>lua require("telescope.builtin").lsp_implementations()<CR>
-    anoremenu 100.50 PopUp.Find\ All\ References           <Cmd>lua require("telescope.builtin").lsp_references()<CR>
-    anoremenu 100.60 PopUp.Code\ Action\ /\ Auto-Import    <Cmd>lua vim.lsp.buf.code_action()<CR>
-    anoremenu 100.70 PopUp.Organize\ Imports               <Cmd>lua _G.lsp_organize_imports()<CR>
-    anoremenu 100.80 PopUp.Rename\ Symbol                  <Cmd>lua vim.lsp.buf.rename()<CR>
-    nmenu     100.82 PopUp.Toggle\ Comment\ (gcc)          gcc
-    vmenu     100.82 PopUp.Toggle\ Comment\ (gc)           gc
-    anoremenu 100.85 PopUp.-test-sep-                      <Nop>
-    anoremenu 100.90 PopUp.Run\ Nearest\ Test\ (Vitest)    <Cmd>lua _G.vitest_actions.run_nearest()<CR>
-    anoremenu 100.95 PopUp.Toggle\ Test\ Watch\ (Vitest)   <Cmd>lua _G.vitest_actions.toggle_watch()<CR>
-    anoremenu 100.99 PopUp.-lsp-sep-                       <Nop>
-  ]])
-end
-
-_G.clear_lsp_popup_menu = function()
-  vim.cmd([[
-    silent! aunmenu PopUp.Show\ Type\ /\ Hover\ Info
-    silent! aunmenu PopUp.Go\ to\ Source\ Definition
-    silent! aunmenu PopUp.Go\ to\ Type\ Definition
-    silent! aunmenu PopUp.Go\ to\ Implementation
-    silent! aunmenu PopUp.Find\ All\ References
-    silent! aunmenu PopUp.Code\ Action\ /\ Auto-Import
-    silent! aunmenu PopUp.Organize\ Imports
-    silent! aunmenu PopUp.Rename\ Symbol
-    silent! aunmenu PopUp.Toggle\ Comment\ (gcc)
-    silent! aunmenu PopUp.Toggle\ Comment\ (gc)
-    silent! aunmenu PopUp.-test-sep-
-    silent! aunmenu PopUp.Run\ Nearest\ Test\ (Vitest)
-    silent! aunmenu PopUp.Toggle\ Test\ Watch\ (Vitest)
-    silent! aunmenu PopUp.-lsp-sep-
-  ]])
-end
-
-_G.setup_lsp_popup_menu()
+require("core.context-menu").register("editor", {
+  { priority = "100.10", label = "Show Type / Hover Info", cmd = "<Cmd>lua vim.lsp.buf.hover()<CR>" },
+  { priority = "100.20", label = "Go to Source Definition", cmd = "<Cmd>lua _G.lsp_go_to_source_def()<CR>" },
+  { priority = "100.30", label = "Go to Type Definition", cmd = '<Cmd>lua require("telescope.builtin").lsp_type_definitions()<CR>' },
+  { priority = "100.40", label = "Go to Implementation", cmd = '<Cmd>lua require("telescope.builtin").lsp_implementations()<CR>' },
+  { priority = "100.50", label = "Find All References", cmd = '<Cmd>lua require("telescope.builtin").lsp_references()<CR>' },
+  { priority = "100.60", label = "Code Action / Auto-Import", cmd = "<Cmd>lua vim.lsp.buf.code_action()<CR>" },
+  { priority = "100.70", label = "Organize Imports", cmd = "<Cmd>lua _G.lsp_organize_imports()<CR>" },
+  { priority = "100.80", label = "Rename Symbol", cmd = "<Cmd>lua vim.lsp.buf.rename()<CR>" },
+  { priority = "100.99", sep = "-lsp-sep-" },
+})
 
 -- Export helper for Neo-tree file move/rename import updates
 local M = {}

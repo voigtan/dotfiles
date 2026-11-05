@@ -18,7 +18,8 @@ home/.config/nvim/
 └── lua/
     ├── core/
     │   ├── options.lua             # Core options, whitespace, control chars, diffopt, en_gb spell, yank highlight
-    │   ├── state.lua               # Persistent on-disk UI toggles per-folder (~/.local/state/nvim/ui-toggles.json)
+    │   ├── state.lua               # Persistent on-disk UI toggles per-GitHub project (~/.local/state/nvim/ui-toggles.json)
+    │   ├── context-menu.lua        # Right-click PopUp context menu registry ("editor", "neo-tree", etc.)
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
     │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr

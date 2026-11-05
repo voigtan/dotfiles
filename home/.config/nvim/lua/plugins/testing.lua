@@ -409,3 +409,10 @@ map("n", "<leader>vC", function()
   require("coverage").load(true)
   vim.cmd("CoverageSummary")
 end, { desc = "Show file coverage summary popup" })
+
+-- 5. Right-Click Context Menu for Vitest
+require("core.context-menu").register("editor", {
+  { priority = "100.85", sep = "-test-sep-" },
+  { priority = "100.90", label = "Run Nearest Test (Vitest)", cmd = "<Cmd>lua _G.vitest_actions.run_nearest()<CR>" },
+  { priority = "100.95", label = "Toggle Test Watch (Vitest)", cmd = "<Cmd>lua _G.vitest_actions.toggle_watch()<CR>" },
+})
