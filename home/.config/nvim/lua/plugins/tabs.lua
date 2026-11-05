@@ -6,10 +6,31 @@ local map = vim.keymap.set
 local state = require("core.state")
 
 -- Helper to close a file tab without collapsing the editor split or quitting Neovim
-_G.close_buffer_tab = function(bufnr)
+_G.close_buffer_tab = function(bufnr, force)
   bufnr = (bufnr and bufnr > 0) and bufnr or vim.api.nvim_get_current_buf()
-  if vim.bo[bufnr].filetype == "neo-tree" then
+  if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].filetype == "neo-tree" then
     return
+  end
+
+  if not force and vim.bo[bufnr].modified then
+    local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+    if name == "" then
+      name = "[No Name]"
+    end
+    local choice = vim.fn.confirm(
+      string.format('Save changes to "%s" before closing?', name),
+      "&Yes\n&No (Discard)\n&Cancel",
+      1
+    )
+    if choice == 1 then
+      vim.api.nvim_buf_call(bufnr, function()
+        vim.cmd("write")
+      end)
+    elseif choice == 2 then
+      force = true
+    else
+      return
+    end
   end
 
   local alt_buf = nil
@@ -32,7 +53,7 @@ _G.close_buffer_tab = function(bufnr)
   end
 
   if vim.api.nvim_buf_is_valid(bufnr) then
-    pcall(vim.cmd, "bdelete " .. bufnr)
+    pcall(vim.cmd, (force and "bdelete! " or "bdelete ") .. bufnr)
   end
 end
 
@@ -66,6 +87,40 @@ if ok_bufferline then
     },
   })
   vim.o.showtabline = state.get("tabs", true) and 2 or 0
+
+  -- Show BOTH the orange modified circle (●) AND the clickable close button (󰅖) on modified tabs
+  local ok_ui, ui = pcall(require, "bufferline.ui")
+  local ok_cfg, bl_config = pcall(require, "bufferline.config")
+  local ok_hl, bl_highlights = pcall(require, "bufferline.highlights")
+  if ok_ui and ok_cfg and ok_hl and not ui._patched_modified_close then
+    ui._patched_modified_close = true
+    local orig_element = ui.element
+    ui.element = function(current_state, element)
+      element = orig_element(current_state, element)
+      if element.modified and element.component then
+        local orig_comp = element.component
+        local curr_hl = bl_highlights.for_element(element)
+        local close_icon = (bl_config.options and bl_config.options.buffer_close_icon) or "󰅖"
+        local mod_icon = (bl_config.options and bl_config.options.modified_icon) or "●"
+        local close_seg = ui.make_clickable("handle_close", element.id, {
+          text = " " .. close_icon,
+          highlight = curr_hl.close_button,
+        })
+        element.length = element.length + vim.fn.strwidth(" " .. close_icon)
+        element.component = function(...)
+          local segs = orig_comp(...)
+          for i, seg in ipairs(segs) do
+            if seg.text == mod_icon then
+              table.insert(segs, i + 1, close_seg)
+              break
+            end
+          end
+          return segs
+        end
+      end
+      return element
+    end
+  end
 end
 
 -- Command & helper to toggle the top File Tabs bar on/off (persisted per-folder on disk)
@@ -119,5 +174,8 @@ map("n", "<leader>tf", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
 map("n", "<leader>bp", "<cmd>BufferLineTogglePin<CR>", { desc = "Pin / unpin file tab" })
 map("n", "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close all other file tabs" })
 map("n", "<leader>bd", function()
-  _G.close_buffer_tab(0)
+  _G.close_buffer_tab(0, false)
 end, { desc = "Close current file tab" })
+map("n", "<leader>bD", function()
+  _G.close_buffer_tab(0, true)
+end, { desc = "Force close file tab (discard changes)" })
