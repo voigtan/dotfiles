@@ -9,7 +9,7 @@ if ok_lualine then
       globalstatus = true,
       component_separators = { left = "│", right = "│" },
       section_separators = { left = "", right = "" },
-      disabled_filetypes = { statusline = { "neo-tree" } },
+      disabled_filetypes = { statusline = { "neo-tree" } }, -- Disable Lualine statusline for Neo-tree file explorer
     },
     sections = {
       lualine_a = {
