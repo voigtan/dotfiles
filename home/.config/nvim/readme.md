@@ -27,6 +27,7 @@ home/.config/nvim/
         ├── init.lua                # Loads all plugin modules in order
         ├── theme.lua               # Catppuccin Frappé + nvim-web-devicons
         ├── treesitter.lua          # Treesitter parsers/highlighting + sticky scroll (treesitter-context)
+        ├── flash.lua               # Flash.nvim fast on-screen jump (s, S, f/t/F/T)
         ├── lsp.lua                 # Mason + native Nvim 0.12 LSP, Copilot inline completion & IntelliSense keys
         ├── formatting.lua          # Conform.nvim (Prettier / LSP formatOnSave) + <Space>f
         ├── git.lua                 # Gitsigns (blame & inline diffs), git.autofetch, floating :LazyGit (<Space>gg)
@@ -54,6 +55,15 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<C-j>` | `<C-Down>` | Focus **Integrated Terminal** (bottom) |
 | `<C-k>` | `<C-Up>` | Focus **Code Editor** (up from terminal) |
 | `:q` / `:wq` | — | Quits Neovim cleanly (automatically closes Neo-tree/Terminal if closing the last file) |
+
+### Fast On-Screen Jump / Flash (`lua/plugins/flash.lua`)
+| Keymap | Mode | Action |
+| :--- | :--- | :--- |
+| `s` | Normal / Visual / Operator | **Flash Jump**: Type 1–2 characters, then press the highlighted label letter to jump anywhere on screen (even across splits) |
+| `S` | Normal / Visual / Operator | **Flash Treesitter**: Labels every syntax node around your cursor so you can select an entire function, argument, or block with 1 keypress |
+| `f` / `F` / `t` / `T` | Normal / Visual | Enhanced single-line character jump with label hints (press `;` / `,` to repeat) |
+| `r` | Operator-pending (e.g. after `y`, `d`, `c`) | **Remote Flash**: Perform an action (like `yr<char><label>iw` to copy a word) at another location and snap right back |
+| `<C-s>` | Command-line (`/` or `?`) | Toggle Flash jump labels during a regular `/` search |
 
 ### File Tabs (`lua/plugins/tabs.lua`)
 | Keymap / Command | Action |

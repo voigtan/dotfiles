@@ -5,6 +5,7 @@
 
 require("plugins.theme")
 require("plugins.treesitter")
+require("plugins.flash")
 require("plugins.lsp")
 require("plugins.formatting")
 require("plugins.git")

@@ -9,6 +9,7 @@ if ok_catppuccin then
     integrations = {
       treesitter = true,
       treesitter_context = true,
+      flash = true,
       gitsigns = true,
       neotree = true,
       telescope = { enabled = true },

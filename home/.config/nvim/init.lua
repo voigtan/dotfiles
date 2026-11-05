@@ -60,6 +60,9 @@ vim.pack.add({
   gh("nvim-neotest/neotest"),
   gh("marilari88/neotest-vitest"),
   gh("andythigpen/nvim-coverage"),
+
+  -- Fast On-Screen Jump Navigation
+  gh("folke/flash.nvim"),
 }, { confirm = false })
 
 -- 3. Core Feature Modules & Plugin Feature Modules
