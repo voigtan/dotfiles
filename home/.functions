@@ -158,13 +158,27 @@ cal-year() {
 
 cal-holidays() {
     local input=${1:-$(date +%Y)}
+    local requested_year=""
+    if [[ -n "$2" ]]; then
+        if [[ "$input" =~ ^[0-9]{4}$ ]]; then
+            requested_year="$input"
+            input="$2"
+        else
+            echo "Usage: cal-holidays [year|date|holiday] [holiday]"
+            return 2
+        fi
+    fi
     [[ "$input" == "today" ]] && input=$(date +%Y-%m-%d)
     local year cache_dir cache_file
 
-    if [[ "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+    if [[ -n "$requested_year" ]]; then
+        year="$requested_year"
+    elif [[ "$input" =~ ^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$ ]]; then
         year="${input%%-*}"
-    else
+    elif [[ "$input" =~ ^[0-9]{4}$ ]]; then
         year="$input"
+    else
+        year=$(date +%Y)
     fi
 
     cache_dir="$HOME/.dotfiles/.cache/holidays"
@@ -181,18 +195,44 @@ cal-holidays() {
         fi
     fi
 
-    if [[ "$input" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+    if [[ "$input" =~ ^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$ ]]; then
         python3 - "$cache_file" "$input" <<'PYEOF'
 import json, sys
+from datetime import date
+
 cache_file, target = sys.argv[1], sys.argv[2]
+target_date = date(*map(int, target.split("-")))
 with open(cache_file) as f:
     holidays = json.load(f)
-matches = [h for h in holidays if h["date"] == target]
+matches = [
+    h for h in holidays
+    if date(*map(int, h["date"].split("-"))) == target_date
+]
+if matches:
+    for h in matches:
+        print(f"{target_date.isoformat()}  {h['name']['sv']} ({h['name']['en']})")
+else:
+    print(f"No holiday on {target_date.isoformat()}")
+PYEOF
+        return
+    fi
+
+    if [[ ! "$input" =~ ^[0-9]{4}$ ]]; then
+        python3 - "$cache_file" "$input" <<'PYEOF'
+import json, sys
+
+cache_file, query = sys.argv[1], sys.argv[2].casefold()
+with open(cache_file) as f:
+    holidays = json.load(f)
+matches = [
+    h for h in holidays
+    if any(query in h["name"][language].casefold() for language in ("sv", "en"))
+]
 if matches:
     for h in matches:
         print(f"{h['date']}  {h['name']['sv']} ({h['name']['en']})")
 else:
-    print(f"No holiday on {target}")
+    print(f"No holiday matching {sys.argv[2]}")
 PYEOF
         return
     fi
