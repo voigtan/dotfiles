@@ -7,8 +7,4 @@ vim.filetype.add({
     svg = "html",
     mjs = "javascript",
   },
-  pattern = {
-    [".*/www/.*%.js"] = { "text", { priority = 10 } },
-    [".*/www/.*%.ts"] = { "text", { priority = 10 } },
-  },
 })
