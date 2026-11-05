@@ -72,7 +72,8 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<S-h>` (`Shift + h`) or `[b` | Previous file tab |
 | `<S-l>` (`Shift + l`) or `]b` | Next file tab |
 | `<Space>bt` or `<Space>tf` (or `:ToggleTabs`) | **Toggle top File Tabs bar** on/off |
-| `<Space>bd` | Close current file tab (without closing the window split or quitting Neovim) |
+| `<Space>bd` | Close current file tab (prompts *Save / Discard / Cancel* if modified) |
+| `<Space>bD` | **Force-close** current file tab and discard unsaved changes immediately |
 | `<Space>bo` | Close all other file tabs |
 | `<Space>bp` | Pin / unpin current file tab |
 
@@ -158,6 +159,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 ### Terminals & Rulers (`lua/core/terminals.lua`, `lua/core/rulers.lua`)
 | Keymap / Command | Action |
 | :--- | :--- |
+| `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a centered floating modal window (`q` to close) |
 | `<Space>tz` or `:TermZsh` | Open bottom terminal with `/bin/zsh -l` |
 | `<Space>tb` or `:TermBash` | Open bottom terminal with `bash -l` |
 | `<Space>tt` or `:TermTmux` | Open bottom terminal with `tmux` |
