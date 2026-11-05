@@ -7,6 +7,7 @@ local desired_parsers = {
   "javascript",
   "typescript",
   "tsx",
+  "dockerfile",
   "html",
   "css",
   "scss",

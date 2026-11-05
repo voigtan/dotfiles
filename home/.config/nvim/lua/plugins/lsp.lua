@@ -23,6 +23,8 @@ if ok_mti then
     ensure_installed = {
       "vtsls",
       "biome",
+      "dockerfile-language-server",
+      "docker-compose-language-service",
       "html-lsp",
       "css-lsp",
       "json-lsp",
@@ -191,6 +193,8 @@ vim.lsp.config("copilot", {
 vim.lsp.enable({
   "vtsls",
   "biome",
+  "dockerls",
+  "docker_compose_language_service",
   "html",
   "cssls",
   "jsonls",

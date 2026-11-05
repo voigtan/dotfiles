@@ -7,4 +7,8 @@ vim.filetype.add({
     svg = "html",
     mjs = "javascript",
   },
+  pattern = {
+    [".*/docker%-compose.*%.ya?ml"] = "yaml.docker-compose",
+    [".*/compose.*%.ya?ml"] = "yaml.docker-compose",
+  },
 })
