@@ -107,11 +107,7 @@ vim.api.nvim_create_autocmd("SessionLoadPost", {
   end,
 })
 
--- Keymaps
-map("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle File Explorer (Neo-tree)" })
-map("n", "<leader>o", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file in Explorer" })
-
--- Right-Click Context Menu inside Neo-tree
+-- Helper to invoke Neo-tree filesystem commands from right-click menu
 _G.neotree_ctx_action = function(action_name)
   local state = require("neo-tree.sources.manager").get_state("filesystem")
   if not state then
@@ -124,6 +120,13 @@ _G.neotree_ctx_action = function(action_name)
     cmds[action_name](state)
   end
 end
+
+-- ============================================================================
+-- Keymaps & Right-Click Context Menu
+-- ============================================================================
+
+map("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle File Explorer (Neo-tree)" })
+map("n", "<leader>o", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file in Explorer" })
 
 require("core.context-menu").register("neo-tree", {
   { priority = "100.05", label = "Open File / Folder", cmd = '<Cmd>lua _G.neotree_ctx_action("open")<CR>' },

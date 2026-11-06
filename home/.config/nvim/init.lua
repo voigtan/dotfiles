@@ -32,11 +32,12 @@ vim.pack.add({
   gh("nvim-treesitter/nvim-treesitter"),
   gh("nvim-treesitter/nvim-treesitter-context"),
 
-  -- LSP Server Configs, Mason Installer & JSON Schemas
+  -- LSP Server Configs, Mason Installer, JSON Schemas & Inline Diagnostics
   gh("neovim/nvim-lspconfig"),
   gh("mason-org/mason.nvim"),
   gh("WhoIsSethDaniel/mason-tool-installer.nvim"),
   gh("b0o/SchemaStore.nvim"),
+  gh("rachartier/tiny-inline-diagnostic.nvim"),
 
   -- Format on Save (Prettier + LSP formatters)
   gh("stevearc/conform.nvim"),

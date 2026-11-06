@@ -83,23 +83,26 @@ vim.api.nvim_create_user_command("LazyDocker", function()
   vim.cmd("startinsert")
 end, { desc = "Open LazyDocker in a floating modal window" })
 
-local term_profiles = {
-  TermZsh = "/bin/zsh -l",
-  TermBash = "bash -l",
-  TermTmux = "tmux",
-  TermPwsh = "pwsh",
-}
-
-for cmd_name, shell_cmd in pairs(term_profiles) do
-  vim.api.nvim_create_user_command(cmd_name, function()
-    if vim.bo.filetype == "neo-tree" then
-      vim.cmd("wincmd l")
+local function open_bottom_terminal(cmd)
+  if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neotest-summary" then
+    if _G.win_nav and _G.win_nav.focus_editor then
+      _G.win_nav.focus_editor()
     end
-    vim.cmd("belowright split | resize 15 | terminal " .. shell_cmd)
-    vim.bo.buflisted = false
-    vim.cmd("startinsert")
-  end, { desc = "Open integrated terminal: " .. shell_cmd })
+  end
+  vim.cmd("belowright split | resize 15 | terminal " .. cmd)
+  vim.bo.buflisted = false
+  vim.cmd("startinsert")
 end
+
+-- Default shell terminal (uses vim.o.shell, i.e. /bin/zsh -l)
+vim.api.nvim_create_user_command("Term", function()
+  open_bottom_terminal(vim.o.shell .. " -l")
+end, { desc = "Open integrated terminal (default shell)" })
+
+-- Tmux terminal profile
+vim.api.nvim_create_user_command("TermTmux", function()
+  open_bottom_terminal("tmux")
+end, { desc = "Open integrated terminal (tmux)" })
 
 -- Keymaps & Which-Key Group
 local ok_wk, wk = pcall(require, "which-key")
@@ -110,9 +113,7 @@ if ok_wk then
   })
 end
 
+map("n", "<leader>tt", "<cmd>Term<CR>", { desc = "Open Terminal (zsh)" })
+map("n", "<leader>tx", "<cmd>TermTmux<CR>", { desc = "Open Terminal (tmux)" })
 map("n", "<leader>td", "<cmd>LazyDocker<CR>", { desc = "Open LazyDocker floating window" })
-map("n", "<leader>tz", "<cmd>TermZsh<CR>", { desc = "Open Terminal (zsh -l)" })
-map("n", "<leader>tb", "<cmd>TermBash<CR>", { desc = "Open Terminal (bash -l)" })
-map("n", "<leader>tt", "<cmd>TermTmux<CR>", { desc = "Open Terminal (tmux)" })
-map("n", "<leader>tp", "<cmd>TermPwsh<CR>", { desc = "Open Terminal (pwsh)" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

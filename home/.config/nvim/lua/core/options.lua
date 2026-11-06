@@ -91,6 +91,19 @@ opt.shell = "/bin/zsh"
 -- "editor.fontFamily": "'Monaspace Neon', monospace" (for GUI clients like Neovide)
 opt.guifont = "Monaspace Neon:h13"
 
+-- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("CoreYankHighlight", { clear = true }),
+  desc = "Highlight yanked text",
+  callback = function()
+    vim.hl.on_yank({ timeout = 200 })
+  end,
+})
+
+-- ============================================================================
+-- Keymaps & Context Menu Bindings
+-- ============================================================================
+
 -- Clear search highlight on <Esc>
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 
@@ -108,13 +121,4 @@ vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on
 require("core.context-menu").register("editor", {
   { priority = "100.82", label = "Toggle Comment (gcc)", cmd = "gcc", mode = "n", remap = true },
   { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
-})
-
--- Highlight yanked text
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("CoreYankHighlight", { clear = true }),
-  desc = "Highlight yanked text",
-  callback = function()
-    vim.hl.on_yank({ timeout = 200 })
-  end,
 })

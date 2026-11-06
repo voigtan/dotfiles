@@ -159,11 +159,9 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 ### Terminals & Rulers (`lua/core/terminals.lua`, `lua/core/rulers.lua`)
 | Keymap / Command | Action |
 | :--- | :--- |
+| `<Space>tt` or `:Term` | Open bottom terminal with default shell (`/bin/zsh -l`) |
+| `<Space>tx` or `:TermTmux` | Open bottom terminal with `tmux` |
 | `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a centered floating modal window (`q` to close) |
-| `<Space>tz` or `:TermZsh` | Open bottom terminal with `/bin/zsh -l` |
-| `<Space>tb` or `:TermBash` | Open bottom terminal with `bash -l` |
-| `<Space>tt` or `:TermTmux` | Open bottom terminal with `tmux` |
-| `<Space>tp` or `:TermPwsh` | Open bottom terminal with `pwsh` |
 | `<Esc><Esc>` | Exit Terminal mode into Normal mode |
 | `<Space>tr` or `:ToggleRulers` | Toggle 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers on/off |
 

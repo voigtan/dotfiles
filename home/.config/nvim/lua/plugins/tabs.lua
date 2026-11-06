@@ -136,16 +136,6 @@ vim.api.nvim_create_user_command("ToggleTabs", function()
   end
 end, { desc = "Toggle top File Tabs bar on/off" })
 
--- Keymaps & Which-Key Group
-local ok_wk, wk = pcall(require, "which-key")
-if ok_wk then
-  wk.add({
-    { "<leader>b", group = "File Tabs" },
-    { "<leader>bt", icon = { icon = " ", color = "yellow" } },
-    { "<leader>tf", icon = { icon = " ", color = "yellow" } },
-  })
-end
-
 local function cycle_buffer_tab(direction)
   if _G.win_nav and not _G.win_nav.is_editor_buf(0) then
     _G.win_nav.focus_editor()
@@ -155,6 +145,19 @@ local function cycle_buffer_tab(direction)
   else
     vim.cmd("BufferLineCyclePrev")
   end
+end
+
+-- ============================================================================
+-- Keymaps & Which-Key Group
+-- ============================================================================
+
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>b", group = "File Tabs" },
+    { "<leader>bt", icon = { icon = " ", color = "yellow" } },
+    { "<leader>tf", icon = { icon = " ", color = "yellow" } },
+  })
 end
 
 map("n", "<S-h>", function()
