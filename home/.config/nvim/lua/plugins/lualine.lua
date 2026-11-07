@@ -12,22 +12,7 @@ if ok_lualine then
       disabled_filetypes = { statusline = { "neo-tree" } }, -- Disable Lualine statusline for Neo-tree file explorer
     },
     sections = {
-      lualine_a = {
-        -- {
-        --   function()
-        --     local sys = vim.uv.os_uname().sysname
-        --     if sys == "Darwin" then
-        --       return ""
-        --     elseif sys == "Linux" then
-        --       return ""
-        --     elseif sys:match("Windows") then
-        --       return ""
-        --     end
-        --     return sys
-        --   end,
-        -- },
-        "mode",
-      },
+      lualine_a = { "mode" },
       lualine_b = { "branch", "diff", "diagnostics" },
       lualine_c = { { "filename", path = 1 } },
       lualine_x = {
