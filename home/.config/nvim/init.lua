@@ -12,9 +12,10 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- 1. Core Native Options, State, Context Menu & Filetypes
+-- 1. Core Native Options, State, Modal, Context Menu & Filetypes
 require("core.options")
 require("core.state")
+require("core.modal")
 require("core.context-menu")
 require("core.filetypes")
 

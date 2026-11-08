@@ -3,6 +3,7 @@
 -- ============================================================================
 
 local map = vim.keymap.set
+local modal = require("core.modal")
 
 local function focus_window_by(predicate, fallback_wincmd)
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -69,13 +70,67 @@ _G.win_nav = {
   end,
 }
 
--- Close Neovim on :q / :wq even when Neo-tree or Terminal splits are open
+-- Track the active ":" command line (cleared on next tick so it is never stale from history)
+local active_ex_cmd = nil
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  group = vim.api.nvim_create_augroup("CoreSmartQuitCmdline", { clear = true }),
+  callback = function()
+    if vim.v.event.cmdtype == ":" and not vim.v.event.abort then
+      active_ex_cmd = vim.trim(vim.fn.getcmdline() or "")
+      vim.schedule(function()
+        active_ex_cmd = nil
+      end)
+    end
+  end,
+})
+
+-- Abort an in-progress :q cleanly by giving it a 1-line ephemeral split to close instead
+local function abort_quit()
+  local scratch = vim.api.nvim_create_buf(false, true)
+  vim.bo[scratch].bufhidden = "wipe"
+  vim.api.nvim_open_win(scratch, true, { split = "above", height = 1 })
+end
+
+-- Prompt to save or discard a modified buffer before :q closes the window/Neovim
+local function prompt_modified_buffer_on_quit(buf)
+  local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t")
+  if name == "" then
+    name = "[No Name]"
+  end
+  local choice = modal.confirm({
+    title = " 󰆓 Unsaved Changes ",
+    prompt = string.format('Save changes to "%s" before quitting?', name),
+    highlight = name,
+    buttons = {
+      { label = " 󰆓 [Y]es (Save) ", keys = { "y", "s" } },
+      { label = " 󰅖 [N]o (Discard) ", keys = { "n", "d" } },
+      { label = " 󰜺 [C]ancel ", keys = { "c", "q" } },
+    },
+    default = 1,
+    cancel = 3,
+  })
+  if choice == 1 then
+    return modal.save_buffer(buf, name)
+  elseif choice == 2 then
+    vim.bo[buf].modified = false
+    return true
+  else
+    return false
+  end
+end
+
+-- Close Neovim on :q / :wq even when Neo-tree or Terminal splits are open,
+-- and prompt via floating modal for any unsaved buffers before closing panels
 vim.api.nvim_create_autocmd("QuitPre", {
   group = vim.api.nvim_create_augroup("CoreSmartQuit", { clear = true }),
-  desc = "Close auxiliary Neo-tree/Terminal panels when quitting the last file window",
+  desc = "Prompt for unsaved buffers and close auxiliary panels when quitting",
   callback = function()
     local current_win = vim.api.nvim_get_current_win()
     local current_buf = vim.api.nvim_win_get_buf(current_win)
+
+    local ex_cmd = active_ex_cmd or ""
+    local is_force = ex_cmd:find("!", 1, true) ~= nil
+    local is_write_quit = ex_cmd:match("^wq") ~= nil or ex_cmd:match("^x") ~= nil
 
     local non_floating_wins = {}
     local aux_wins = {}
@@ -84,25 +139,33 @@ vim.api.nvim_create_autocmd("QuitPre", {
       if not cfg.relative or cfg.relative == "" then
         table.insert(non_floating_wins, win)
         local buf = vim.api.nvim_win_get_buf(win)
-        local ft = vim.bo[buf].filetype
-        if ft == "neo-tree" or ft == "neotest-summary" or vim.bo[buf].buftype == "terminal" then
+        if not is_editor_buf(buf) or vim.bo[buf].buftype ~= "" then
           table.insert(aux_wins, win)
         end
       end
     end
 
-    -- Case 1: :q run inside Neo-tree or Terminal when the only other window is an empty [No Name] buffer
-    if vim.bo[current_buf].filetype == "neo-tree" or vim.bo[current_buf].buftype == "terminal" then
+    -- Case 1: :q run inside Neo-tree / Neotest / Terminal when the only other window is an empty [No Name] buffer
+    if not is_editor_buf(current_buf) then
       if #non_floating_wins - #aux_wins == 1 then
         for _, win in ipairs(non_floating_wins) do
           local buf = vim.api.nvim_win_get_buf(win)
           if
-            vim.bo[buf].filetype ~= "neo-tree"
-            and vim.bo[buf].buftype ~= "terminal"
+            is_editor_buf(buf)
             and vim.api.nvim_buf_get_name(buf) == ""
             and not vim.bo[buf].modified
             and vim.api.nvim_buf_line_count(buf) <= 1
           then
+            if not is_force then
+              for _, b in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_valid(b) and vim.bo[b].buflisted and vim.bo[b].modified and is_editor_buf(b) then
+                  if not prompt_modified_buffer_on_quit(b) then
+                    abort_quit()
+                    return
+                  end
+                end
+              end
+            end
             pcall(vim.api.nvim_win_close, win, true)
           end
         end
@@ -110,11 +173,41 @@ vim.api.nvim_create_autocmd("QuitPre", {
       return
     end
 
-    -- Case 2: :q run in the last file window while Neo-tree / Terminal panels are open
-    if #non_floating_wins - #aux_wins <= 1 then
-      for _, win in ipairs(aux_wins) do
-        pcall(vim.api.nvim_win_close, win, true)
+    -- Case 2: :q run in an editor split when OTHER editor splits remain open
+    if #non_floating_wins - #aux_wins > 1 then
+      if
+        not is_force
+        and not is_write_quit
+        and vim.bo[current_buf].modified
+        and #vim.fn.win_findbuf(current_buf) <= 1
+      then
+        if not prompt_modified_buffer_on_quit(current_buf) then
+          abort_quit()
+        end
       end
+      return
+    end
+
+    -- Case 3: :q run in the last file window — prompt for ALL modified buffers BEFORE closing Neo-tree/Terminal
+    if not is_force then
+      for _, b in ipairs(vim.api.nvim_list_bufs()) do
+        if
+          vim.api.nvim_buf_is_valid(b)
+          and vim.bo[b].buflisted
+          and vim.bo[b].modified
+          and vim.bo[b].buftype ~= "terminal"
+          and not (is_write_quit and b == current_buf)
+        then
+          if not prompt_modified_buffer_on_quit(b) then
+            abort_quit()
+            return
+          end
+        end
+      end
+    end
+
+    for _, win in ipairs(aux_wins) do
+      pcall(vim.api.nvim_win_close, win, true)
     end
   end,
 })

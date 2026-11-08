@@ -4,12 +4,22 @@
 
 local map = vim.keymap.set
 local state = require("core.state")
+local modal = require("core.modal")
+
+local function is_closable_file_buf(b)
+  return vim.api.nvim_buf_is_valid(b)
+    and vim.bo[b].buflisted
+    and vim.bo[b].buftype ~= "terminal"
+    and vim.bo[b].filetype ~= "neo-tree"
+    and vim.bo[b].filetype ~= "neotest-summary"
+end
 
 -- Helper to close a file tab without collapsing the editor split or quitting Neovim
+-- Returns true if closed (or ignored), false if the user cancelled the save prompt
 _G.close_buffer_tab = function(bufnr, force)
   bufnr = (bufnr and bufnr > 0) and bufnr or vim.api.nvim_get_current_buf()
   if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].filetype == "neo-tree" then
-    return
+    return true
   end
 
   if not force and vim.bo[bufnr].modified then
@@ -17,25 +27,32 @@ _G.close_buffer_tab = function(bufnr, force)
     if name == "" then
       name = "[No Name]"
     end
-    local choice = vim.fn.confirm(
-      string.format('Save changes to "%s" before closing?', name),
-      "&Yes\n&No (Discard)\n&Cancel",
-      1
-    )
+    local choice = modal.confirm({
+      title = " 󰆓 Unsaved Changes ",
+      prompt = string.format('Save changes to "%s" before closing?', name),
+      highlight = name,
+      buttons = {
+        { label = " 󰆓 [Y]es (Save) ", keys = { "y", "s" } },
+        { label = " 󰅖 [N]o (Discard) ", keys = { "n", "d" } },
+        { label = " 󰜺 [C]ancel ", keys = { "c", "q" } },
+      },
+      default = 1,
+      cancel = 3,
+    })
     if choice == 1 then
-      vim.api.nvim_buf_call(bufnr, function()
-        vim.cmd("write")
-      end)
+      if not modal.save_buffer(bufnr, name) then
+        return false
+      end
     elseif choice == 2 then
       force = true
     else
-      return
+      return false
     end
   end
 
   local alt_buf = nil
   for _, b in ipairs(vim.api.nvim_list_bufs()) do
-    if b ~= bufnr and vim.bo[b].buflisted and vim.api.nvim_buf_is_loaded(b) and vim.bo[b].filetype ~= "neo-tree" then
+    if b ~= bufnr and is_closable_file_buf(b) and vim.api.nvim_buf_is_loaded(b) then
       alt_buf = b
       break
     end
@@ -55,6 +72,7 @@ _G.close_buffer_tab = function(bufnr, force)
   if vim.api.nvim_buf_is_valid(bufnr) then
     pcall(vim.cmd, (force and "bdelete! " or "bdelete ") .. bufnr)
   end
+  return true
 end
 
 local ok_bufferline, bufferline = pcall(require, "bufferline")
@@ -147,6 +165,95 @@ local function cycle_buffer_tab(direction)
   end
 end
 
+local function pick_buffer_tab(close)
+  if not close and _G.win_nav and not _G.win_nav.is_editor_buf(0) then
+    _G.win_nav.focus_editor()
+  end
+
+  local ok_state, bl_state = pcall(require, "bufferline.state")
+  if not ok_state then
+    return
+  end
+
+  local was_hidden = vim.o.showtabline == 0
+  if was_hidden then
+    vim.o.showtabline = 2
+  end
+
+  bl_state.is_picking = true
+  if type(_G.nvim_bufferline) == "function" then
+    _G.nvim_bufferline()
+  end
+  vim.cmd("redrawtabline")
+  vim.cmd("redraw")
+
+  local ok_char, char = pcall(vim.fn.getcharstr)
+
+  bl_state.is_picking = false
+  if was_hidden then
+    vim.o.showtabline = 0
+  end
+  if type(_G.nvim_bufferline) == "function" then
+    _G.nvim_bufferline()
+  end
+  vim.cmd("redrawtabline")
+  vim.cmd("redraw")
+
+  if not ok_char or not char or char == "" then
+    return
+  end
+
+  local target_id = nil
+  local fallback_id = nil
+  for _, item in ipairs(bl_state.components or {}) do
+    local element = item.as_element and item:as_element() or item
+    if element and element.letter then
+      if element.letter == char then
+        target_id = element.id
+        break
+      elseif not fallback_id and element.letter:lower() == char:lower() then
+        fallback_id = element.id
+      end
+    end
+  end
+
+  target_id = target_id or fallback_id
+  if not target_id then
+    return
+  end
+
+  if close then
+    _G.close_buffer_tab(target_id, false)
+  elseif vim.api.nvim_buf_is_valid(target_id) then
+    vim.api.nvim_set_current_buf(target_id)
+  end
+  vim.cmd("redrawtabline")
+end
+
+local function close_other_buffer_tabs()
+  if _G.win_nav and not _G.win_nav.is_editor_buf(0) then
+    _G.win_nav.focus_editor()
+  end
+  local current = vim.api.nvim_get_current_buf()
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if b ~= current and is_closable_file_buf(b) then
+      if not _G.close_buffer_tab(b, false) then
+        return
+      end
+    end
+  end
+end
+
+local function close_all_buffer_tabs()
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if is_closable_file_buf(b) then
+      if not _G.close_buffer_tab(b, false) then
+        return
+      end
+    end
+  end
+end
+
 -- ============================================================================
 -- Keymaps & Which-Key Group
 -- ============================================================================
@@ -155,6 +262,9 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>b", group = "File Tabs" },
+    { "<leader>ba", icon = { icon = "󰅙 ", color = "red" } },
+    { "<leader>bb", icon = { icon = "󰀻 ", color = "cyan" } },
+    { "<leader>bc", icon = { icon = "󰅖 ", color = "red" } },
     { "<leader>bt", icon = { icon = " ", color = "yellow" } },
     { "<leader>tf", icon = { icon = " ", color = "yellow" } },
   })
@@ -172,10 +282,20 @@ end, { desc = "Previous file tab" })
 map("n", "]b", function()
   cycle_buffer_tab(1)
 end, { desc = "Next file tab" })
+map("n", "gb", function()
+  pick_buffer_tab(false)
+end, { desc = "Pick file tab by letter" })
+map("n", "<leader>bb", function()
+  pick_buffer_tab(false)
+end, { desc = "Pick file tab by letter" })
+map("n", "<leader>bc", function()
+  pick_buffer_tab(true)
+end, { desc = "Pick file tab to close by letter" })
 map("n", "<leader>bt", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
 map("n", "<leader>tf", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
 map("n", "<leader>bp", "<cmd>BufferLineTogglePin<CR>", { desc = "Pin / unpin file tab" })
-map("n", "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close all other file tabs" })
+map("n", "<leader>bo", close_other_buffer_tabs, { desc = "Close all other file tabs" })
+map("n", "<leader>ba", close_all_buffer_tabs, { desc = "Close all file tabs" })
 map("n", "<leader>bd", function()
   _G.close_buffer_tab(0, false)
 end, { desc = "Close current file tab" })

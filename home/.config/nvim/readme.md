@@ -19,6 +19,7 @@ home/.config/nvim/
     ├── core/
     │   ├── options.lua             # Core options, whitespace, control chars, diffopt, en_gb spell, yank highlight
     │   ├── state.lua               # Persistent on-disk UI toggles per-GitHub project (~/.local/state/nvim/ui-toggles.json)
+    │   ├── modal.lua               # Centered floating confirmation modal (core.modal.confirm + vim.fn.confirm override)
     │   ├── context-menu.lua        # Right-click PopUp context menu registry ("editor", "neo-tree", etc.)
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
@@ -55,7 +56,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<C-l>` | `<C-Right>` | Focus **Code Editor** (right) |
 | `<C-j>` | `<C-Down>` | Focus **Integrated Terminal** (bottom) |
 | `<C-k>` | `<C-Up>` | Focus **Code Editor** (up from terminal) |
-| `:q` / `:wq` | — | Quits Neovim cleanly (automatically closes Neo-tree/Terminal if closing the last file) |
+| `:q` / `:wq` | — | Quits Neovim cleanly (prompts via floating modal for any unsaved buffers before closing Neo-tree/Terminal) |
 
 ### Fast On-Screen Jump / Flash (`lua/plugins/flash.lua`)
 | Keymap | Mode | Action |
@@ -71,10 +72,13 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | :--- | :--- |
 | `<S-h>` (`Shift + h`) or `[b` | Previous file tab |
 | `<S-l>` (`Shift + l`) or `]b` | Next file tab |
+| `<Space>bb` or `gb` | **Pick file tab by letter** (replaces tab icons with jump letters) |
+| `<Space>bc` | **Pick file tab to close by letter** |
 | `<Space>bt` or `<Space>tf` (or `:ToggleTabs`) | **Toggle top File Tabs bar** on/off |
-| `<Space>bd` | Close current file tab (prompts *Save / Discard / Cancel* if modified) |
+| `<Space>bd` | Close current file tab (opens centered **Unsaved Changes** modal if modified) |
 | `<Space>bD` | **Force-close** current file tab and discard unsaved changes immediately |
-| `<Space>bo` | Close all other file tabs |
+| `<Space>bo` | Close all other file tabs (prompts via modal if any are modified) |
+| `<Space>ba` | **Close all file tabs** smoothly while keeping Neo-tree / Terminal layout open |
 | `<Space>bp` | Pin / unpin current file tab |
 
 ### File Explorer / Neo-tree (`lua/plugins/neo-tree.lua`)
