@@ -273,4 +273,108 @@ vim.fn.confirm = function(msg, choices, default, confirm_type)
   })
 end
 
+-- ============================================================================
+-- Centered Floating Cmdline (via native Neovim 0.12 vim._core.ui2)
+-- ============================================================================
+
+local cmdline_styles = {
+  [":"] = { title = "  Cmdline ", hl = "Title" },
+  ["/"] = { title = "  Search Down ", hl = "DiagnosticInfo" },
+  ["?"] = { title = "  Search Up ", hl = "DiagnosticInfo" },
+  ["="] = { title = " 󰢱 Eval ", hl = "DiagnosticHint" },
+}
+
+local function setup_floating_cmdline()
+  local ok_ui2, ui2 = pcall(require, "vim._core.ui2")
+  if not ok_ui2 or not ui2.cmd or ui2.cmd._floating_patched then
+    return
+  end
+  ui2.cmd._floating_patched = true
+
+  local orig_show = ui2.cmd.cmdline_show
+  local orig_hide = ui2.cmd.cmdline_hide
+
+  ui2.cmd.cmdline_show = function(content, pos, firstc, prompt, indent, level, hl_id)
+    orig_show(content, pos, firstc, prompt, indent, level, hl_id)
+
+    local win = ui2.wins and ui2.wins.cmd
+    local buf = ui2.bufs and ui2.bufs.cmd
+    if not win or not vim.api.nvim_win_is_valid(win) or not buf or not vim.api.nvim_buf_is_valid(buf) then
+      return
+    end
+
+    -- Keep cmdheight at 0 so Lualine at the bottom never jumps when opening the cmdline
+    if vim.o.cmdheight ~= 0 then
+      vim._with({ noautocmd = true, o = { splitkeep = "screen" } }, function()
+        vim.o.cmdheight = 0
+      end)
+    end
+
+    local style = cmdline_styles[firstc] or { title = "  Cmdline ", hl = "Title" }
+    if prompt and #prompt > 0 then
+      style = { title = "  Input ", hl = "DiagnosticWarn" }
+    end
+
+    local min_w = math.min(60, math.max(vim.o.columns - 4, 20))
+    local max_w = math.max(math.floor(vim.o.columns * 0.7), min_w)
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    local longest = 0
+    for _, l in ipairs(lines) do
+      longest = math.max(longest, vim.fn.strdisplaywidth(l))
+    end
+    local width = math.min(math.max(longest + 4, min_w), max_w)
+
+    pcall(vim.api.nvim_win_set_width, win, width)
+    local texth = vim.api.nvim_win_text_height(win, {})
+    local height = math.max(1, texth.all or 1)
+    local row = math.max(math.floor(vim.o.lines * 0.25), 2)
+    local col = math.max(math.floor((vim.o.columns - width) / 2), 0)
+
+    pcall(vim.api.nvim_win_set_config, win, {
+      relative = "editor",
+      row = row,
+      col = col,
+      width = width,
+      height = height,
+      border = "rounded",
+      title = style.title,
+      title_pos = "center",
+      hide = false,
+      zindex = 200,
+    })
+
+    vim._with({ win = win, noautocmd = true }, function()
+      vim.api.nvim_set_option_value(
+        "winhighlight",
+        string.format("Normal:NormalFloat,FloatBorder:%s,FloatTitle:%s,Search:,CurSearch:,IncSearch:", style.hl, style.hl),
+        { scope = "local" }
+      )
+    end)
+
+    ui2.cmd.cmdline_pos(pos)
+  end
+
+  ui2.cmd.cmdline_hide = function(level, abort)
+    orig_hide(level, abort)
+    local win = ui2.wins and ui2.wins.cmd
+    if win and vim.api.nvim_win_is_valid(win) then
+      pcall(vim.api.nvim_win_set_config, win, {
+        relative = "laststatus",
+        row = 1,
+        col = 0,
+        width = 10000,
+        height = 1,
+        border = "none",
+        hide = true,
+      })
+    end
+  end
+end
+
+setup_floating_cmdline()
+vim.api.nvim_create_autocmd("UIEnter", {
+  group = vim.api.nvim_create_augroup("CoreFloatingCmdline", { clear = true }),
+  callback = setup_floating_cmdline,
+})
+
 return M

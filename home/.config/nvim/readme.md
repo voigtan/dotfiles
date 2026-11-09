@@ -19,7 +19,7 @@ home/.config/nvim/
     ├── core/
     │   ├── options.lua             # Core options, whitespace, control chars, diffopt, en_gb spell, yank highlight
     │   ├── state.lua               # Persistent on-disk UI toggles per-GitHub project (~/.local/state/nvim/ui-toggles.json)
-    │   ├── modal.lua               # Centered floating confirmation modal (core.modal.confirm + vim.fn.confirm override)
+    │   ├── modal.lua               # Centered floating confirmation modal & floating Cmdline (:/?/=) via native ui2
     │   ├── context-menu.lua        # Right-click PopUp context menu registry ("editor", "neo-tree", etc.)
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
