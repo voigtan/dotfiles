@@ -22,31 +22,63 @@ if [ ! -d "$folder_path_dotfiles_home" ]; then
   error_exit "Folder $folder_path_dotfiles_home does not exist."
 fi
 
-# msg "Setting up symlink of dotfiles"
+# Remove any macOS .DS_Store files inside home/ so Stow never conflicts on them
+find "$folder_path_dotfiles_home" -name ".DS_Store" -delete
 
-# Loop through each dotfile in the folder
-for file in "$folder_path_dotfiles_home"/.*(N); do
-  # Ignore . and .. entries
-  if [ "$file" = "$folder_path_dotfiles_home/." ] || [ "$file" = "$folder_path_dotfiles_home/.." ]; then
+# Automatically create top-level hidden directories (e.g. ~/.config, ~/.colima, ~/.docker)
+# and any intermediate container directories that hold only subdirectories (no direct files),
+# so Stow links individual config folders/files instead of folding the root directory.
+for dir in "$folder_path_dotfiles_home"/**/*(ND/); do
+  rel_dir="${dir#${folder_path_dotfiles_home}/}"
+
+  # Skip if already a symlink in $HOME
+  [[ -L ~/"$rel_dir" ]] && continue
+
+  # Always create top-level hidden directories in $HOME (depth 1, e.g. .config, .colima, .docker)
+  if [[ "${dir:h}" == "$folder_path_dotfiles_home" ]]; then
+    mkdir -p ~/"$rel_dir"
     continue
   fi
 
-  # Extract the filename from the path
-  filename="${file##*/}"
+  # For deeper directories, only mkdir -p if neither this directory nor any of its
+  # depth >= 2 ancestors has direct files (meaning it's purely a container path like .config/opencode)
+  check_dir="$dir"
+  has_package_files=false
+  while [[ "${check_dir:h}" != "$folder_path_dotfiles_home" && "$check_dir" != "/" ]]; do
+    direct_files=("$check_dir"/*(ND.))
+    if (( ${#direct_files} > 0 )); then
+      has_package_files=true
+      break
+    fi
+    check_dir="${check_dir:h}"
+  done
 
-  # Check if the file is a symlink
-  if [ -L ~/"$filename" ]; then
-    # ok "~/$filename is a symlink, skipping"
-    continue
+  if ! $has_package_files; then
+    mkdir -p ~/"$rel_dir"
   fi
+done
 
-  # Check if the file exists in the home directory
-  if [ -e ~/"$filename" ]; then
-    # Rename the existing file to <filename>.bak
-    mv ~/"$filename" ~/"$filename".bak
-    warn "↔️ Renamed ~/$filename to ~/$filename.bak"
+# Back up any conflicting regular files in $HOME before running Stow
+for file in "$folder_path_dotfiles_home"/**/*(ND.); do
+  rel_path="${file#${folder_path_dotfiles_home}/}"
+  target=~/"$rel_path"
+
+  # Skip if the file or any of its parent directories in $HOME is already a symlink
+  curr="$target"
+  is_linked=false
+  while [[ "$curr" != "$HOME" && "$curr" != "/" ]]; do
+    if [[ -L "$curr" ]]; then
+      is_linked=true
+      break
+    fi
+    curr="${curr:h}"
+  done
+  $is_linked && continue
+
+  if [[ -f "$target" ]]; then
+    mv "$target" "${target}.bak"
+    warn "↔️ Renamed ~/$rel_path to ~/${rel_path}.bak"
   fi
-
 done
 
 stow home
