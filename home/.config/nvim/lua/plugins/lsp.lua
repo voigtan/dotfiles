@@ -23,6 +23,7 @@ if ok_mti then
     ensure_installed = {
       "vtsls",
       "biome",
+      "lua-language-server",
       "dockerfile-language-server",
       "docker-compose-language-service",
       "html-lsp",
@@ -133,7 +134,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- 4. Server Configs (vtsls, jsonls, yamlls, html, cssls, copilot)
+-- 4. Server Configs (vtsls, lua_ls, jsonls, yamlls, html, cssls, copilot)
+vim.lsp.config("lua_ls", {
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      workspace = {
+        checkThirdParty = false,
+        library = { vim.env.VIMRUNTIME },
+      },
+      diagnostics = {
+        globals = { "vim" },
+      },
+    },
+  },
+})
+
 local ts_settings = {
   implicitProjectConfig = { checkJs = true },
   referencesCodeLens = { enabled = true, showOnAllFunctions = true },
@@ -218,6 +234,7 @@ vim.lsp.config("copilot", {
 vim.lsp.enable({
   "vtsls",
   "biome",
+  "lua_ls",
   "dockerls",
   "docker_compose_language_service",
   "html",
