@@ -27,6 +27,12 @@ Temporary Items
 .apdisk
 .extra
 
+# Never track exported GPG keys or trust files
+*.gpg
+*.key
+*trustlevel.txt
+*ownertrust*.txt
+
 # Ignore everything in home/.colima
 home/.colima/*
 # But not dev folder and its contents
