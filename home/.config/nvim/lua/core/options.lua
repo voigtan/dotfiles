@@ -122,3 +122,27 @@ require("core.context-menu").register("editor", {
   { priority = "100.82", label = "Toggle Comment (gcc)", cmd = "gcc", mode = "n", remap = true },
   { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
 })
+
+
+-- macOS Cmd (Super) shortcuts for Save, Close, Copy, Cut, Paste & Comment
+vim.keymap.set({ "n", "x" }, "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
+vim.keymap.set("i", "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
+vim.keymap.set("i", "<D-w>", "<Esc><Cmd>bd<CR>", { desc = "Close buffer" })
+
+-- Visual & Select mode: Cmd+C copies selection, Cmd+X cuts selection, Cmd+V pastes over selection
+vim.keymap.set("x", "<D-c>", '"+y', { desc = "Copy selection" })
+vim.keymap.set("x", "<D-x>", '"+d', { desc = "Cut selection" })
+vim.keymap.set("x", "<D-v>", '"_d"+P', { desc = "Paste over selection" })
+vim.keymap.set("s", "<D-c>", '<C-g>"+y', { desc = "Copy selection" })
+vim.keymap.set("s", "<D-x>", '<C-g>"+d', { desc = "Cut selection" })
+vim.keymap.set("s", "<D-v>", '<C-g>"_d"+P', { desc = "Paste over selection" })
+
+-- Insert & Command-line mode: Cmd+C copies current line, Cmd+V pastes at cursor from clipboard
+vim.keymap.set("i", "<D-c>", "<Cmd>normal! yy<CR>", { desc = "Copy line" })
+vim.keymap.set("i", "<D-v>", "<C-r><C-o>+", { desc = "Paste from clipboard" })
+vim.keymap.set("c", "<D-v>", "<C-r>+", { desc = "Paste from clipboard" })
+
+vim.keymap.set("i", "<D-k><D-c>", "<Esc><Cmd>normal gcc<CR>a", { desc = "Toggle comment on line" })
+-- Keep the visual selection active so `gc` toggles comments on the selected rows.
+vim.keymap.set("x", "<D-k><D-c>", "gcgv", { remap = true, desc = "Toggle comment on selection" })
+

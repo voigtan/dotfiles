@@ -24,7 +24,8 @@ home/.config/nvim/
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
     │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr
-    │   └── terminals.lua           # :TermZsh/Bash/Tmux/Pwsh, TermOpen/TermClose, <Space>tz/tb/tt/tp
+    │   ├── terminals.lua           # :TermZsh/Bash/Tmux/Pwsh, TermOpen/TermClose, <Space>tz/tb/tt/tp
+    │   └── pack.lua                # :PackSync/Update/Review/Clean/Restore/Log & <Space>p* Which-Key group
     └── plugins/
         ├── init.lua                # Loads all plugin modules in order
         ├── theme.lua               # Catppuccin Frappé + nvim-web-devicons
@@ -70,6 +71,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 ### File Tabs (`lua/plugins/tabs.lua`)
 | Keymap / Command | Action |
 | :--- | :--- |
+| `<Space>bn` | **New untitled file tab** (`[No Name]` — prompts for a file path when saving) |
 | `<S-h>` (`Shift + h`) or `[b` | Previous file tab |
 | `<S-l>` (`Shift + l`) or `]b` | Next file tab |
 | `<Space>bb` or `gb` | **Pick file tab by letter** (replaces tab icons with jump letters) |
@@ -129,8 +131,9 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>cm` | Normal | **Add All Missing Imports** in current file |
 | `<Space>co` | Normal | **Organize Imports** (sorts & removes unused imports) |
 | `<Space>cr` | Normal | Rename symbol across project |
-| `gcc` / `<Space>/` / `<C-k><C-c>` | Normal / Insert | **Toggle comment** on current line (also in Right-Click menu) |
-| `gc` / `<Space>/` / `<C-k><C-c>` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
+| `gcc` / `<Space>/` / `<D-k><D-c>` | Normal / Insert | **Toggle comment** on current line (also in Right-Click menu) |
+| `gc` / `<Space>/` / `<D-k><D-c>` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
+| `<D-c>` / `<D-x>` / `<D-v>` | Visual / Insert / Cmdline | **Copy** selection (or current line in Insert), **Cut** selection, and **Paste** at cursor / over selection |
 | `<Space>cd` | Normal | Show line type error / diagnostic float |
 | `<Space>cl` | Normal | Run LSP CodeLens |
 
@@ -171,14 +174,15 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 
 ---
 
-## Managing Plugins & LSP Servers
+## Managing Plugins & LSP Servers (`lua/core/pack.lua`)
 
-- **Update Neovim 0.12 Plugins (`vim.pack`)**:
-  ```vim
-  :lua vim.pack.update()
-  ```
-  *(Opens a review tab showing incoming changes; run `:write` to confirm or `:quit` to cancel).*
-- **Inspect Installed LSPs & Formatters (`mason.nvim`)**:
-  ```vim
-  :Mason
-  ```
+| Keymap | Ex Command | Action |
+| :--- | :--- | :--- |
+| `<Space>ps` | `:PackSync` | **Sync All**: Auto-updates `vim.pack` plugins, Treesitter parsers (`TSUpdate`), and Mason tools (`MasonToolsUpdate`) |
+| `<Space>pu` | `:PackUpdate [names...]` | **Auto-update plugins** immediately via `vim.pack.update(names, { force = true })` (supports tab-completion for plugin names) |
+| `<Space>pr` | `:PackReview [names...]` | **Review plugin updates** interactively in a confirmation buffer (`:write` to confirm or `:quit` to cancel) |
+| `<Space>pc` | `:PackClean` | **Clean unused** inactive `vim.pack` plugins from disk + `:MasonToolsClean` |
+| `<Space>pR` | `:PackRestore` | **Restore all plugins** to the exact commits pinned in `nvim-pack-lock.json` |
+| `<Space>pl` | `:PackLog` | **Open update log** (`~/.local/state/nvim/nvim-pack.log`) |
+| `<Space>pm` | `:Mason` | **Open Mason** interactive LSP & formatter manager |
+| `<Space>pt` | `:TSUpdate` | **Update Treesitter** parsers only |

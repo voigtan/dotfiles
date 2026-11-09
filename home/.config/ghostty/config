@@ -20,3 +20,6 @@ font-feature = ss09
 font-feature = ss10
 
 window-padding-x = 8
+
+# Forward Cmd+C to TUI apps (like Neovim <D-c>) when there is no native terminal selection
+keybind = performable:super+c=copy_to_clipboard
