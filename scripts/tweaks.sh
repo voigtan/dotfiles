@@ -18,25 +18,15 @@ defaults write com.apple.menuextra.battery ShowPercent YES
 # Enable function keys (F1, F2, etc.) as standard function keys
 defaults write -g com.apple.keyboard.fnState -bool true
 
-# Disable the Mission Control "Show Desktop" keyboard shortcut
-defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 '{ enabled = 0; value = { parameters = (65535, 65535, 0); type = "standard"; }; }'
-
 # Disable F11 show desktop shortcut from mission control
 defaults write com.apple.dock showDesktop -bool false
 
+# Disable the Mission Control "Show Desktop" keyboard shortcut
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 '{ enabled = 0; value = { parameters = (65535, 65535, 0); type = "standard"; }; }'
+
 
 ###############################################################################
-# Finder                                                                      #
-###############################################################################
-
-# Screenshots location
-defaults write com.apple.screencapture location ~/Downloads
-
-# Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
-defaults write com.apple.screencapture type -string "png"
-
-###############################################################################
-# Dock, Dashboard, and hot corners                                            #
+# Dock, Dashboard, and hot corners
 ###############################################################################
 # Enable highlight hover effect for the grid view of a stack (Dock)
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
@@ -53,8 +43,9 @@ defaults write com.apple.dock minimize-to-application -bool true
 # Remove recent a pplications in dock
 defaults write com.apple.dock show-recents -bool false
 
+
 ###############################################################################
-# Terminal & iTerm 2                                                          #
+# Terminal & iTerm 2
 ###############################################################################
 
 # Don’t display the annoying prompt when quitting iTerm
@@ -71,6 +62,7 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # Enable AirDrop over Ethernet and on unsupported Macs running Lion
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 
+
 ###############################################################################
 # SSD
 ###############################################################################
@@ -78,8 +70,9 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 # Disable the sudden motion sensor as it’s not useful for SSDs
 sudo pmset -a sms 0
 
+
 ###############################################################################
-# Finder                                                                      #
+# Finder
 ###############################################################################
 
 # Always open everything in Finder's column view. This is important.
@@ -98,5 +91,15 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Enable subpixel font rendering on non-Apple LCDs
 # Reference: https://github.com/kevinSuttle/macOS-Defaults/issues/17#issuecomment-266633501
 defaults write NSGlobalDomain AppleFontSmoothing -int 1
+
+# Screenshots location
+defaults write com.apple.screencapture location ~/Downloads
+
+# Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
+defaults write com.apple.screencapture type -string "png"
+
+# Show the status bar in Finder
+defaults write com.apple.finder "ShowStatusBar" -bool "true"
+
 
 ok "Changed OSX settings. Note that some of these changes require a logout/restart to take effect."
