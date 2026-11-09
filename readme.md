@@ -1,29 +1,26 @@
 # Installation
 
-Open the terminal and start with the steps:
+1. Clone the repository into `~/.dotfiles`:
 
-1. If its a new installation of macOS run:
-    `xcode-select --install`
-
-1. Install the dotfiles and homebrew apps.
-
-        
-```
+```zsh
 git clone https://github.com/voigtan/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ```
 
-After cloning add the following in the .extra file:
-       
-```
+> **Note:** On a brand-new Mac without `git` or `make` yet, running `git clone` will automatically prompt macOS to install Xcode Command Line Tools (or `scripts/osx.sh` will install them automatically if you run `./install.sh`).
+
+2. *(Optional)* Create `home/.extra` for local overrides (such as Git credentials):
+
+```zsh
 # Git credentials
 GIT_AUTHOR_NAME=""
 GIT_AUTHOR_EMAIL=""
 GIT_SIGNINGKEY=""
 ```
 
-and then run:
-```
+3. Run the installer (installs Xcode CLI Tools, Oh My Zsh, Homebrew + `brewfile` packages/fonts, symlinks `home/` via GNU Stow, configures Ghostty/iTerm2/Dock/macOS defaults, and sets up `pinentry-mac`):
+
+```zsh
 make install
 ```
 
