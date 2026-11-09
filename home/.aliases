@@ -48,15 +48,13 @@ alias chrome-extensions-disabled='open --new -a "Google Chrome" --args --disable
 
 # override vim with nvim
 alias vim='nvim'
+alias nvim-voigtan="NVIM_APPNAME=nvim-voigtan nvim"
 
 # lazy docker shortcut
 alias lzd='lazydocker'
 
 # Get week number
 alias week='date +%V'
-
-# Stopwatch
-alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
