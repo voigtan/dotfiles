@@ -35,8 +35,8 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 source $(brew --prefix nvm)/nvm.sh
 
-# Load aliases and functions when present
-for file in ~/.aliases ~/.functions; do
+# Load custom zsh configurations (aliases, functions, etc.)
+for file in ~/.config/zsh/*.zsh(N); do
     [[ -r "$file" && -f "$file" ]] && source "$file"
 done
 unset file;

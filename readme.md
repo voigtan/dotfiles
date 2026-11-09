@@ -17,6 +17,56 @@ make install
 
 ---
 
+# Folder Structure
+
+```text
+~/.dotfiles/
+├── brewfile              # Homebrew packages, casks, and Nerd Fonts
+├── install.sh            # Entrypoint script called by `make install`
+├── Makefile              # Make targets (`make install`, `make help`)
+├── home/                 # Dotfiles symlinked into `~/` via GNU Stow
+│   ├── .bash_profile     # Bash profile configuration
+│   ├── .colima/          # Colima container runtime templates
+│   ├── .config/          # XDG config files
+│   │   ├── ghostty/      # Ghostty terminal configuration
+│   │   ├── nvim/         # Neovim configuration
+│   │   ├── opencode/     # OpenCode skills & configuration
+│   │   ├── zsh/          # Modular Zsh configs sourced by `.zshrc`
+│   │   │   ├── aliases.zsh   # General shell aliases
+│   │   │   ├── docker.zsh    # Docker aliases & helpers
+│   │   │   ├── functions.zsh # General shell utility functions
+│   │   │   ├── git.zsh       # Git & Lazygit helpers
+│   │   │   ├── holidays.zsh  # Calendar & Swedish holiday utilities
+│   │   │   └── macos.zsh     # macOS-specific aliases & functions
+│   │   └── starship.toml # Starship prompt configuration
+│   ├── .docker/          # Docker CLI configuration
+│   ├── .gitconfig        # Git global configuration & aliases
+│   ├── .tmux.conf        # Tmux configuration
+│   └── .zshrc            # Zsh & Oh My Zsh configuration
+├── iterm2/               # Exported iTerm2 preferences plist
+├── scripts/              # Modular setup & macOS customization scripts
+│   ├── Bootstrap.sh      # OS detection and main setup orchestrator
+│   ├── osx.sh            # Full macOS bootstrap flow
+│   ├── LinkDotfiles.sh   # Preps directories, backs up conflicts, runs `stow home`
+│   ├── InstallHomebrew.sh
+│   ├── InstallOhMyZSH.sh
+│   ├── DockerPlugins.sh  # Links Docker CLI plugins (buildx, compose)
+│   ├── SetupPinentry.sh  # Configures gpg-agent to use pinentry-mac
+│   ├── CleanDock.sh      # Curates macOS Dock apps
+│   └── tweaks.sh         # macOS system defaults & UI tweaks
+└── tools/                # Shared shell helpers (logging, prompts, OS checks, menus)
+```
+
+### How `home/` and GNU Stow Work
+
+The `home/` directory mirrors your `$HOME` (`~/`) directory. Running `./scripts/LinkDotfiles.sh` (or `stow home` from `~/.dotfiles`):
+
+* Automatically creates top-level container directories like `~/.config`, `~/.colima`, and `~/.docker` so individual app configurations (such as `~/.config/nvim`, `~/.config/ghostty`, and `~/.config/zsh`) are symlinked cleanly without overwriting unrelated files in `~/.config`.
+* Backs up any pre-existing conflicting files in `~/` as `*.bak` before linking.
+* Automatically sources any `*.zsh` file inside `~/.config/zsh/` when `.zshrc` loads.
+
+---
+
 # GPG Key & Git Commit Signing Guide
 
 > **Placeholder used below:** Replace `1E62EB9A74CF9C3A` with your actual GPG `KEY_ID`.
