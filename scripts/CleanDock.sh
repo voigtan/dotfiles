@@ -13,12 +13,15 @@ if ! appExists dockutil; then
 	fi
 fi
 
-# Define the apps to be added to the Dock
-apps=(
+# Use '<space>' for a small spacer and '<large-space>' for a regular spacer.
+dock_items=(
 	'KeePassXC'
-	'Visual Studio Code'
-	'Google Chrome'
 	Spotify
+	'<space>'
+	'Visual Studio Code'
+	'Ghostty'
+	'Google Chrome'
+	'<space>'
 	Slack
 )
 
@@ -26,8 +29,16 @@ apps=(
 dockutil --no-restart --remove all
 
 # Add all my apps to the Dock
-for app in "${apps[@]}"; do
-	dockutil --add "/Applications/${app}.app" --no-restart
+for item in "${dock_items[@]}"; do
+	if [[ "$item" == '<space>' ]]; then
+		defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="small-spacer-tile";}' ||
+			error_exit "Failed to add a small spacer to the Dock."
+	elif [[ "$item" == '<large-space>' ]]; then
+		defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}' ||
+			error_exit "Failed to add a large spacer to the Dock."
+	else
+		dockutil --add "/Applications/${item}.app" --no-restart >/dev/null
+	fi
 done
 
 killall Dock
