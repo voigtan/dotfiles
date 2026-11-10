@@ -23,12 +23,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
   end,
 })
 
--- Auto-close bottom terminal split when shell exits cleanly (skip for LazyGit / LazyDocker modals)
+-- Auto-close bottom terminal split when shell exits cleanly (skip for LazyGit / LazyDocker / Devcontainer modals)
 vim.api.nvim_create_autocmd("TermClose", {
   group = augroup,
   callback = function(args)
     local ft = vim.bo[args.buf].filetype
-    if ft == "lazygit" or ft == "lazydocker" then
+    if ft == "lazygit" or ft == "lazydocker" or ft == "devcontainer" then
       return
     end
     if vim.v.event.status == 0 and vim.api.nvim_buf_is_valid(args.buf) then
@@ -93,11 +93,22 @@ local function open_bottom_terminal(cmd)
   vim.bo.buflisted = false
   vim.cmd("startinsert")
 end
+_G.open_bottom_terminal = open_bottom_terminal
 
--- Default shell terminal (uses vim.o.shell, i.e. /bin/zsh -l)
+-- Default shell terminal (automatically attaches to running devcontainer if present, else host zsh)
 vim.api.nvim_create_user_command("Term", function()
+  local ok_dc, dc = pcall(require, "core.devcontainer")
+  if ok_dc and dc.is_running() then
+    open_bottom_terminal(dc.get_shell_cmd())
+  else
+    open_bottom_terminal(vim.o.shell .. " -l")
+  end
+end, { desc = "Open integrated terminal (devcontainer if running, else host shell)" })
+
+-- Explicit host shell terminal (always runs on macOS even when devcontainer is running)
+vim.api.nvim_create_user_command("TermHost", function()
   open_bottom_terminal(vim.o.shell .. " -l")
-end, { desc = "Open integrated terminal (default shell)" })
+end, { desc = "Open integrated terminal on host macOS" })
 
 -- Tmux terminal profile
 vim.api.nvim_create_user_command("TermTmux", function()
@@ -113,7 +124,8 @@ if ok_wk then
   })
 end
 
-map("n", "<leader>tt", "<cmd>Term<CR>", { desc = "Open Terminal (zsh)" })
+map("n", "<leader>tt", "<cmd>Term<CR>", { desc = "Open Terminal (devcontainer or zsh)" })
+map("n", "<leader>th", "<cmd>TermHost<CR>", { desc = "Open Host Terminal (macOS zsh)" })
 map("n", "<leader>tx", "<cmd>TermTmux<CR>", { desc = "Open Terminal (tmux)" })
 map("n", "<leader>td", "<cmd>LazyDocker<CR>", { desc = "Open LazyDocker floating window" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

@@ -100,12 +100,63 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+-- Native Neovim 0.12 Undo Tree (`nvim.undotree`)
+pcall(vim.cmd.packadd, "nvim.undotree")
+
+local function toggle_undotree()
+  -- If currently inside the undotree or another sidebar, focus the code editor first
+  if vim.bo.filetype == "nvim-undotree" then
+    vim.api.nvim_win_close(0, true)
+    if _G.win_nav and _G.win_nav.focus_editor then
+      _G.win_nav.focus_editor()
+    end
+    return
+  end
+  if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neotest-summary" or vim.bo.buftype == "terminal" then
+    if _G.win_nav and _G.win_nav.focus_editor then
+      _G.win_nav.focus_editor()
+    end
+  end
+
+  local ok_ut, undotree = pcall(require, "undotree")
+  if ok_ut then
+    undotree.open({ command = "botright 35vnew" })
+  end
+end
+
+vim.api.nvim_create_user_command("ToggleUndotree", toggle_undotree, { desc = "Toggle native Neovim Undo Tree" })
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("CoreNativeUndotree", { clear = true }),
+  pattern = "nvim-undotree",
+  callback = function(args)
+    vim.bo[args.buf].bufhidden = "hide"
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = "no"
+    vim.opt_local.list = false
+    vim.opt_local.spell = false
+    vim.opt_local.colorcolumn = ""
+    vim.opt_local.winfixwidth = true
+    vim.keymap.set("n", "q", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
+    vim.keymap.set("n", "<Esc>", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
+  end,
+})
+
 -- ============================================================================
 -- Keymaps & Context Menu Bindings
 -- ============================================================================
 
 -- Clear search highlight on <Esc>
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+
+-- Paste over selection & Delete/Change without overwriting yanked text (black-hole register `"_`)
+vim.keymap.set("x", "p", "P", { desc = "Paste over selection without losing yanked text" })
+vim.keymap.set({ "n", "x" }, "x", '"_x', { desc = "Delete character without yanking" })
+vim.keymap.set({ "n", "x" }, "X", '"_X', { desc = "Delete character before cursor without yanking" })
+vim.keymap.set({ "n", "x" }, "<Del>", '"_x', { desc = "Delete character without yanking" })
+vim.keymap.set({ "n", "x" }, "<leader>D", '"_d', { desc = "Delete without yanking (black-hole)" })
+vim.keymap.set({ "n", "x" }, "<leader>C", '"_c', { desc = "Change without yanking (black-hole)" })
 
 -- Commenting shortcuts: Ctrl+k, Ctrl+c (works in Normal, Visual, and Insert mode, plus <leader>/ and gcc/gc)
 -- vim.keymap.set("n", "<C-k><C-c>", "gcc", { remap = true, desc = "Toggle comment on line" })
@@ -146,3 +197,13 @@ vim.keymap.set("i", "<D-k><D-c>", "<Esc><Cmd>normal gcc<CR>a", { desc = "Toggle 
 -- Keep the visual selection active so `gc` toggles comments on the selected rows.
 vim.keymap.set("x", "<D-k><D-c>", "gcgv", { remap = true, desc = "Toggle comment on selection" })
 
+-- Native Undo Tree toggle (<Space>tu)
+local ok_wk, wk = pcall(require, "which-key")
+if ok_wk then
+  wk.add({
+    { "<leader>tu", icon = { icon = "󰕌 ", color = "purple" } },
+  })
+end
+vim.keymap.set("n", "<leader>tu", "<Cmd>ToggleUndotree<CR>", { desc = "Toggle Undo Tree" })
+
+vim.keymap.set("n", "<leader>re", "<cmd>restart<cr>", { desc = "Restart Neovim" })

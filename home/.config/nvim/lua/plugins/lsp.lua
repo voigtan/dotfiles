@@ -169,6 +169,35 @@ vim.lsp.config("vtsls", {
   },
 })
 
+-- Biome LSP: only use local node_modules/.bin/biome if the host-platform binary
+-- (e.g. @biomejs/cli-darwin-arm64) is installed; if node_modules was installed inside
+-- a Linux devcontainer, fall back to Mason's native host `biome` binary.
+local function resolve_biome_cmd(root_dir)
+  if root_dir then
+    local local_cmd = vim.fs.joinpath(root_dir, "node_modules/.bin/biome")
+    if vim.fn.executable(local_cmd) == 1 then
+      local sys_os = vim.uv.os_uname().sysname:lower()
+      local sys_arch = vim.uv.os_uname().machine:lower()
+      if sys_os == "darwin" and sys_arch == "arm64" then
+        local darwin_pkg = vim.fs.joinpath(root_dir, "node_modules/@biomejs/cli-darwin-arm64/biome")
+        if vim.fn.filereadable(darwin_pkg) == 1 then
+          return local_cmd
+        end
+      else
+        return local_cmd
+      end
+    end
+  end
+  return "biome"
+end
+
+vim.lsp.config("biome", {
+  cmd = function(dispatchers, config)
+    local cmd = resolve_biome_cmd((config or {}).root_dir)
+    return vim.lsp.rpc.start({ cmd, "lsp-proxy" }, dispatchers)
+  end,
+})
+
 local json_schemas = {}
 local yaml_schemas = {}
 local ok_schemastore, schemastore = pcall(require, "schemastore")

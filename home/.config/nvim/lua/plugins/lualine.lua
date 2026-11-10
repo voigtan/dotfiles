@@ -18,6 +18,33 @@ if ok_lualine then
       lualine_x = {
         {
           function()
+            local ok_dc, dc = pcall(require, "core.devcontainer")
+            if not ok_dc then
+              return ""
+            end
+            local st = dc.get_state()
+            if st == "running" then
+              return "  Devcontainer"
+            elseif st == "starting" then
+              return "  Starting..."
+            elseif st == "stopped" then
+              return "  Devcontainer (off)"
+            end
+            return ""
+          end,
+          color = function()
+            local ok_dc, dc = pcall(require, "core.devcontainer")
+            local st = ok_dc and dc.get_state() or "none"
+            if st == "running" then
+              return { fg = "#a6d189" } -- Catppuccin Frappé Green
+            elseif st == "starting" then
+              return { fg = "#e5c890" } -- Catppuccin Frappé Yellow
+            end
+            return { fg = "#737994" } -- Catppuccin Frappé Overlay0 (dimmed when stopped)
+          end,
+        },
+        {
+          function()
             local clients = vim.lsp.get_clients({ bufnr = 0 })
             if #clients == 0 then
               return ""

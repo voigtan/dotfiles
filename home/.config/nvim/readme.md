@@ -24,7 +24,8 @@ home/.config/nvim/
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
     │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr
-    │   ├── terminals.lua           # :TermZsh/Bash/Tmux/Pwsh, TermOpen/TermClose, <Space>tz/tb/tt/tp
+    │   ├── terminals.lua           # :Term (devcontainer-aware), :TermHost, :TermTmux, :LazyDocker, <Space>tt/th/tx/td
+    │   ├── devcontainer.lua        # Passive .devcontainer detection, :DevcontainerUp/Rebuild/Stop/Term/Logs/Edit (<Space>d*)
     │   └── pack.lua                # :PackSync/Update/Review/Clean/Restore/Log & <Space>p* Which-Key group
     └── plugins/
         ├── init.lua                # Loads all plugin modules in order
@@ -133,6 +134,9 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>cr` | Normal | Rename symbol across project |
 | `gcc` / `<Space>/` / `<D-k><D-c>` | Normal / Insert | **Toggle comment** on current line (also in Right-Click menu) |
 | `gc` / `<Space>/` / `<D-k><D-c>` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
+| `p` | Visual | **Paste over selection** without overwriting yanked clipboard text |
+| `x` / `X` / `<Del>` | Normal / Visual | **Delete character(s)** without overwriting yanked clipboard text |
+| `<Space>D` / `<Space>C` | Normal / Visual | **Delete / Change** motion or selection without yanking (`"_d` / `"_c`) |
 | `<D-c>` / `<D-x>` / `<D-v>` | Visual / Insert / Cmdline | **Copy** selection (or current line in Insert), **Cut** selection, and **Paste** at cursor / over selection |
 | `<Space>cd` | Normal | Show line type error / diagnostic float |
 | `<Space>cl` | Normal | Run LSP CodeLens |
@@ -163,13 +167,21 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>gp` | Preview current Git hunk inline |
 | `<Space>gb` | Toggle end-of-line Git blame decoration |
 
-### Terminals & Rulers (`lua/core/terminals.lua`, `lua/core/rulers.lua`)
+### Terminals, Devcontainers & Rulers (`lua/core/terminals.lua`, `lua/core/devcontainer.lua`, `lua/core/rulers.lua`)
 | Keymap / Command | Action |
 | :--- | :--- |
-| `<Space>tt` or `:Term` | Open bottom terminal with default shell (`/bin/zsh -l`) |
+| `<Space>tt` or `:Term` | Open bottom terminal (attaches inside **Devcontainer** if running, otherwise macOS `/bin/zsh -l`) |
+| `<Space>th` or `:TermHost` | Open bottom terminal on **host macOS** (`/bin/zsh -l`, even when a devcontainer is running) |
 | `<Space>tx` or `:TermTmux` | Open bottom terminal with `tmux` |
 | `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a centered floating modal window (`q` to close) |
+| `<Space>du` or `:DevcontainerUp` | **Start / Up Devcontainer** for current project in a floating build window (auto-closes on success) |
+| `<Space>dR` or `:DevcontainerRebuild` | **Rebuild Devcontainer** (`--build-no-cache --remove-existing-container`) |
+| `<Space>ds` or `:DevcontainerStop` | **Stop** the running Devcontainer for current project |
+| `<Space>dt` or `:DevcontainerTerm` | Explicitly open bottom terminal inside the running Devcontainer |
+| `<Space>dl` or `:DevcontainerLogs` | View live **Devcontainer logs** in a floating modal (`q` to close) |
+| `<Space>dc` or `:DevcontainerEdit` | Open `.devcontainer/devcontainer.json` in the editor |
 | `<Esc><Esc>` | Exit Terminal mode into Normal mode |
+| `<Space>tu` or `:ToggleUndotree` | Toggle native Neovim 0.12 **Undo Tree** sidebar on the right (`j`/`k` live-previews undo states, `q`/`<Esc>` closes) |
 | `<Space>tr` or `:ToggleRulers` | Toggle 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers on/off |
 
 ---

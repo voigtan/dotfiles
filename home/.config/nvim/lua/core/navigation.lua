@@ -24,7 +24,7 @@ end
 
 local function is_editor_buf(buf)
   local ft = vim.bo[buf].filetype
-  return ft ~= "neo-tree" and ft ~= "neotest-summary" and vim.bo[buf].buftype ~= "terminal"
+  return ft ~= "neo-tree" and ft ~= "neotest-summary" and ft ~= "nvim-undotree" and vim.bo[buf].buftype ~= "terminal"
 end
 
 _G.win_nav = {
@@ -38,8 +38,8 @@ _G.win_nav = {
     if vim.bo.filetype == "neo-tree" then
       return
     end
-    -- If on the right-hand Neotest Summary sidebar, move left into the Code Editor first
-    if vim.bo.filetype == "neotest-summary" then
+    -- If on the right-hand Neotest Summary or Undo Tree sidebar, move left into the Code Editor first
+    if vim.bo.filetype == "neotest-summary" or vim.bo.filetype == "nvim-undotree" then
       focus_window_by(function(_, buf)
         return is_editor_buf(buf)
       end, "h")

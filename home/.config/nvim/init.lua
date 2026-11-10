@@ -72,5 +72,6 @@ vim.pack.add({
 require("core.navigation")
 require("core.rulers")
 require("core.terminals")
+require("core.devcontainer")
 require("plugins")
 require("core.pack")
