@@ -78,6 +78,15 @@ for file in "$folder_path_dotfiles_home"/**/*(ND.); do
   if [[ -f "$target" ]]; then
     mv "$target" "${target}.bak"
     warn "↔️ Renamed ~/$rel_path to ~/${rel_path}.bak"
+
+    # If the parent directory in $HOME is now empty, remove it so Stow can fold the directory cleanly
+    parent_dir="${target:h}"
+    if [[ "$parent_dir" != "$HOME" && -d "$parent_dir" && ! -L "$parent_dir" ]]; then
+      remaining=("$parent_dir"/*(ND))
+      if (( ${#remaining} == 0 )); then
+        rmdir "$parent_dir"
+      fi
+    fi
   fi
 done
 
