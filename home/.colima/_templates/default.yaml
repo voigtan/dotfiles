@@ -1,0 +1,23 @@
+cpu: 4
+memory: 8
+disk: 100
+arch: host
+runtime: docker
+autoActivate: true
+vmType: vz
+rosetta: true
+binfmt: true
+nestedVirtualization: true
+mountType: virtiofs
+mountInotify: true
+forwardAgent: true
+sshConfig: true
+mounts: []
+
+network:
+  dnsHosts:
+    host.docker.internal: host.lima.internal
+
+docker:
+  features:
+    buildkit: true
