@@ -16,6 +16,8 @@ brew "gmp"
 brew "coreutils"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
+# Reference implementation for the Development Containers specification
+brew "devcontainer"
 # TIFF library and utilities
 brew "libtiff"
 # Tool for exploring each layer in a docker image
