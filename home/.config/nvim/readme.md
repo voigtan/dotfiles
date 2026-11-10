@@ -109,6 +109,9 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<C-h>` *(inside Telescope)* | **Live-toggle dotfiles** on/off while keeping your current search text |
 | `<Space>fb` | Switch open buffers |
 | `<Space>fs` | Search LSP document symbols |
+| `<Space>fk` | **Search all keymaps** (fuzzy filter by key chord or description) |
+| `<Space>fc` | **Command Palette** (fuzzy search & execute `:Ex` commands) |
+| `<Space>fh` | **Search help tags** (fuzzy search Neovim documentation with preview) |
 
 ### TypeScript, LSP IntelliSense & Copilot (`lua/plugins/lsp.lua`)
 | Keymap | Mode | Action |

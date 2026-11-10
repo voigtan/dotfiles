@@ -68,7 +68,10 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>f", group = "Find / Format" },
+    { "<leader>fc", icon = { icon = " ", color = "purple" } },
     { "<leader>fg", icon = { icon = " ", color = "green" } },
+    { "<leader>fh", icon = { icon = "󰋖 ", color = "yellow" } },
+    { "<leader>fk", icon = { icon = "󰌌 ", color = "cyan" } },
     { "<leader>fs", icon = { icon = " ", color = "green" } },
   })
 end
@@ -88,6 +91,15 @@ end, { desc = "Switch open buffers" })
 map("n", "<leader>fs", function()
   require("telescope.builtin").lsp_document_symbols()
 end, { desc = "Document symbols" })
+map("n", "<leader>fk", function()
+  require("telescope.builtin").keymaps()
+end, { desc = "Search all keymaps" })
+map("n", "<leader>fc", function()
+  require("telescope.builtin").commands()
+end, { desc = "Command Palette (search commands)" })
+map("n", "<leader>fh", function()
+  require("telescope.builtin").help_tags()
+end, { desc = "Search Neovim help tags" })
 map("n", "gd", function()
   require("telescope.builtin").lsp_definitions()
 end, { desc = "Go to definition" })
