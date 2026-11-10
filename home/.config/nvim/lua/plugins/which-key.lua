@@ -9,6 +9,27 @@ if ok_wk then
   wk.setup({
     preset = "modern",
     delay = 200,
+    -- Auto-expand small subgroups (<= 2 items) inline so you don't need an extra keypress
+    expand = 2,
+    win = {
+      -- Never shrink the popup to 4 lines when the cursor happens to be near the bottom of the screen
+      no_overlap = false,
+      width = 0.95,
+      height = { min = 6, max = 0.80 },
+      padding = { 1, 2 },
+      border = "rounded",
+      title = true,
+      title_pos = "center",
+    },
+    layout = {
+      -- Cap column width so long descriptions don't force a single tall column; fits 3-4 columns side-by-side
+      width = { min = 20, max = 38 },
+      spacing = 3,
+    },
+    keys = {
+      scroll_down = "<Down>",
+      scroll_up = "<Up>",
+    },
     icons = {
       group = "", -- Default is "+" (use "" to remove the +, or "+ " to add a space)
     },
@@ -25,20 +46,24 @@ if ok_wk then
     },
   })
 
-  -- Allow <C-c> as a second chord key inside Which-Key (e.g. <C-k><C-c> to comment lines)
-  -- Normally Neovim's `getcharstr()` throws `Vim:Interrupt` on Ctrl+C, causing Which-Key to abort.
-  -- local ok_state, wk_state = pcall(require, "which-key.state")
-  -- if ok_state then
-  --   wk_state.getchar = function()
-  --     local ok, char = pcall(vim.fn.getcharstr)
-  --     if not ok and tostring(char):find("Interrupt") then
-  --       if wk_state.state and wk_state.state.node and wk_state.state.node:find("<C-C>") then
-  --         return true, "\x03"
-  --       end
-  --     end
-  --     return ok, char
-  --   end
-  -- end
+  -- Also allow <C-d>/<C-u> and <PageDown>/<PageUp> to scroll in addition to <Down>/<Up>
+  local ok_state, wk_state = pcall(require, "which-key.state")
+  local ok_view, wk_view = pcall(require, "which-key.view")
+  if ok_state and ok_view then
+    local orig_check = wk_state.check
+    wk_state.check = function(state, key)
+      if wk_view.valid() then
+        if key == "<C-D>" or key == "<PageDown>" then
+          wk_view.scroll(false)
+          return state.node
+        elseif key == "<C-U>" or key == "<PageUp>" then
+          wk_view.scroll(true)
+          return state.node
+        end
+      end
+      return orig_check(state, key)
+    end
+  end
 end
 
 vim.keymap.set("n", "<leader>?", function()

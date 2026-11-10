@@ -228,6 +228,7 @@ function M.save_buffer(buf, display_name)
 end
 
 -- Override vim.fn.confirm so standard confirmation calls in Lua also use the floating modal
+---@diagnostic disable-next-line: duplicate-set-field
 vim.fn.confirm = function(msg, choices, default, confirm_type)
   if #vim.api.nvim_list_uis() == 0 then
     return orig_confirm(msg, choices, default, confirm_type)
@@ -284,12 +285,14 @@ local cmdline_styles = {
   ["="] = { title = " 󰢱 Eval ", hl = "DiagnosticHint" },
 }
 
+local floating_cmdline_patched = false
+
 local function setup_floating_cmdline()
   local ok_ui2, ui2 = pcall(require, "vim._core.ui2")
-  if not ok_ui2 or not ui2.cmd or ui2.cmd._floating_patched then
+  if not ok_ui2 or not ui2.cmd or floating_cmdline_patched then
     return
   end
-  ui2.cmd._floating_patched = true
+  floating_cmdline_patched = true
 
   local orig_show = ui2.cmd.cmdline_show
   local orig_hide = ui2.cmd.cmdline_hide
