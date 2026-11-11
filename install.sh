@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-set -e
 
 chmod +x scripts/*.sh tools/*.sh 2>/dev/null || true
 

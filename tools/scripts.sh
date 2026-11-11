@@ -1,21 +1,26 @@
 #!/usr/bin/env zsh
 
 # Guard so tools are only loaded once per shell session
-[[ -n "${_DOTFILES_TOOLS_LOADED:-}" ]] && return 0
+if [[ -n "${_DOTFILES_TOOLS_LOADED:-}" ]]; then
+    return 0
+fi
 export _DOTFILES_TOOLS_LOADED=1
 
 chmod +x ./tools/*.sh 2>/dev/null || true
 
 # Load each of the tools
 for file in ./tools/*.sh; do
-    [[ -e "$file" ]] || continue
-    [[ "$file" == "./tools/scripts.sh" ]] && continue
+    if [[ ! -e "$file" || "$file" == "./tools/scripts.sh" ]]; then
+        continue
+    fi
     source "$file"
 done
 
 # Prompt for sudo once and keep sudo alive (even if child installers like Homebrew run `sudo -k`)
 function sudo_keepalive() {
-    [[ -n "${_DOTFILES_SUDO_READY:-}" ]] && return 0
+    if [[ -n "${_DOTFILES_SUDO_READY:-}" ]]; then
+        return 0
+    fi
 
     local sudo_pw
     while true; do

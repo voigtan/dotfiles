@@ -26,7 +26,11 @@ else
     ok "Homebrew already installed"
 fi
 
-brew update --quiet && brew bundle && brew cleanup -s
+brew update --quiet || warn "brew update encountered a warning, continuing..."
+if ! brew bundle; then
+    warn "Some Brewfile items failed to install (e.g. Mac App Store apps if not signed in yet). Continuing setup..."
+fi
+brew cleanup -s || true
 
 # Verify Gatekeeper signature and clear quarantine flag on Homebrew-installed casks
 # so macOS doesn't block or prompt on first launch after bulk installation

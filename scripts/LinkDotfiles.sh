@@ -30,7 +30,9 @@ for dir in "$folder_path_dotfiles_home"/**/*(ND/); do
   rel_dir="${dir#${folder_path_dotfiles_home}/}"
 
   # Skip if already a symlink in $HOME
-  [[ -L ~/"$rel_dir" ]] && continue
+  if [[ -L ~/"$rel_dir" ]]; then
+    continue
+  fi
 
   # Always create top-level hidden directories in $HOME (depth 1, e.g. .config, .colima, .docker)
   if [[ "${dir:h}" == "$folder_path_dotfiles_home" ]]; then
@@ -71,7 +73,9 @@ for file in "$folder_path_dotfiles_home"/**/*(ND.); do
     fi
     curr="${curr:h}"
   done
-  $is_linked && continue
+  if $is_linked; then
+    continue
+  fi
 
   if [[ -f "$target" ]]; then
     mv "$target" "${target}.bak"
