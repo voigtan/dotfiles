@@ -3,6 +3,7 @@
 -- ============================================================================
 
 local opt = vim.opt
+local map = vim.keymap.set
 
 -- UI & General
 opt.number = true
@@ -104,14 +105,18 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 pcall(vim.cmd.packadd, "nvim.undotree")
 
 local function toggle_undotree()
-  -- If currently inside the undotree or another sidebar, focus the code editor first
-  if vim.bo.filetype == "nvim-undotree" then
-    vim.api.nvim_win_close(0, true)
-    if _G.win_nav and _G.win_nav.focus_editor then
-      _G.win_nav.focus_editor()
+  -- If an Undotree window is already open anywhere in the tabpage, close it and focus the editor
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "nvim-undotree" then
+      pcall(vim.api.nvim_win_close, win, true)
+      if _G.win_nav and _G.win_nav.focus_editor then
+        _G.win_nav.focus_editor()
+      end
+      return
     end
-    return
   end
+
   if vim.bo.filetype == "neo-tree" or vim.bo.filetype == "neotest-summary" or vim.bo.buftype == "terminal" then
     if _G.win_nav and _G.win_nav.focus_editor then
       _G.win_nav.focus_editor()
@@ -130,7 +135,6 @@ vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("CoreNativeUndotree", { clear = true }),
   pattern = "nvim-undotree",
   callback = function(args)
-    vim.bo[args.buf].bufhidden = "hide"
     vim.opt_local.number = false
     vim.opt_local.relativenumber = false
     vim.opt_local.signcolumn = "no"
@@ -138,8 +142,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = false
     vim.opt_local.colorcolumn = ""
     vim.opt_local.winfixwidth = true
-    vim.keymap.set("n", "q", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
-    vim.keymap.set("n", "<Esc>", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
+    map("n", "q", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
+    map("n", "<Esc>", "<Cmd>ToggleUndotree<CR>", { buffer = args.buf, silent = true, desc = "Close Undo Tree" })
   end,
 })
 
@@ -148,25 +152,18 @@ vim.api.nvim_create_autocmd("FileType", {
 -- ============================================================================
 
 -- Clear search highlight on <Esc>
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 
 -- Paste over selection & Delete/Change without overwriting yanked text (black-hole register `"_`)
-vim.keymap.set("x", "p", "P", { desc = "Paste over selection without losing yanked text" })
-vim.keymap.set({ "n", "x" }, "x", '"_x', { desc = "Delete character without yanking" })
-vim.keymap.set({ "n", "x" }, "X", '"_X', { desc = "Delete character before cursor without yanking" })
-vim.keymap.set({ "n", "x" }, "<Del>", '"_x', { desc = "Delete character without yanking" })
-vim.keymap.set({ "n", "x" }, "<leader>D", '"_d', { desc = "Delete without yanking (black-hole)" })
-vim.keymap.set({ "n", "x" }, "<leader>C", '"_c', { desc = "Change without yanking (black-hole)" })
+map("x", "p", "P", { desc = "Paste over selection without losing yanked text" })
+map({ "n", "x" }, "x", '"_x', { desc = "Delete character without yanking" })
+map({ "n", "x" }, "X", '"_X', { desc = "Delete character before cursor without yanking" })
+map({ "n", "x" }, "<Del>", '"_x', { desc = "Delete character without yanking" })
+-- map({ "n", "x" }, "<leader>D", '"_d', { desc = "Delete without yanking (black-hole)" })
+-- map({ "n", "x" }, "<leader>C", '"_c', { desc = "Change without yanking (black-hole)" })
 
--- Commenting shortcuts: Ctrl+k, Ctrl+c (works in Normal, Visual, and Insert mode, plus <leader>/ and gcc/gc)
--- vim.keymap.set("n", "<C-k><C-c>", "gcc", { remap = true, desc = "Toggle comment on line" })
--- vim.keymap.set("x", "<C-k><C-c>", "gc", { remap = true, desc = "Toggle comment on selection" })
--- vim.keymap.set("i", "<C-k><C-c>", "<Cmd>normal gcc<CR>", { desc = "Toggle comment on line" })
--- vim.keymap.set("n", "<C-k>c", "gcc", { remap = true, desc = "Toggle comment on line" })
--- vim.keymap.set("x", "<C-k>c", "gc", { remap = true, desc = "Toggle comment on selection" })
--- vim.keymap.set("i", "<C-k>c", "<Cmd>normal gcc<CR>", { desc = "Toggle comment on line" })
-vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment on line" })
-vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on selection" })
+map("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment on line" })
+map("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on selection" })
 
 -- Right-Click Context Menu: Toggle Comment
 require("core.context-menu").register("editor", {
@@ -174,36 +171,41 @@ require("core.context-menu").register("editor", {
   { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
 })
 
-
 -- macOS Cmd (Super) shortcuts for Save, Close, Copy, Cut, Paste & Comment
-vim.keymap.set({ "n", "x" }, "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
-vim.keymap.set("i", "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
-vim.keymap.set("i", "<D-w>", "<Esc><Cmd>bd<CR>", { desc = "Close buffer" })
+map({ "n", "x" }, "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
+map("i", "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
+map("i", "<D-w>", "<Esc><Cmd>bd<CR>", { desc = "Close buffer" })
 
 -- Visual & Select mode: Cmd+C copies selection, Cmd+X cuts selection, Cmd+V pastes over selection
-vim.keymap.set("x", "<D-c>", '"+y', { desc = "Copy selection" })
-vim.keymap.set("x", "<D-x>", '"+d', { desc = "Cut selection" })
-vim.keymap.set("x", "<D-v>", '"_d"+P', { desc = "Paste over selection" })
-vim.keymap.set("s", "<D-c>", '<C-g>"+y', { desc = "Copy selection" })
-vim.keymap.set("s", "<D-x>", '<C-g>"+d', { desc = "Cut selection" })
-vim.keymap.set("s", "<D-v>", '<C-g>"_d"+P', { desc = "Paste over selection" })
+map("x", "<D-c>", '"+y', { desc = "Copy selection" })
+map("x", "<D-x>", '"+d', { desc = "Cut selection" })
+map("x", "<D-v>", '"_d"+P', { desc = "Paste over selection" })
+map("s", "<D-c>", '<C-g>"+y', { desc = "Copy selection" })
+map("s", "<D-x>", '<C-g>"+d', { desc = "Cut selection" })
+map("s", "<D-v>", '<C-g>"_d"+P', { desc = "Paste over selection" })
 
 -- Insert & Command-line mode: Cmd+C copies current line, Cmd+V pastes at cursor from clipboard
-vim.keymap.set("i", "<D-c>", "<Cmd>normal! yy<CR>", { desc = "Copy line" })
-vim.keymap.set("i", "<D-v>", "<C-r><C-o>+", { desc = "Paste from clipboard" })
-vim.keymap.set("c", "<D-v>", "<C-r>+", { desc = "Paste from clipboard" })
+map("i", "<D-c>", "<Cmd>normal! yy<CR>", { desc = "Copy line" })
+map("i", "<D-v>", "<C-r><C-o>+", { desc = "Paste from clipboard" })
+map("c", "<D-v>", "<C-r>+", { desc = "Paste from clipboard" })
 
-vim.keymap.set("i", "<D-k><D-c>", "<Esc><Cmd>normal gcc<CR>a", { desc = "Toggle comment on line" })
+map("i", "<D-k><D-c>", "<Esc><Cmd>normal gcc<CR>a", { desc = "Toggle comment on line" })
 -- Keep the visual selection active so `gc` toggles comments on the selected rows.
-vim.keymap.set("x", "<D-k><D-c>", "gcgv", { remap = true, desc = "Toggle comment on selection" })
+map("x", "<D-k><D-c>", "gcgv", { remap = true, desc = "Toggle comment on selection" })
 
--- Native Undo Tree toggle (<Space>tu)
-local ok_wk, wk = pcall(require, "which-key")
-if ok_wk then
-  wk.add({
-    { "<leader>tu", icon = { icon = "󰕌 ", color = "purple" } },
-  })
-end
-vim.keymap.set("n", "<leader>tu", "<Cmd>ToggleUndotree<CR>", { desc = "Toggle Undo Tree" })
-
-vim.keymap.set("n", "<leader>re", "<cmd>restart<cr>", { desc = "Restart Neovim" })
+-- Native Undo Tree toggle (<Space>tu) & Restart (<Space>re)
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("CoreOptionsWhichKey", { clear = true }),
+  once = true,
+  callback = function()
+    local ok_wk, wk = pcall(require, "which-key")
+    if ok_wk then
+      wk.add({
+        { "<leader>tu", icon = { icon = "󰕌 ", color = "purple" } },
+        { "<leader>r", icon = { icon = "󰜉 ", color = "orange" } },
+      })
+    end
+  end,
+})
+map("n", "<leader>tu", "<Cmd>ToggleUndotree<CR>", { desc = "Toggle Undo Tree" })
+map("n", "<leader>r", "<cmd>restart<cr>", { desc = "Restart Neovim" })

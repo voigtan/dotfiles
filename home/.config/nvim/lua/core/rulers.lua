@@ -3,6 +3,7 @@
 -- ============================================================================
 
 local state = require("core.state")
+local map = vim.keymap.set
 local augroup = vim.api.nvim_create_augroup("CoreRulers", { clear = true })
 local ruler_ns = vim.api.nvim_create_namespace("vscode_rulers")
 
@@ -85,4 +86,4 @@ vim.api.nvim_create_user_command("ToggleRulers", function()
   )
 end, { desc = "Toggle 80/120 column rulers and highlights" })
 
-vim.keymap.set("n", "<leader>tr", "<cmd>ToggleRulers<CR>", { desc = "Toggle 80/120 Rulers & Highlights" })
+map("n", "<leader>tr", "<cmd>ToggleRulers<CR>", { desc = "Toggle 80/120 Rulers & Highlights" })
