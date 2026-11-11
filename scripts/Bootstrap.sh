@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source ./tools/scripts.sh
-
 banner
 
 msg "Welcome! This script will install various software and customize your system settings."
@@ -13,22 +11,16 @@ msg "Remember, it's always a good practice to read and verify code from the inte
 
 pause
 
-# sudo keep-alive, see https://gist.github.com/cowboy/3118588
-# sudo -v
-# while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
 os=$(get_os)
 
 case "$os" in
     "osx")
-        ./scripts/osx.sh
+        source ./scripts/osx.sh
         ;;
     # "linux")
-    #     ./scripts/linux.sh
+    #     source ./scripts/linux.sh
     #     ;;
     *)
         echo "Unsupported operating system: $os"
         ;;
 esac
-
-exit 0

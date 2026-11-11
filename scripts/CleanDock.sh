@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source ./tools/scripts.sh
-
 if ! appExists dockutil; then
 	warn "dockutil is not installed. Please install dockutil before running this script."
 
@@ -44,5 +42,3 @@ done
 killall Dock
 
 ok "Cleaning the OSX dock"
-
-exit 0

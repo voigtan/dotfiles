@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source ./tools/scripts.sh
-
 function xcode_setup() {
     if ! command -v xcode-select >/dev/null 2>&1; then
         error_exit "xcode-select is unavailable. This setup must run on macOS."
@@ -46,38 +44,15 @@ function xcode_setup() {
     ok "XCode Command-line Tools installed"
 }
 
-function brew_setup() {
-    if ! appExists brew; then
-        # Install Homebrew
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        # Setup Homebrew envvars.
-        if [[ $(arch) == "arm64" ]]; then
-            (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        elif [[ $(arch) == "i386" ]]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-        else
-            error_exit "Invalid CPU arch: $(arch)" >&2
-        fi
-
-        ok "Homebrew installed"
-    else
-        ok "Homebrew Already installed"
-    fi
-}
-
 function main() {
     msg "Running OSX setup"
     xcode_setup
-    scripts/InstallOhMyZSH.sh
-    brew_setup
-    scripts/InstallHomebrew.sh
-    scripts/LinkDotfiles.sh
-    scripts/CleanDock.sh
-    scripts/tweaks.sh
-    scripts/SetupPinentry.sh
-    exit 0
+    source ./scripts/InstallOhMyZSH.sh
+    source ./scripts/InstallHomebrew.sh
+    source ./scripts/LinkDotfiles.sh
+    source ./scripts/CleanDock.sh
+    source ./scripts/tweaks.sh
+    source ./scripts/SetupPinentry.sh
 }
 
 main

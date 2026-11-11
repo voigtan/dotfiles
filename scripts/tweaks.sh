@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source ./tools/scripts.sh
-
 # Reference: https://macos-defaults.com/
 
 # Close any open System Settings panes to prevent them from overriding changes

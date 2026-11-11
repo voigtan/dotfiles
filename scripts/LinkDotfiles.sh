@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source ./tools/scripts.sh
-
 # Define the folder containing the files to check
 folder_path_dotfiles_home="home"
 
@@ -93,5 +91,3 @@ done
 stow home
 
 ok "Dotfiles symlinked successfully"
-
-exit 0

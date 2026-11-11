@@ -1,12 +1,14 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-chmod +x tools/*.sh
+# Guard so tools are only loaded once per shell session
+[[ -n "${_DOTFILES_TOOLS_LOADED:-}" ]] && return 0
+export _DOTFILES_TOOLS_LOADED=1
 
-# Load each of the tools.
-for file in ./tools/*; do
-    [ -e "$file" ] || continue
+chmod +x ./tools/*.sh 2>/dev/null || true
 
-    [[ $file == "./tools/scripts.sh" ]] && continue
-
-    source $file
+# Load each of the tools
+for file in ./tools/*.sh; do
+    [[ -e "$file" ]] || continue
+    [[ "$file" == "./tools/scripts.sh" ]] && continue
+    source "$file"
 done
