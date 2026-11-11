@@ -33,10 +33,10 @@ function sudo_keepalive() {
         warn "Incorrect password, please try again."
     done
 
-    # Create a temporary 0700 askpass script so if Homebrew's installer runs `sudo -k`
-    # or `brew bundle` casks need sudo, it re-authenticates automatically without prompting again
+    # Create a temporary 0755 askpass script in /tmp so Homebrew's filtered environment
+    # and root `sudo -A` subprocesses (like .pkg cask installers) can execute it cleanly
     local askpass_script
-    askpass_script=$(mktemp "${TMPDIR:-/tmp}/dotfiles-askpass.XXXXXX")
+    askpass_script=$(mktemp "/tmp/dotfiles-askpass.XXXXXX")
     chmod 700 "$askpass_script"
     cat > "$askpass_script" <<EOF
 #!/bin/sh
