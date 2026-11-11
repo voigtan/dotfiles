@@ -12,6 +12,13 @@ osascript -e 'tell application "System Settings" to quit' >/dev/null 2>&1 || tru
 # Enable macOS Dark Mode
 osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
 
+# Set Icon & Widget style to Dark ("RegularDark")
+defaults write -g AppleIconAppearanceTheme -string "RegularDark"
+
+# Set Accent Color to Pink (6) and Highlight Color to Pink
+defaults write -g AppleAccentColor -int 6
+defaults write -g AppleHighlightColor -string "1.000000 0.749020 0.823529 Pink"
+
 # Use traditional ("non-natural") scroll direction
 defaults write -g com.apple.swipescrolldirection -bool false
 
