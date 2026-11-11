@@ -9,6 +9,9 @@ osascript -e 'tell application "System Settings" to quit' >/dev/null 2>&1 || tru
 # 1. Global Input & UI (-g / NSGlobalDomain)                                  #
 ###############################################################################
 
+# Enable macOS Dark Mode
+osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+
 # Use traditional ("non-natural") scroll direction
 defaults write -g com.apple.swipescrolldirection -bool false
 
@@ -84,6 +87,16 @@ defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 # Load custom preferences from ~/.dotfiles/iterm2
 defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.dotfiles/iterm2"
 defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+
+###############################################################################
+# 6. Security & Authentication (Touch ID for sudo)                            #
+###############################################################################
+
+# Enable Touch ID for sudo via /etc/pam.d/sudo_local (persists across macOS updates)
+if [[ -f /etc/pam.d/sudo_local.template ]] && ! grep -q "^auth.*pam_tid\.so" /etc/pam.d/sudo_local 2>/dev/null; then
+    sudo sh -c 'sed "s/^#auth/auth/" /etc/pam.d/sudo_local.template > /etc/pam.d/sudo_local'
+    ok "Enabled Touch ID for sudo (/etc/pam.d/sudo_local)"
+fi
 
 ###############################################################################
 # Apply settings live & restart affected services                             #
