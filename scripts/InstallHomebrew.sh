@@ -1,8 +1,13 @@
 #!/usr/bin/env zsh
 
+sudo_keepalive
+
 if ! appExists brew; then
     msg "Installing Homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Re-warm sudo immediately because Homebrew's installer runs `sudo -k` on exit
+    sudo -A -v 2>/dev/null || true
 
     # Setup Homebrew envvars
     if [[ $(arch) == "arm64" ]]; then
@@ -22,5 +27,19 @@ else
 fi
 
 brew update --quiet && brew bundle && brew cleanup -s
+
+# Verify Gatekeeper signature and clear quarantine flag on Homebrew-installed casks
+# so macOS doesn't block or prompt on first launch after bulk installation
+for cask_name in $(brew list --cask 2>/dev/null); do
+    for app_path in /opt/homebrew/Caskroom/"$cask_name"/*/*.app(N); do
+        app_name="${app_path:t}"
+        target_app="/Applications/$app_name"
+        if [[ -d "$target_app" ]] && xattr -p com.apple.quarantine "$target_app" >/dev/null 2>&1; then
+            if spctl --assess --type execute "$target_app" >/dev/null 2>&1 || codesign --verify --deep --strict "$target_app" >/dev/null 2>&1; then
+                sudo xattr -dr com.apple.quarantine "$target_app" 2>/dev/null || true
+            fi
+        fi
+    done
+done
 
 ok "Homebrew packages installed successfully"

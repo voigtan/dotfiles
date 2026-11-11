@@ -11,13 +11,8 @@ msg $'\e[1mRemember, it\'s always a good practice to read and verify code from t
 
 pause
 
-# Ask for the administrator password upfront
-sudo -v
-
-# Keep-alive: update existing `sudo` timestamp until the script has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-SUDO_KEEPALIVE_PID=$!
-trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
+# Ask for the administrator password once upfront and keep sudo alive across all installers
+sudo_keepalive
 
 # Fix permissions in cases where perhaps re-running under a different user and similar scenarios
 DIRS=(
