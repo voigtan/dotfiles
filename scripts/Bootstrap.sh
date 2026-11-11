@@ -7,9 +7,17 @@ msg "Before running this script, it's important to understand what it does."
 echo ""
 msg "Please take a moment to review the code."
 echo ""
-msg "Remember, it's always a good practice to read and verify code from the internet before trusting it."
+msg $'\e[1mRemember, it\'s always a good practice to read and verify code from the internet before trusting it.\e[0m'
 
 pause
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` timestamp until the script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+SUDO_KEEPALIVE_PID=$!
+trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null || true' EXIT
 
 # Fix permissions in cases where perhaps re-running under a different user and similar scenarios
 DIRS=(
