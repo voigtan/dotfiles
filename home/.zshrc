@@ -68,3 +68,4 @@ _git_go() { _git_switch }
 export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 
 eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
