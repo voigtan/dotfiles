@@ -275,7 +275,7 @@ if ok_wk then
     { "<leader>bc", icon = { icon = "󰅖 ", color = "red" } },
     { "<leader>bn", icon = { icon = "󰈔 ", color = "green" } },
     { "<leader>bt", icon = { icon = " ", color = "yellow" } },
-    { "<leader>tf", icon = { icon = " ", color = "yellow" } },
+    { "<leader>of", icon = { icon = " ", color = "yellow" } },
   })
 end
 
@@ -302,7 +302,7 @@ map("n", "<leader>bc", function()
 end, { desc = "Pick file tab to close by letter" })
 map("n", "<leader>bn", new_buffer_tab, { desc = "New untitled file tab" })
 map("n", "<leader>bt", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
-map("n", "<leader>tf", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
+map("n", "<leader>of", "<cmd>ToggleTabs<CR>", { desc = "Toggle File Tabs bar" })
 map("n", "<leader>bp", "<cmd>BufferLineTogglePin<CR>", { desc = "Pin / unpin file tab" })
 map("n", "<leader>bo", close_other_buffer_tabs, { desc = "Close all other file tabs" })
 map("n", "<leader>ba", close_all_buffer_tabs, { desc = "Close all file tabs" })

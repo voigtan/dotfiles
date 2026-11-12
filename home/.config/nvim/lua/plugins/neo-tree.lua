@@ -126,7 +126,7 @@ end
 -- ============================================================================
 
 map("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "Toggle File Explorer (Neo-tree)" })
-map("n", "<leader>o", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file in Explorer" })
+map("n", "<leader>E", "<cmd>Neotree reveal<CR>", { desc = "Reveal current file in Explorer" })
 
 require("core.context-menu").register("neo-tree", {
   { priority = "100.05", label = "Open File / Folder", cmd = '<Cmd>lua _G.neotree_ctx_action("open")<CR>' },

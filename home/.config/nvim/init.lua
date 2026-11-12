@@ -64,8 +64,9 @@ vim.pack.add({
   gh("marilari88/neotest-vitest"),
   gh("andythigpen/nvim-coverage"),
 
-  -- Fast On-Screen Jump Navigation
+  -- Fast On-Screen Jump Navigation & Multi-Cursor (Cmd+D)
   gh("folke/flash.nvim"),
+  { src = gh("jake-stewart/multicursor.nvim"), version = "1.0" },
 }, { confirm = false })
 
 -- 3. Core Feature Modules & Plugin Feature Modules
@@ -73,5 +74,6 @@ require("core.navigation")
 require("core.rulers")
 require("core.terminals")
 require("core.devcontainer")
+require("core.vscode")
 require("plugins")
 require("core.pack")

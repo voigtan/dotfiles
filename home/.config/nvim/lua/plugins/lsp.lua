@@ -349,6 +349,7 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>c", group = "Code / TypeScript LSP" },
+    { "<leader>oi", icon = { icon = "󰌵 ", color = "cyan" } },
   })
 end
 
@@ -361,14 +362,22 @@ end, { expr = true, replace_keycodes = true, desc = "Accept inline completion (C
 map("i", "<M-]>", function()
   vim.lsp.inline_completion.select({ count = 1 })
 end, { desc = "Next Copilot inline suggestion" })
+map("i", "<M-ä>", function()
+  vim.lsp.inline_completion.select({ count = 1 })
+end, { desc = "Next Copilot inline suggestion (Swedish Option+ä)" })
 
 map("i", "<M-[>", function()
   vim.lsp.inline_completion.select({ count = -1 })
 end, { desc = "Previous Copilot inline suggestion" })
+map("i", "<M-å>", function()
+  vim.lsp.inline_completion.select({ count = -1 })
+end, { desc = "Previous Copilot inline suggestion (Swedish Option+å)" })
 
+-- Toggle Inlay Hints (<M-i> and Swedish macOS Option+i `ı`)
 map({ "n", "i", "v" }, "<M-i>", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })
+map({ "n", "i", "v" }, "ı", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Swedish Option+i)" })
 map("n", "<leader>ci", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })
-map("n", "<leader>ti", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })
+map("n", "<leader>oi", toggle_inlay_hints, { desc = "Toggle Inline Type Hints (Inlay Hints)" })
 
 map("i", "<C-Space>", function()
   vim.lsp.completion.get()

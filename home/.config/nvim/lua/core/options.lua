@@ -162,8 +162,14 @@ map({ "n", "x" }, "<Del>", '"_x', { desc = "Delete character without yanking" })
 -- map({ "n", "x" }, "<leader>D", '"_d', { desc = "Delete without yanking (black-hole)" })
 -- map({ "n", "x" }, "<leader>C", '"_c', { desc = "Change without yanking (black-hole)" })
 
-map("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment on line" })
-map("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment on selection" })
+-- Swedish Keyboard Normal/Visual/Operator Ergonomics (å/ä -> [/], Å/Ä -> {/}, ö/Ö -> ^/$)
+-- Eliminates needing Option+8/9 or Option+Shift+8/9 for bracket motions & paragraph/line jumps
+map({ "n", "x", "o" }, "å", "[", { remap = true, desc = "Previous '[' motion (Swedish å)" })
+map({ "n", "x", "o" }, "ä", "]", { remap = true, desc = "Next ']' motion (Swedish ä)" })
+map({ "n", "x", "o" }, "Å", "{", { desc = "Paragraph up '{' (Swedish Å)" })
+map({ "n", "x", "o" }, "Ä", "}", { desc = "Paragraph down '}' (Swedish Ä)" })
+map({ "n", "x", "o" }, "ö", "^", { desc = "Start of line '^' (Swedish ö)" })
+map({ "n", "x", "o" }, "Ö", "$", { desc = "End of line '$' (Swedish Ö)" })
 
 -- Right-Click Context Menu: Toggle Comment
 require("core.context-menu").register("editor", {
@@ -171,29 +177,7 @@ require("core.context-menu").register("editor", {
   { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
 })
 
--- macOS Cmd (Super) shortcuts for Save, Close, Copy, Cut, Paste & Comment
-map({ "n", "x" }, "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
-map("i", "<D-s>", "<Cmd>write<CR>", { desc = "Save file" })
-map("i", "<D-w>", "<Esc><Cmd>bd<CR>", { desc = "Close buffer" })
-
--- Visual & Select mode: Cmd+C copies selection, Cmd+X cuts selection, Cmd+V pastes over selection
-map("x", "<D-c>", '"+y', { desc = "Copy selection" })
-map("x", "<D-x>", '"+d', { desc = "Cut selection" })
-map("x", "<D-v>", '"_d"+P', { desc = "Paste over selection" })
-map("s", "<D-c>", '<C-g>"+y', { desc = "Copy selection" })
-map("s", "<D-x>", '<C-g>"+d', { desc = "Cut selection" })
-map("s", "<D-v>", '<C-g>"_d"+P', { desc = "Paste over selection" })
-
--- Insert & Command-line mode: Cmd+C copies current line, Cmd+V pastes at cursor from clipboard
-map("i", "<D-c>", "<Cmd>normal! yy<CR>", { desc = "Copy line" })
-map("i", "<D-v>", "<C-r><C-o>+", { desc = "Paste from clipboard" })
-map("c", "<D-v>", "<C-r>+", { desc = "Paste from clipboard" })
-
-map("i", "<D-k><D-c>", "<Esc><Cmd>normal gcc<CR>a", { desc = "Toggle comment on line" })
--- Keep the visual selection active so `gc` toggles comments on the selected rows.
-map("x", "<D-k><D-c>", "gcgv", { remap = true, desc = "Toggle comment on selection" })
-
--- Native Undo Tree toggle (<Space>tu) & Restart (<Space>re)
+-- Options / UI Toggles group (<Space>o), Native Undo Tree toggle (<Space>ou) & Restart (<Space>r)
 vim.api.nvim_create_autocmd("VimEnter", {
   group = vim.api.nvim_create_augroup("CoreOptionsWhichKey", { clear = true }),
   once = true,
@@ -201,11 +185,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
     local ok_wk, wk = pcall(require, "which-key")
     if ok_wk then
       wk.add({
-        { "<leader>tu", icon = { icon = "󰕌 ", color = "purple" } },
+        { "<leader>o", group = "Options / UI Toggles", icon = { icon = " ", color = "yellow" } },
+        { "<leader>ou", icon = { icon = "󰕌 ", color = "purple" } },
         { "<leader>r", icon = { icon = "󰜉 ", color = "orange" } },
       })
     end
   end,
 })
-map("n", "<leader>tu", "<Cmd>ToggleUndotree<CR>", { desc = "Toggle Undo Tree" })
+
+map("n", "<leader>ou", "<Cmd>ToggleUndotree<CR>", { desc = "Toggle Undo Tree" })
 map("n", "<leader>r", "<cmd>restart<cr>", { desc = "Restart Neovim" })

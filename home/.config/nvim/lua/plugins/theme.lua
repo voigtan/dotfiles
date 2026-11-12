@@ -6,6 +6,10 @@ local ok_catppuccin, catppuccin = pcall(require, "catppuccin")
 if ok_catppuccin then
   catppuccin.setup({
     flavour = "frappe",
+    transparent_background = true,
+    float = {
+      transparent = true,
+    },
     integrations = {
       treesitter = true,
       treesitter_context = true,

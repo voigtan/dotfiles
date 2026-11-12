@@ -59,11 +59,21 @@ _G.win_nav = {
     end
   end,
   down = function()
+    local ok_terms, terms = pcall(require, "core.terminals")
+    if ok_terms then
+      terms.toggle()
+      return
+    end
     focus_window_by(function(_, buf)
       return vim.bo[buf].buftype == "terminal"
     end, "j")
   end,
   up = function()
+    local ok_terms, terms = pcall(require, "core.terminals")
+    if ok_terms and terms.is_open() then
+      terms.hide()
+      return
+    end
     focus_window_by(function(_, buf)
       return is_editor_buf(buf)
     end, "k")

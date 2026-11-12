@@ -86,4 +86,17 @@ vim.api.nvim_create_user_command("ToggleRulers", function()
   )
 end, { desc = "Toggle 80/120 column rulers and highlights" })
 
-map("n", "<leader>tr", "<cmd>ToggleRulers<CR>", { desc = "Toggle 80/120 Rulers & Highlights" })
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("CoreRulersWhichKey", { clear = true }),
+  once = true,
+  callback = function()
+    local ok_wk, wk = pcall(require, "which-key")
+    if ok_wk then
+      wk.add({
+        { "<leader>or", icon = { icon = "📏 ", color = "orange" } },
+      })
+    end
+  end,
+})
+
+map("n", "<leader>or", "<cmd>ToggleRulers<CR>", { desc = "Toggle 80/120 Rulers & Highlights" })

@@ -3,6 +3,7 @@
 -- ============================================================================
 
 local ok_lualine, lualine = pcall(require, "lualine")
+
 if ok_lualine then
   lualine.setup({
     options = {
@@ -16,6 +17,23 @@ if ok_lualine then
       lualine_b = { "branch", "diff", "diagnostics" },
       lualine_c = { { "filename", path = 1 } },
       lualine_x = {
+        {
+          function()
+            if vim.g.vscode_keys_enabled then
+              return "󰨞 VSCode"
+            end
+            return " Neovim"
+          end,
+          color = function()
+            if vim.g.vscode_keys_enabled then
+              return { fg = "#8caaee" } -- Catppuccin Frappé Blue (VS Code)
+            end
+            return { fg = "#a6d189" } -- Catppuccin Frappé Green (Neovim)
+          end,
+          on_click = function()
+            vim.cmd("ToggleVSCodeKeys")
+          end,
+        },
         {
           function()
             local ok_dc, dc = pcall(require, "core.devcontainer")

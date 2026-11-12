@@ -23,23 +23,24 @@ home/.config/nvim/
     │   ├── context-menu.lua        # Right-click PopUp context menu registry ("editor", "neo-tree", etc.)
     │   ├── filetypes.lua           # Native vim.filetype.add() ("files.associations")
     │   ├── navigation.lua          # Smart <C-h/j/k/l> pane navigation & QuitPre (:q closes tree/terminal)
-    │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>tr
+    │   ├── rulers.lua              # 80/120 colored rulers (#ff9900 & #9f0af5), :ToggleRulers, <Space>or
     │   ├── terminals.lua           # :Term (devcontainer-aware), :TermHost, :TermTmux, :LazyDocker, <Space>tt/th/tx/td
     │   ├── devcontainer.lua        # Passive .devcontainer detection, :DevcontainerUp/Rebuild/Stop/Term/Logs/Edit (<Space>d*)
+    │   ├── vscode.lua              # Toggleable VS Code / macOS keymaps (:ToggleVSCodeKeys, <Space>ov, <D-d> multi-cursor, Shift+Arrows)
     │   └── pack.lua                # :PackSync/Update/Review/Clean/Restore/Log & <Space>p* Which-Key group
     └── plugins/
         ├── init.lua                # Loads all plugin modules in order
-        ├── theme.lua               # Catppuccin Frappé + nvim-web-devicons
+        ├── theme.lua               # Catppuccin Frappé (transparent) + nvim-web-devicons
         ├── treesitter.lua          # Treesitter parsers/highlighting + sticky scroll (treesitter-context)
         ├── flash.lua               # Flash.nvim fast on-screen jump (s, S, f/t/F/T)
         ├── lsp.lua                 # Mason + native Nvim 0.12 LSP, Copilot inline completion & IntelliSense keys
         ├── formatting.lua          # Conform.nvim (Prettier / LSP formatOnSave) + <Space>f
         ├── git.lua                 # Gitsigns (blame & inline diffs), git.autofetch, floating :LazyGit (<Space>gg)
-        ├── neo-tree.lua            # Neo-tree (file nesting, rename fix, :restart restore) + <Space>e / <Space>o
+        ├── neo-tree.lua            # Neo-tree (file nesting, rename fix, :restart restore) + <Space>e / <Space>E
         ├── tabs.lua                # File tabs bar, toggle (:ToggleTabs), window-safe tab closing + <S-h>/<S-l>/<Space>b*
         ├── telescope.lua           # Telescope fuzzy finder + <C-p> / <Space>ff / <Space>fg / gd / gr
         ├── testing.lua             # Vitest (neotest-vitest) pass/fail/watch + inline coverage (nvim-coverage)
-        ├── lualine.lua             # Statusbar (Catppuccin Frappé + active LSP indicator)
+        ├── lualine.lua             # Statusbar (Catppuccin Frappé + VSCode/Neovim keymap mode + Devcontainer + LSP)
         └── which-key.lua           # Which-Key popup guide + group labels + <Space>?
 ```
 
@@ -77,7 +78,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<S-l>` (`Shift + l`) or `]b` | Next file tab |
 | `<Space>bb` or `gb` | **Pick file tab by letter** (replaces tab icons with jump letters) |
 | `<Space>bc` | **Pick file tab to close by letter** |
-| `<Space>bt` or `<Space>tf` (or `:ToggleTabs`) | **Toggle top File Tabs bar** on/off |
+| `<Space>bt` or `<Space>of` (or `:ToggleTabs`) | **Toggle top File Tabs bar** on/off |
 | `<Space>bd` | Close current file tab (opens centered **Unsaved Changes** modal if modified) |
 | `<Space>bD` | **Force-close** current file tab and discard unsaved changes immediately |
 | `<Space>bo` | Close all other file tabs (prompts via modal if any are modified) |
@@ -88,7 +89,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | Keymap | Where | Action |
 | :--- | :--- | :--- |
 | `<Space>e` | Global | Toggle Neo-tree sidebar |
-| `<Space>o` | Global | Reveal current file in Neo-tree |
+| `<Space>E` (`Shift + e`) | Global | Reveal current file in Neo-tree |
 | `Right Click` | Inside Neo-tree | Open file explorer context menu (*New File*, *New Folder*, *Rename*, *Move*, *Copy/Cut/Paste*, *Delete*, *Expand Nested*) |
 | `<Tab>` / `<Right>` / `za` / `zo` | Inside Neo-tree | **Expand** `<file>.ts` to view nested `<file>.test.ts` / `<file>.test.tsx` |
 | `<Left>` / `zc` | Inside Neo-tree | **Collapse** nested file or directory |
@@ -120,7 +121,7 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `Ctrl + Left Click` (`<C-LeftMouse>`) | Normal / Insert | Show TypeScript type / hover popup at mouse position |
 | `Option/Alt + Left Click` (`<M-LeftMouse>`) | Normal / Insert | Go to Definition / Reference at mouse position |
 | `Right Click` | Normal / Visual / Insert | Open context menu (*Show Type/Hover*, *Find All References*, *Go to Type Definition*, *Code Action*, *Rename*) |
-| `<M-i>` (`Alt + i`) or `<Space>ci` / `<Space>ti` | Normal / Insert / Visual | Toggle Inline Type Hints (Inlay Hints) |
+| `<M-i>` (`Alt + i`) or `<Space>ci` / `<Space>oi` | Normal / Insert / Visual | Toggle Inline Type Hints (Inlay Hints) |
 | `<C-k>` | Insert | Show function parameter signature help |
 | `<C-Space>` | Insert | Manually trigger LSP IntelliSense completion menu |
 | `<C-n>` / `<C-p>` / `<C-y>` | Insert | Next item / Previous item / Confirm completion item |
@@ -135,14 +136,46 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>cm` | Normal | **Add All Missing Imports** in current file |
 | `<Space>co` | Normal | **Organize Imports** (sorts & removes unused imports) |
 | `<Space>cr` | Normal | Rename symbol across project |
-| `gcc` / `<Space>/` / `<D-k><D-c>` | Normal / Insert | **Toggle comment** on current line (also in Right-Click menu) |
-| `gc` / `<Space>/` / `<D-k><D-c>` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
+| `gcc` | Normal | **Toggle comment** on current line (also in Right-Click menu) |
+| `gc` | Visual | **Toggle comment** on selected lines (also in Right-Click menu) |
 | `p` | Visual | **Paste over selection** without overwriting yanked clipboard text |
 | `x` / `X` / `<Del>` | Normal / Visual | **Delete character(s)** without overwriting yanked clipboard text |
 | `<Space>D` / `<Space>C` | Normal / Visual | **Delete / Change** motion or selection without yanking (`"_d` / `"_c`) |
-| `<D-c>` / `<D-x>` / `<D-v>` | Visual / Insert / Cmdline | **Copy** selection (or current line in Insert), **Cut** selection, and **Paste** at cursor / over selection |
 | `<Space>cd` | Normal | Show line type error / diagnostic float |
 | `<Space>cl` | Normal | Run LSP CodeLens |
+
+### VS Code / macOS Keybindings (`lua/core/vscode.lua`)
+Enabled by default and persisted per GitHub project (`<Space>ov` or `:ToggleVSCodeKeys` to toggle ON/OFF):
+
+| Keymap | Mode | Action |
+| :--- | :--- | :--- |
+| `<Space>ov` or `:ToggleVSCodeKeys` | Normal | **Toggle all VS Code / macOS keybindings** ON/OFF (also in Right-Click menu) |
+| `Cmd + D` (`<D-d>`) | Normal / Visual / Insert | **Multi-Cursor**: Select word under cursor & add a live cursor to the next occurrence (`<Esc>` clears extra cursors, `<Left>`/`<Right>` switches active cursor) |
+| `Cmd + K, Cmd + D` (`<D-k><D-d>`) | Normal / Visual | **Skip** current occurrence and add cursor to the next match |
+| `Shift + Left/Right/Up/Down` | Normal / Insert / Visual | **Character & Line Selection** (`keymodel = "startsel,stopsel"` — unshifted arrow stops selection) |
+| `Option + Shift + Left/Right` (`<M-S-Left>`/`<M-S-Right>`) | Normal / Insert / Visual | **Select word-by-word** left / right |
+| `Option + Left/Right` (`<M-Left>`/`<M-Right>`) | Normal / Insert | **Move cursor word-by-word** left / right |
+| `Cmd + Left/Right` (`<D-Left>`/`<D-Right>`) | Normal / Insert | **Jump to start / end of line** (`^` / `$`) |
+| `Cmd + Shift + Left/Right` (`<D-S-Left>`/`<D-S-Right>`) | Normal / Insert / Visual | **Select to start / end of line** |
+| `Option + j / k` or `Option + Down / Up` | Normal / Insert / Visual | **Move line(s) down / up** and auto-indent (supports Swedish macOS `Option` layout without breaking `{`/`}`/`[`/`]`) |
+| `Option + Shift + Down / Up` (`<M-S-Down>`/`<M-S-Up>`) | Normal / Insert / Visual | **Duplicate line or selection** down / up |
+| `Cmd + S` (`<D-s>`) | Normal / Insert / Visual | **Save file** |
+| `Cmd + W` (`<D-w>`) | Normal / Insert / Visual | **Close current file tab** safely |
+| `Cmd + C` / `Cmd + X` / `Cmd + V` | Normal / Visual / Select / Insert / Cmdline | **Copy**, **Cut**, and **Paste** (over selection or at cursor) |
+| `Cmd + Z` / `Cmd + Shift + Z` | Normal / Insert / Visual | **Undo** / **Redo** |
+| `Cmd + A` (`<D-a>`) | Normal / Insert / Visual | **Select entire file** (`ggVG`) |
+| `Cmd + /` (`Cmd + Shift + 7` / `Cmd + '`) or `Cmd + K, Cmd + C` | Normal / Insert / Visual | **Toggle comment** on line or selection |
+
+### Swedish Keyboard Ergonomics (`lua/core/options.lua`)
+In Normal, Visual, and Operator-pending modes (Insert mode still types `å`, `ä`, `ö` normally):
+
+| Keymap | Equivalent US Key | Action |
+| :--- | :--- | :--- |
+| `å` / `ä` | `[` / `]` | **Bracket motions** without needing `Option + 8/9` (e.g., `åb` / `äb` for prev/next tab, `åd` / `äd` for prev/next diagnostic) |
+| `Å` / `Ä` | `{` / `}` | **Jump paragraph up / down** without needing `Option + Shift + 8/9` |
+| `ö` / `Ö` | `^` / `$` | **Jump to start / end of line** without needing dead-key `^` or `Option + 4` |
+| `Option + i` (`ı`) | `<M-i>` | **Toggle Inlay Hints** on Swedish macOS layout |
+| `Option + å` / `Option + ä` | `<M-[>` / `<M-]>` | **Previous / Next Copilot suggestion** in Insert mode |
 
 ### Formatting (`lua/plugins/formatting.lua`)
 - **Format on Save**: Enabled automatically for `javascript`, `javascriptreact`, `typescript`, `typescriptreact`, `css`, `scss` (automatically uses **Biome** if `biome.json`/`biome.jsonc` is present in the project, otherwise falls back to **Prettier**) and `html` (via HTML LSP).
@@ -171,21 +204,32 @@ Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` f
 | `<Space>gb` | Toggle end-of-line Git blame decoration |
 
 ### Terminals, Devcontainers & Rulers (`lua/core/terminals.lua`, `lua/core/devcontainer.lua`, `lua/core/rulers.lua`)
+Interactive shells (`1:Term`, `2:Host`, `3:Tmux`) share a **persistent floating terminal window** with a border tab bar, while `:LazyGit` and `:LazyDocker` open as ephemeral floating modals that close & terminate on `q` or `<Esc><Esc>`:
+
 | Keymap / Command | Action |
 | :--- | :--- |
-| `<Space>tt` or `:Term` | Open bottom terminal (attaches inside **Devcontainer** if running, otherwise macOS `/bin/zsh -l`) |
-| `<Space>th` or `:TermHost` | Open bottom terminal on **host macOS** (`/bin/zsh -l`, even when a devcontainer is running) |
-| `<Space>tx` or `:TermTmux` | Open bottom terminal with `tmux` |
-| `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a centered floating modal window (`q` to close) |
+| `<Space>tt` / `<Space>1` / `<Space>t1` or `:Term` (or `<C-j>`) | **Toggle Floating Terminal 1** (attaches inside **Devcontainer** if running, otherwise macOS `/bin/zsh -l`) |
+| `<Space>th` / `<Space>2` / `<Space>t2` or `:TermHost` | **Toggle / Switch to Host Floating Terminal 2** (`/bin/zsh -l` on macOS, even when a devcontainer is running) |
+| `<Space>tx` / `<Space>3` / `<Space>t3` or `:TermTmux` | **Toggle / Switch to Tmux Floating Terminal 3** (`tmux`) |
+| `<D-1>` / `<D-2>` / `<D-3>` or `<C-Tab>` *(inside float)* | **Switch** between floating terminal profiles `1:Term`, `2:Host`, and `3:Tmux` |
+| `<Esc><Esc>` or `<C-j>` / `<C-k>` *(inside float)* | **Hide floating terminal** (keeps shell processes running in the background) |
+| `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a floating modal window (`q` or `<Esc><Esc>` closes & terminates it) |
+| `<Space>gg` or `:LazyGit` | Open **LazyGit** in a floating modal window (`q` or `<Esc><Esc>` closes & terminates it) |
 | `<Space>du` or `:DevcontainerUp` | **Start / Up Devcontainer** for current project in a floating build window (auto-closes on success) |
 | `<Space>dR` or `:DevcontainerRebuild` | **Rebuild Devcontainer** (`--build-no-cache --remove-existing-container`) |
 | `<Space>ds` or `:DevcontainerStop` | **Stop** the running Devcontainer for current project |
-| `<Space>dt` or `:DevcontainerTerm` | Explicitly open bottom terminal inside the running Devcontainer |
+| `<Space>dt` or `:DevcontainerTerm` | Explicitly open floating terminal inside the running Devcontainer |
 | `<Space>dl` or `:DevcontainerLogs` | View live **Devcontainer logs** in a floating modal (`q` to close) |
 | `<Space>dc` or `:DevcontainerEdit` | Open `.devcontainer/devcontainer.json` in the editor |
-| `<Esc><Esc>` | Exit Terminal mode into Normal mode |
-| `<Space>tu` or `:ToggleUndotree` | Toggle native Neovim 0.12 **Undo Tree** sidebar on the right (`j`/`k` live-previews undo states, `q`/`<Esc>` closes) |
-| `<Space>tr` or `:ToggleRulers` | Toggle 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers on/off |
+
+### Options / UI Toggles (`<Space>o`)
+| Keymap / Command | Action |
+| :--- | :--- |
+| `<Space>ov` or `:ToggleVSCodeKeys` | Toggle **VS Code / macOS Keybindings** (`󰨞 VSCode` / ` Neovim` in Lualine) |
+| `<Space>or` or `:ToggleRulers` | Toggle **80 (`#ff9900`) and 120 (`#9f0af5`) column rulers** on/off |
+| `<Space>of` or `:ToggleTabs` | Toggle top **File Tabs bar** on/off |
+| `<Space>oi` | Toggle **Inline Type Hints (Inlay Hints)** |
+| `<Space>ou` or `:ToggleUndotree` | Toggle native Neovim 0.12 **Undo Tree** sidebar on the right (`j`/`k` live-previews undo states, `q`/`<Esc>` closes) |
 
 ---
 

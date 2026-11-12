@@ -298,7 +298,7 @@ function M.logs()
   end)
 end
 
---- Open an interactive bottom terminal inside the running devcontainer
+--- Open an interactive floating terminal inside the running devcontainer
 function M.open_terminal()
   local root = M.find_config()
   if not root then
@@ -311,9 +311,7 @@ function M.open_terminal()
       vim.notify("Devcontainer is not running. Start it first with <Space>du (:DevcontainerUp)", vim.log.levels.WARN)
       return
     end
-    if _G.open_bottom_terminal then
-      _G.open_bottom_terminal(M.get_shell_cmd(root))
-    end
+    require("core.terminals").open("term", M.get_shell_cmd(root))
   end)
 end
 

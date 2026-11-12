@@ -35,54 +35,19 @@ end
 
 -- 3. Floating LazyGit Modal Window (:LazyGit / <leader>gg)
 vim.api.nvim_create_user_command("LazyGit", function()
-  if vim.fn.executable("lazygit") == 0 then
-    vim.notify("lazygit is not installed or not in PATH", vim.log.levels.ERROR)
-    return
-  end
-
-  local width = math.floor(vim.o.columns * 0.9)
-  local height = math.floor((vim.o.lines - vim.o.cmdheight) * 0.9)
-  local col = math.floor((vim.o.columns - width) / 2)
-  local row = math.floor(((vim.o.lines - vim.o.cmdheight) - height) / 2)
-
-  local lg_buf = vim.api.nvim_create_buf(false, true)
-  local lg_win = vim.api.nvim_open_win(lg_buf, true, {
-    relative = "editor",
-    width = width,
-    height = height,
-    col = col,
-    row = row,
-    style = "minimal",
-    border = "rounded",
+  require("core.terminals").open_ephemeral_tui({
+    bin = "lazygit",
     title = " 󰊢 LazyGit ",
-    title_pos = "center",
-  })
-
-  vim.bo[lg_buf].filetype = "lazygit"
-  vim.bo[lg_buf].buflisted = false
-
-  vim.fn.jobstart("lazygit", {
-    term = true,
+    filetype = "lazygit",
     on_exit = function()
-      vim.schedule(function()
-        if vim.api.nvim_win_is_valid(lg_win) then
-          pcall(vim.api.nvim_win_close, lg_win, true)
-        end
-        if vim.api.nvim_buf_is_valid(lg_buf) then
-          pcall(vim.api.nvim_buf_delete, lg_buf, { force = true })
-        end
-        pcall(function()
-          require("gitsigns").refresh()
-        end)
-        pcall(function()
-          require("neo-tree.sources.manager").refresh("filesystem")
-        end)
+      pcall(function()
+        require("gitsigns").refresh()
+      end)
+      pcall(function()
+        require("neo-tree.sources.manager").refresh("filesystem")
       end)
     end,
   })
-
-  vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = lg_buf, nowait = true })
-  vim.cmd("startinsert")
 end, { desc = "Open LazyGit in a floating modal window" })
 
 -- 4. Keymaps & Which-Key Group
@@ -90,6 +55,7 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>g", group = "Git / Inline Diffs" },
+    { "<leader>gg", icon = { icon = "󰊢 ", color = "orange" } },
   })
 end
 
