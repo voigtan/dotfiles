@@ -117,6 +117,7 @@ function M.refresh_status(callback)
       if current_state == "starting" then
         return
       end
+      local prev_state = current_state
       if obj.code == 0 and obj.stdout then
         local cid = vim.trim(obj.stdout):match("^([^\r\n]+)")
         if cid and cid ~= "" then
@@ -129,6 +130,11 @@ function M.refresh_status(callback)
       else
         current_state = "stopped"
         current_container_id = nil
+      end
+      if current_state ~= prev_state then
+        pcall(function()
+          require("which-key.buf").clear()
+        end)
       end
       vim.cmd("redrawstatus")
       if callback then
@@ -278,6 +284,9 @@ function M.stop()
       if obj.code == 0 then
         current_state = "stopped"
         current_container_id = nil
+        pcall(function()
+          require("which-key.buf").clear()
+        end)
         vim.cmd("redrawstatus")
         vim.notify(" Devcontainer stopped", vim.log.levels.INFO)
       else
@@ -315,8 +324,9 @@ function M.open_terminal()
   end)
 end
 
--- Passive detection on startup and directory change (zero automatic container startup)
-vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged", "FocusGained" }, {
+-- Passive detection on startup, session restore (:restart), and directory change
+M.refresh_status()
+vim.api.nvim_create_autocmd({ "VimEnter", "SessionLoadPost", "DirChanged", "FocusGained" }, {
   group = augroup,
   callback = function()
     M.refresh_status()

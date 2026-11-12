@@ -451,34 +451,60 @@ vim.api.nvim_create_user_command("LazyDocker", function()
   })
 end, { desc = "Open LazyDocker in floating modal window" })
 
+local function is_devcontainer_running()
+  local ok_dc, dc = pcall(require, "core.devcontainer")
+  return ok_dc and dc.is_running()
+end
+
 local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.add({
     { "<leader>t", group = "Terminal", icon = { icon = " ", color = "green" } },
-    { "<leader>tt", icon = { icon = " ", color = "green" } },
-    { "<leader>th", icon = { icon = " ", color = "cyan" } },
-    { "<leader>tx", icon = { icon = " ", color = "orange" } },
-    { "<leader>t1", icon = { icon = " ", color = "green" } },
-    { "<leader>t2", icon = { icon = " ", color = "cyan" } },
-    { "<leader>t3", icon = { icon = " ", color = "orange" } },
-    { "<leader>td", icon = { icon = " ", color = "blue" } },
+    {
+      "<leader>tt",
+      "<cmd>Term<CR>",
+      desc = function()
+        if is_devcontainer_running() then
+          return "Toggle Devcontainer Terminal"
+        end
+        return "Toggle Terminal (zsh)"
+      end,
+      icon = function()
+        if is_devcontainer_running() then
+          return { icon = " ", color = "cyan" }
+        end
+        return { icon = " ", color = "green" }
+      end,
+    },
+    {
+      "<leader>th",
+      "<cmd>TermHost<CR>",
+      desc = "Toggle Host Terminal (macOS zsh)",
+      icon = { icon = " ", color = "cyan" },
+    },
+    { "<leader>tx", "<cmd>TermTmux<CR>", desc = "Toggle Tmux Terminal", icon = { icon = " ", color = "orange" } },
+    { "<leader>td", "<cmd>LazyDocker<CR>", desc = "Open LazyDocker", icon = { icon = " ", color = "blue" } },
+    { "<leader>t1", hidden = true },
+    { "<leader>t2", hidden = true },
+    { "<leader>t3", hidden = true },
     { "<leader>1", hidden = true },
     { "<leader>2", hidden = true },
     { "<leader>3", hidden = true },
   })
+else
+  map("n", "<leader>tt", "<cmd>Term<CR>", { desc = "Toggle Terminal (zsh)" })
+  map("n", "<leader>th", "<cmd>TermHost<CR>", { desc = "Toggle Host Terminal (macOS zsh)" })
+  map("n", "<leader>tx", "<cmd>TermTmux<CR>", { desc = "Toggle Tmux Terminal" })
+  map("n", "<leader>td", "<cmd>LazyDocker<CR>", { desc = "Open LazyDocker" })
 end
 
--- Normal mode toggles (<Space>tt/th/tx and <Space>1/2/3 or <Space>t1/t2/t3)
-map("n", "<leader>tt", "<cmd>Term<CR>", { desc = "Toggle Floating Terminal (1: Term / Devcontainer)" })
-map("n", "<leader>th", "<cmd>TermHost<CR>", { desc = "Toggle Host Floating Terminal (2: macOS zsh)" })
-map("n", "<leader>tx", "<cmd>TermTmux<CR>", { desc = "Toggle Tmux Floating Terminal (3: Tmux)" })
-map("n", "<leader>t1", "<cmd>Term<CR>", { desc = "Toggle Floating Terminal 1 (Term / Devcontainer)" })
-map("n", "<leader>t2", "<cmd>TermHost<CR>", { desc = "Toggle Floating Terminal 2 (Host zsh)" })
-map("n", "<leader>t3", "<cmd>TermTmux<CR>", { desc = "Toggle Floating Terminal 3 (Tmux)" })
-map("n", "<leader>1", "<cmd>Term<CR>", { desc = "Toggle Floating Terminal 1 (Term / Devcontainer)" })
-map("n", "<leader>2", "<cmd>TermHost<CR>", { desc = "Toggle Floating Terminal 2 (Host zsh)" })
-map("n", "<leader>3", "<cmd>TermTmux<CR>", { desc = "Toggle Floating Terminal 3 (Tmux)" })
-map("n", "<leader>td", "<cmd>LazyDocker<CR>", { desc = "Open LazyDocker floating modal" })
+-- Hidden number shortcuts (<Space>1/2/3 & <Space>t1/t2/t3)
+map("n", "<leader>t1", "<cmd>Term<CR>", { desc = "Toggle Terminal (Devcontainer or zsh)" })
+map("n", "<leader>t2", "<cmd>TermHost<CR>", { desc = "Toggle Host Terminal (macOS zsh)" })
+map("n", "<leader>t3", "<cmd>TermTmux<CR>", { desc = "Toggle Tmux Terminal" })
+map("n", "<leader>1", "<cmd>Term<CR>", { desc = "Toggle Terminal (Devcontainer or zsh)" })
+map("n", "<leader>2", "<cmd>TermHost<CR>", { desc = "Toggle Host Terminal (macOS zsh)" })
+map("n", "<leader>3", "<cmd>TermTmux<CR>", { desc = "Toggle Tmux Terminal" })
 map("t", "<Esc><Esc>", "<C-\\><C-n><cmd>lua require('core.terminals').hide()<CR>", { desc = "Hide floating terminal" })
 
 return M

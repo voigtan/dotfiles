@@ -9,6 +9,13 @@ if ok_wk then
   wk.setup({
     preset = "modern",
     delay = 200,
+    filter = function(mapping)
+      if mapping.lhs == "<leader>th" or mapping.lhs == " th" then
+        local ok_dc, dc = pcall(require, "core.devcontainer")
+        return ok_dc and dc.is_running()
+      end
+      return true
+    end,
     -- Auto-expand small subgroups (<= 2 items) inline so you don't need an extra keypress
     expand = 2,
     win = {
