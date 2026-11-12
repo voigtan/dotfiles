@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
         "Voigt"
-    ]
+    ],
+    "files.associations": {
+        "**/brewfiles/Brewfile.*": "ruby"
+    }
 }

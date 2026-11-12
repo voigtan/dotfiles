@@ -27,9 +27,36 @@ else
 fi
 
 brew update --quiet || warn "brew update encountered a warning, continuing..."
-if ! brew bundle --no-upgrade; then
-    warn "Some Brewfile items failed to install. Continuing setup..."
+
+real_brewfile_groups=()
+for file in ~/.dotfiles/brewfiles/Brewfile.*; do
+    if [[ "$file" == *"Brewfile.ignore" ]]; then
+        continue
+    fi
+    group=$(basename "$file" | cut -d. -f2)
+    real_brewfile_groups+=("$group")
+done
+
+brew_groups=("${real_brewfile_groups[@]}")
+selected_groups=("${brew_groups[@]}")
+
+if [[ -n "${HOMEBREW_BREW_GROUPS:-}" ]]; then
+    selected_groups=(${=HOMEBREW_BREW_GROUPS})
+elif [[ -t 0 || -t 1 ]]; then
+    msg "Select Brewfile groups to install:"
+    if ! interactive_menu --all "${brew_groups[@]}" selected_groups; then
+        warn "Brewfile selection cancelled, skipping package installation."
+        selected_groups=()
+    fi
 fi
+
+if (( ${#selected_groups[@]} > 0 )); then
+    msg "Installing Brewfile groups: ${selected_groups[*]}"
+    HOMEBREW_BREW_GROUPS="${selected_groups[*]}" brew bundle --no-upgrade || warn "Some Brewfile items failed to install. Continuing setup..."
+else
+    warn "No Brewfile groups selected."
+fi
+
 brew cleanup -s || true
 
 ok "Homebrew packages installed successfully"

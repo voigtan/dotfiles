@@ -106,12 +106,98 @@ pw() {
     echo
 }
 
-# Dump current Homebrew packages to the dotfiles brewfile
-# Usage: backup-brewfile [path]
+# Dump current Homebrew packages to the modular dotfiles brewfiles
+# Usage: backup-brewfile [brewfiles_dir]
 backup-brewfile() {
-    local backup_path=${1:-~/.dotfiles/brewfile}
-    brew bundle dump --file="$backup_path" --force --no-vscode
-    echo "Brewfile backed up to $backup_path (without VSCode extensions)"
+    local brewfiles_dir=${1:-~/.dotfiles/brewfiles}
+    local tmpfile
+    tmpfile=$(mktemp "${TMPDIR:-/tmp}/Brewfile.dump.XXXXXX") || return 1
+
+    if ! brew bundle dump --file="$tmpfile" --force --no-vscode; then
+        rm -f "$tmpfile"
+        return 1
+    fi
+
+    BREWFILES_DIR="$brewfiles_dir" DUMP_FILE="$tmpfile" ruby -e '
+      dir = File.expand_path(ENV.fetch("BREWFILES_DIR"))
+      dump_file = ENV.fetch("DUMP_FILE")
+      groups = %w[core work personal]
+      ignore_file = File.join(dir, "Brewfile.ignore")
+
+      def parse_entries(path)
+        return [] unless File.exist?(path)
+        entries = []
+        comments = []
+        File.readlines(path).each do |line|
+          if line =~ /^\s*#/
+            comments << line
+          elsif line =~ /^\s*(tap|brew|cask|mas|vscode|go|cargo|uv|flatpak|krew|npm)\s+"([^"]+)"/
+            type = $1
+            name = $2
+            key = "#{type}:#{name}"
+            entries << { key: key, block: (comments + [line]).join }
+            comments = []
+          elsif line =~ /^\s*$/
+            comments = []
+          end
+        end
+        entries
+      end
+
+      ignored_keys = parse_entries(ignore_file).each_with_object({}) { |e, h| h[e[:key]] = true }
+
+      group_entries = {}
+      key_to_groups = Hash.new { |h, k| h[k] = [] }
+
+      groups.each do |g|
+        path = File.join(dir, "Brewfile.#{g}")
+        parsed = parse_entries(path)
+        group_entries[g] = parsed
+        parsed.each { |e| key_to_groups[e[:key]] << g }
+      end
+
+      dumped = parse_entries(dump_file)
+      dumped_by_key = dumped.each_with_object({}) { |e, h| h[e[:key]] = e[:block] }
+
+      new_entries_for_core = []
+      dumped.each do |e|
+        next if ignored_keys[e[:key]]
+        if key_to_groups[e[:key]].empty?
+          new_entries_for_core << e
+        end
+      end
+
+      groups.each do |g|
+        path = File.join(dir, "Brewfile.#{g}")
+        out = []
+        seen = {}
+
+        group_entries[g].each do |e|
+          next if ignored_keys[e[:key]] || seen[e[:key]]
+          seen[e[:key]] = true
+          out << (dumped_by_key[e[:key]] || e[:block])
+        end
+
+        if g == "core"
+          new_entries_for_core.each do |e|
+            next if seen[e[:key]]
+            seen[e[:key]] = true
+            out << e[:block]
+          end
+        end
+
+        File.write(path, out.join)
+      end
+    '
+
+    local status_code=$?
+    rm -f "$tmpfile"
+    if (( status_code == 0 )); then
+        echo "Brewfiles backed up and grouped in $brewfiles_dir (core, work, personal; respecting Brewfile.ignore)"
+    else
+        echo "Failed to group Brewfiles" >&2
+        return "$status_code"
+    fi
 }
 
 # Start a simple Python HTTP server

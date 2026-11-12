@@ -1,0 +1,13 @@
+# Add packages here that should be ignored by `backup-brewfile`
+# Examples:
+# brew "some-temp-formula"
+# cask "some-temp-cask"
+# mas "Some App", id: 123456789
+
+mas "Genki Arcade", id: 1555925018
+
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+
+mas "Xcode", id: 497799835
