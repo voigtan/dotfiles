@@ -32,3 +32,6 @@ git() {
     fi
     command git "$@"
 }
+
+# Make `git go` complete like `git switch`
+_git_go() { _git_switch }

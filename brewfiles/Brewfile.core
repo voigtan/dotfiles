@@ -145,8 +145,6 @@ brew "wget"
 brew "ydiff"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# UNIX shell (command interpreter)
-brew "zsh"
 # Additional completion definitions for zsh
 brew "zsh-completions"
 # OpenCode V2 - the AI coding agent for the terminal

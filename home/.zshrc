@@ -1,18 +1,21 @@
-export GPG_TTY=$(tty)
+# Set GPG TTY for the current interactive terminal/tmux pane
+export GPG_TTY=$TTY
 
 # Path to your oh-my-zsh installation.
-DEFAULT_USER="$(whoami)"
+DEFAULT_USER="$USER"
 export ZSH="$HOME/.oh-my-zsh"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="false"
 
-# Set up Homebrew Zsh completion if available
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+# Ensure Homebrew env & PATH are loaded even in non-login interactive shells
+if [[ -z "$HOMEBREW_PREFIX" && -f "$HOME/.zprofile" ]]; then
+    source "$HOME/.zprofile"
+fi
 
-    autoload -Uz compinit
-    compinit
+# Add Homebrew Zsh completions to FPATH before Oh My Zsh runs compinit
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+    FPATH="$HOMEBREW_PREFIX/share/zsh-completions:$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH"
 fi
 
 # Which plugins would you like to load?
@@ -27,45 +30,19 @@ plugins=(
     wd
     fzf
 )
-source $ZSH/oh-my-zsh.sh
+[[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-source $(brew --prefix nvm)/nvm.sh
+[[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ]] && source "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+[[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ]] && source "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
 
 # Load custom zsh configurations (aliases, functions, etc.)
 for file in ~/.config/zsh/*.zsh(N); do
     [[ -r "$file" && -f "$file" ]] && source "$file"
 done
-unset file;
+unset file
 
-# fzf
-# Enable using ALT(CMD)+C to CD into the selected directory and customize behaviour
-# https://betterprogramming.pub/boost-your-command-line-productivity-with-fuzzy-finder-985aa162ba5d
-bindkey "ç" fzf-cd-widget
-
-export FZF_DEFAULT_OPTS="
-    --bind '<:toggle-preview'
-    --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
-    --info=inline
-    --layout=reverse
-    --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
-    --preview-window=:hidden
-    --prompt='∼ ' --pointer='▶' --marker='✓'"
-
-export PATH="/usr/local/sbin:$PATH"
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-# Add Homebrew curl to PATH
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-export PATH=/opt/homebrew/share/google-cloud-sdk/bin:"$PATH"
-
-# Make `git go` complete like `git switch`
-_git_go() { _git_switch }
-
-# Don't upgrade casks that manage their own updates (e.g. Chrome, Discord)
-export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
-
-eval "$(starship init zsh)"
-eval "$(zoxide init zsh)"
+# Prompt & directory jumper
+(( $+commands[starship] )) && eval "$(starship init zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"

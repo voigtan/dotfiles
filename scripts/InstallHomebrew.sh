@@ -9,11 +9,8 @@ if ! appExists brew; then
     # Re-warm sudo immediately because Homebrew's installer runs `sudo -k` on exit
     sudo -A -v 2>/dev/null || true
 
-    # Setup Homebrew envvars
+    # Setup Homebrew envvars for the current install session (persisted via home/.zprofile)
     if [[ $(arch) == "arm64" ]]; then
-        if ! grep -qs '/opt/homebrew/bin/brew shellenv' ~/.zprofile 2>/dev/null; then
-            (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
-        fi
         eval "$(/opt/homebrew/bin/brew shellenv)"
     elif [[ $(arch) == "i386" ]]; then
         eval "$(/usr/local/bin/brew shellenv)"
