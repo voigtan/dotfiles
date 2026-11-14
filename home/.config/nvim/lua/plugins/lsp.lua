@@ -138,10 +138,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.lsp.config("lua_ls", {
   settings = {
     Lua = {
-      runtime = { version = "LuaJIT" },
+      runtime = {
+        version = "LuaJIT",
+        path = { "lua/?.lua", "lua/?/init.lua", "?.lua", "?/init.lua" },
+        pathStrict = true,
+      },
       workspace = {
         checkThirdParty = false,
-        library = { vim.env.VIMRUNTIME },
+        library = vim.api.nvim_get_runtime_file("lua", true),
       },
       diagnostics = {
         globals = { "vim" },

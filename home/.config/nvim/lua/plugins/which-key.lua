@@ -8,7 +8,6 @@ local ok_wk, wk = pcall(require, "which-key")
 if ok_wk then
   wk.setup({
     preset = "modern",
-    delay = 200,
     filter = function(mapping)
       if mapping.lhs == "<leader>th" or mapping.lhs == " th" then
         local ok_dc, dc = pcall(require, "core.devcontainer")
@@ -36,9 +35,6 @@ if ok_wk then
     keys = {
       scroll_down = "<Down>",
       scroll_up = "<Up>",
-    },
-    icons = {
-      group = "", -- Default is "+" (use "" to remove the +, or "+ " to add a space)
     },
     sort = {
       "local",

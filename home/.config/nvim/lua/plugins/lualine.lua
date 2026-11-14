@@ -46,7 +46,7 @@ if ok_lualine then
             elseif st == "starting" then
               return "  Starting..."
             elseif st == "stopped" then
-              return "  Devcontainer (off)"
+              return "  Devcontainer"
             end
             return ""
           end,
