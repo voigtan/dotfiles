@@ -135,6 +135,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- 4. Server Configs (vtsls, lua_ls, jsonls, yamlls, html, cssls, copilot)
+local lua_library = {}
+local config_real = vim.uv.fs_realpath(vim.fn.stdpath("config"))
+for _, lib_path in ipairs(vim.api.nvim_get_runtime_file("lua", true)) do
+  local real = vim.uv.fs_realpath(lib_path)
+  if not (config_real and real and vim.startswith(real, config_real)) then
+    table.insert(lua_library, lib_path)
+  end
+end
+
 vim.lsp.config("lua_ls", {
   settings = {
     Lua = {
@@ -145,7 +154,7 @@ vim.lsp.config("lua_ls", {
       },
       workspace = {
         checkThirdParty = false,
-        library = vim.api.nvim_get_runtime_file("lua", true),
+        library = lua_library,
       },
       diagnostics = {
         globals = { "vim" },

@@ -15,6 +15,7 @@ if ok_neotest then
     -- overwrite an earlier "failed" test result with a later "passed" test result
     local ok_vutil, vutil = pcall(require, "neotest-vitest.util")
     if ok_vutil and vutil.parsed_json_to_results then
+      ---@diagnostic disable-next-line: duplicate-set-field
       vutil.parsed_json_to_results = function(data, _, consoleOut)
         local tests = {}
         for _, testResult in pairs(data.testResults or {}) do
@@ -86,6 +87,7 @@ if ok_neotest then
     )
   end
 
+  ---@diagnostic disable: missing-fields
   neotest.setup({
     adapters = adapters,
     status = {
@@ -121,6 +123,7 @@ if ok_neotest then
       unknown = "?",
     },
   })
+  ---@diagnostic enable: missing-fields
 
   -- Use Neovim 0.12 native multi-line `virtual_lines` for Neotest failure diffs
   -- so multi-line Expected/Received assertion diffs render cleanly below the failing line
@@ -132,6 +135,7 @@ if ok_neotest then
 
   -- Deduplicate diagnostics in the `neotest` namespace (e.g. when a file has duplicate `it()` titles)
   local orig_diag_set = vim.diagnostic.set
+  ---@diagnostic disable-next-line: duplicate-set-field
   vim.diagnostic.set = function(ns, bufnr, diagnostics, opts)
     if ns == neotest_ns and type(diagnostics) == "table" then
       local seen = {}

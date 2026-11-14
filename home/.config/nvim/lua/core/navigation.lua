@@ -236,14 +236,3 @@ map("n", "<C-Left>", _G.win_nav.left, { desc = "Move focus to Left window (Neo-t
 map("n", "<C-Right>", _G.win_nav.right, { desc = "Move focus to Right window (Editor)" })
 map("n", "<C-Down>", _G.win_nav.down, { desc = "Move focus to Lower window (Terminal)" })
 map("n", "<C-Up>", _G.win_nav.up, { desc = "Move focus to Upper window (Editor)" })
-
--- Terminal mode window navigation (exits terminal insert mode via <C-\><C-n> first)
-map("t", "<C-h>", "<C-\\><C-n><cmd>lua _G.win_nav.left()<CR>", { desc = "Move focus to Left window (Neo-tree)" })
-map("t", "<C-l>", "<C-\\><C-n><cmd>lua _G.win_nav.right()<CR>", { desc = "Move focus to Right window (Editor)" })
-map("t", "<C-j>", "<C-\\><C-n><cmd>lua _G.win_nav.down()<CR>", { desc = "Move focus to Lower window (Terminal)" })
-map("t", "<C-k>", "<C-\\><C-n><cmd>lua _G.win_nav.up()<CR>", { desc = "Move focus to Upper window (Editor)" })
-
-map("t", "<C-Left>", "<C-\\><C-n><cmd>lua _G.win_nav.left()<CR>", { desc = "Move focus to Left window (Neo-tree)" })
-map("t", "<C-Right>", "<C-\\><C-n><cmd>lua _G.win_nav.right()<CR>", { desc = "Move focus to Right window (Editor)" })
-map("t", "<C-Down>", "<C-\\><C-n><cmd>lua _G.win_nav.down()<CR>", { desc = "Move focus to Lower window (Terminal)" })
-map("t", "<C-Up>", "<C-\\><C-n><cmd>lua _G.win_nav.up()<CR>", { desc = "Move focus to Upper window (Editor)" })

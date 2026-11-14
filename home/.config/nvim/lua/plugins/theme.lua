@@ -9,6 +9,7 @@ if ok_catppuccin then
     transparent_background = true,
     float = {
       transparent = true,
+      solid = false,
     },
     integrations = {
       treesitter = true,
@@ -16,7 +17,7 @@ if ok_catppuccin then
       flash = true,
       gitsigns = true,
       neotree = true,
-      telescope = { enabled = true },
+      telescope = true,
       which_key = true,
       native_lsp = {
         enabled = true,

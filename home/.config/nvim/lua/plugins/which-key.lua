@@ -36,17 +36,6 @@ if ok_wk then
       scroll_down = "<Down>",
       scroll_up = "<Up>",
     },
-    sort = {
-      "local",
-      "order",
-      "group",
-      function(node)
-        -- Group items with the same action verb together (e.g. "Open Terminal..." together, "Toggle..." together)
-        return (node.desc or ""):match("^(%S+)") or ""
-      end,
-      "alphanum",
-      "mod",
-    },
   })
 
   -- Also allow <C-d>/<C-u> and <PageDown>/<PageUp> to scroll in addition to <Down>/<Up>
@@ -54,6 +43,7 @@ if ok_wk then
   local ok_view, wk_view = pcall(require, "which-key.view")
   if ok_state and ok_view then
     local orig_check = wk_state.check
+    ---@diagnostic disable-next-line: duplicate-set-field
     wk_state.check = function(state, key)
       if wk_view.valid() then
         if key == "<C-D>" or key == "<PageDown>" then

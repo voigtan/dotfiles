@@ -110,9 +110,10 @@ vim.api.nvim_create_autocmd("SessionLoadPost", {
 -- Helper to invoke Neo-tree filesystem commands from right-click menu
 _G.neotree_ctx_action = function(action_name)
   local state = require("neo-tree.sources.manager").get_state("filesystem")
-  if not state then
+  if not state or not state.tree then
     return
   end
+  ---@cast state neotree.StateWithTree
   local cmds = require("neo-tree.sources.filesystem.commands")
   if state.commands and state.commands[action_name] then
     state.commands[action_name](state)

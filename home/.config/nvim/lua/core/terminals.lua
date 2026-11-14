@@ -112,9 +112,9 @@ end
 
 local function build_footer()
   return {
-    { " <Esc><Esc> / <C-j>: Hide ", "Comment" },
+    { " <Esc><Esc>: Hide ", "Comment" },
     { "│", "FloatBorder" },
-    { " <C-n> / <C-p> or <Space>1..3: Switch Profile ", "Comment" },
+    { " <C-Tab> / <D-1..3>: Switch Profile ", "Comment" },
   }
 end
 

@@ -65,6 +65,7 @@ map("n", "<leader>gd", function()
   local gs = require("gitsigns")
   gs.toggle_word_diff()
   gs.toggle_linehl()
+  ---@diagnostic disable-next-line: deprecated
   gs.toggle_deleted()
 end, { desc = "Toggle inline Git diff (word + line + deleted)" })
 

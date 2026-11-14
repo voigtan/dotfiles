@@ -70,7 +70,7 @@ _G.close_buffer_tab = function(bufnr, force)
   end
 
   if vim.api.nvim_buf_is_valid(bufnr) then
-    pcall(vim.cmd, (force and "bdelete! " or "bdelete ") .. bufnr)
+    pcall(vim.api.nvim_buf_delete, bufnr, { force = force == true })
   end
   return true
 end
@@ -113,6 +113,7 @@ if ok_bufferline then
   if ok_ui and ok_cfg and ok_hl and not ui._patched_modified_close then
     ui._patched_modified_close = true
     local orig_element = ui.element
+    ---@diagnostic disable-next-line: duplicate-set-field
     ui.element = function(current_state, element)
       element = orig_element(current_state, element)
       if element.modified and element.component then
@@ -120,6 +121,7 @@ if ok_bufferline then
         local curr_hl = bl_highlights.for_element(element)
         local close_icon = (bl_config.options and bl_config.options.buffer_close_icon) or "󰅖"
         local mod_icon = (bl_config.options and bl_config.options.modified_icon) or "●"
+        ---@diagnostic disable-next-line: missing-fields
         local close_seg = ui.make_clickable("handle_close", element.id, {
           text = " " .. close_icon,
           highlight = curr_hl.close_button,

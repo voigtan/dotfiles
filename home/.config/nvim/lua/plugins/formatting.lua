@@ -21,7 +21,7 @@ if ok_conform then
         require_cwd = true, -- Only use Biome when biome.json / biome.jsonc is in the project
         command = function(_, ctx)
           local util = require("conform.util")
-          local local_cmd = util.from_node_modules("biome")(_, ctx)
+          local local_cmd = util.from_node_modules("biome")(ctx)
           if local_cmd and local_cmd ~= "biome" and vim.fn.executable(local_cmd) == 1 then
             local node_modules_dir = local_cmd:match("^(.*)/%.bin/biome$")
             if node_modules_dir and vim.fn.filereadable(node_modules_dir .. "/@biomejs/cli-darwin-arm64/biome") == 1 then
