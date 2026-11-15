@@ -1,5 +1,8 @@
 theme = Catppuccin Frappe
 
+background-opacity = 0.95
+background-blur = macos-glass-regular
+
 font-family = Monaspace Neon
 font-family = Monaspace Argon
 font-family = FiraCode Nerd Font Mono
