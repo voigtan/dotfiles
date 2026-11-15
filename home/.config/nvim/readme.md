@@ -51,14 +51,14 @@ home/.config/nvim/
 > **Leader Key:** `<Space>`
 
 ### Window & Pane Navigation (`lua/core/navigation.lua`)
-Works in **both Normal mode and Terminal mode** (no need to press `<Esc><Esc>` first):
+Works in **Normal mode** (leaving Terminal mode `<C-h/j/k/l>` untouched so shell shortcuts like `<C-l>` clear work natively):
 
 | Keymap | Equivalent Arrow | Action |
 | :--- | :--- | :--- |
 | `<C-h>` | `<C-Left>` | Focus **Neo-tree sidebar** (left) |
 | `<C-l>` | `<C-Right>` | Focus **Code Editor** (right) |
-| `<C-j>` | `<C-Down>` | Focus **Integrated Terminal** (bottom) |
-| `<C-k>` | `<C-Up>` | Focus **Code Editor** (up from terminal) |
+| `<C-j>` | `<C-Down>` | Toggle **Floating Terminal** |
+| `<C-k>` | `<C-Up>` | Focus **Code Editor** (up) |
 | `:q` / `:wq` | — | Quits Neovim cleanly (prompts via floating modal for any unsaved buffers before closing Neo-tree/Terminal) |
 
 ### Fast On-Screen Jump / Flash (`lua/plugins/flash.lua`)
@@ -208,11 +208,11 @@ Interactive shells (`1:Term`, `2:Host`, `3:Tmux`) share a **persistent floating 
 
 | Keymap / Command | Action |
 | :--- | :--- |
-| `<Space>tt` / `<Space>1` / `<Space>t1` or `:Term` (or `<C-j>`) | **Toggle Floating Terminal 1** (attaches inside **Devcontainer** if running, otherwise macOS `/bin/zsh -l`) |
-| `<Space>th` / `<Space>2` / `<Space>t2` or `:TermHost` | **Toggle / Switch to Host Floating Terminal 2** (`/bin/zsh -l` on macOS, even when a devcontainer is running) |
-| `<Space>tx` / `<Space>3` / `<Space>t3` or `:TermTmux` | **Toggle / Switch to Tmux Floating Terminal 3** (`tmux`) |
+| `<Space>tt` or `:Term` (or `<C-j>`) | **Toggle Terminal** (attaches inside **Devcontainer** if running, otherwise macOS `/bin/zsh -l`; also `<Space>1` / `<Space>t1`) |
+| `<Space>th` or `:TermHost` | **Toggle Host Terminal** (`/bin/zsh -l` on macOS, even when a devcontainer is running; also `<Space>2` / `<Space>t2`) |
+| `<Space>tx` or `:TermTmux` | **Toggle Tmux Terminal** (`tmux`; also `<Space>3` / `<Space>t3`) |
 | `<D-1>` / `<D-2>` / `<D-3>` or `<C-Tab>` *(inside float)* | **Switch** between floating terminal profiles `1:Term`, `2:Host`, and `3:Tmux` |
-| `<Esc><Esc>` or `<C-j>` / `<C-k>` *(inside float)* | **Hide floating terminal** (keeps shell processes running in the background) |
+| `<Esc><Esc>` *(inside float)* | **Hide floating terminal** (keeps shell processes running in the background) |
 | `<Space>td` or `:LazyDocker` | Open **LazyDocker** in a floating modal window (`q` or `<Esc><Esc>` closes & terminates it) |
 | `<Space>gg` or `:LazyGit` | Open **LazyGit** in a floating modal window (`q` or `<Esc><Esc>` closes & terminates it) |
 | `<Space>du` or `:DevcontainerUp` | **Start / Up Devcontainer** for current project in a floating build window (auto-closes on success) |
