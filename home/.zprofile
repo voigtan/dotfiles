@@ -14,7 +14,6 @@ export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 # Prepend existing directories to PATH (silently skipped if not installed)
 path=(
     "$HOME/.local/bin"(N-/)
-    "${HOMEBREW_PREFIX}/opt/openjdk@17/bin"(N-/)
     "${HOMEBREW_PREFIX}/opt/curl/bin"(N-/)
     "${HOMEBREW_PREFIX}/share/google-cloud-sdk/bin"(N-/)
     /usr/local/sbin(N-/)
