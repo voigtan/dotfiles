@@ -32,6 +32,27 @@ plugins=(
 )
 [[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 
+# History configuration
+export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+[[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
+export HISTSIZE=100000
+export SAVEHIST=100000
+
+setopt APPEND_HISTORY          # append to history file instead of overwriting
+setopt SHARE_HISTORY           # share history across all open terminal sessions immediately
+setopt HIST_IGNORE_DUPS        # do not record a command just run again
+setopt HIST_IGNORE_ALL_DUPS    # remove older duplicate entry if a new command is a duplicate
+setopt HIST_IGNORE_SPACE       # do not record commands starting with a leading space
+setopt HIST_EXPIRE_DUPS_FIRST  # expire duplicate entries first when trimming history
+setopt HIST_FIND_NO_DUPS       # do not display duplicates when searching history
+setopt HIST_REDUCE_BLANKS      # strip unnecessary blanks before recording a command
+
+# Shell options
+setopt AUTOCD                  # cd into a directory simply by typing its name
+setopt NOBEEP                  # disable terminal bell on errors or tab-completion
+setopt NUMERIC_GLOB_SORT       # sort file10 after file9, not after file1
+
+
 # NVM
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ]] && source "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
@@ -43,6 +64,10 @@ for file in ~/.config/zsh/*.zsh(N); do
 done
 unset file
 
-# Prompt & directory jumper
+# Prompt & directory jumper (`cd` / `cdi` + `z` / `zi` aliases)
 (( $+commands[starship] )) && eval "$(starship init zsh)"
-(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+if (( $+commands[zoxide] )); then
+    eval "$(zoxide init --cmd cd zsh)"
+    alias z='cd'
+    alias zi='cdi'
+fi
