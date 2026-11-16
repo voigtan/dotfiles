@@ -1,3 +1,9 @@
+# OpenCode V2 - the AI coding agent for the terminal
+brew "anomalyco/tap/opencode-v2", trusted: true
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
 # Provides updates to various Microsoft products

@@ -147,12 +147,6 @@ brew "ydiff"
 brew "zoxide"
 # Additional completion definitions for zsh
 brew "zsh-completions"
-# OpenCode V2 - the AI coding agent for the terminal
-brew "anomalyco/tap/opencode-v2", trusted: true
-# Password manager that keeps all passwords secure behind one password
-cask "1password"
-# Command-line interface for 1Password
-cask "1password-cli"
 # Web browser focusing on privacy
 cask "brave-browser"
 # Web browser
@@ -182,8 +176,6 @@ cask "macfuse"
 cask "rectangle"
 # Unpacks archive files
 cask "the-unarchiver"
-# Virtual machines UI using QEMU
-cask "utm"
 # Open-source code editor
 cask "visual-studio-code"
 # Multimedia player

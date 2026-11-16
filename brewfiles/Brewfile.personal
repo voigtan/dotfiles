@@ -18,3 +18,5 @@ cask "google-drive"
 cask "spotify"
 # Calling and messaging application focusing on security
 cask "viber"
+# Virtual machines UI using QEMU
+cask "utm"

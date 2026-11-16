@@ -104,8 +104,22 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- Native Neovim 0.12 Undo Tree (`nvim.undotree`)
 pcall(vim.cmd.packadd, "nvim.undotree")
 
+-- Floating Spell Suggestions picker at cursor (Telescope cursor theme, fallback to native `z=`)
+local function spell_suggest_popup()
+  local ok_tb, tb = pcall(require, "telescope.builtin")
+  local ok_themes, themes = pcall(require, "telescope.themes")
+  if ok_tb and ok_themes then
+    tb.spell_suggest(themes.get_cursor({
+      layout_config = { width = 45, height = 12 },
+    }))
+  else
+    vim.cmd("normal! z=")
+  end
+end
+_G.spell_suggest_popup = spell_suggest_popup
+
 local function toggle_undotree()
-  -- If an Undotree window is already open anywhere in the tabpage, close it and focus the editor
+  -- If an Undo tree window is already open anywhere in the tabpage, close it and focus the editor
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local buf = vim.api.nvim_win_get_buf(win)
     if vim.bo[buf].filetype == "nvim-undotree" then
@@ -171,10 +185,16 @@ map({ "n", "x", "o" }, "Ä", "}", { desc = "Paragraph down '}' (Swedish Ä)" })
 map({ "n", "x", "o" }, "ö", "^", { desc = "Start of line '^' (Swedish ö)" })
 map({ "n", "x", "o" }, "Ö", "$", { desc = "End of line '$' (Swedish Ö)" })
 
--- Right-Click Context Menu: Toggle Comment
+-- Spellcheck suggestions popup (`z=` and unshifted `z0` for Swedish layout where `=` is Shift+0)
+map("n", "z=", spell_suggest_popup, { desc = "Spelling suggestions popup (EN-GB / SV)" })
+map("n", "z0", spell_suggest_popup, { desc = "Spelling suggestions popup (Swedish unshifted z=)" })
+
+-- Right-Click Context Menu: Toggle Comment & Spellcheck
 require("core.context-menu").register("editor", {
   { priority = "100.82", label = "Toggle Comment (gcc)", cmd = "gcc", mode = "n", remap = true },
   { priority = "100.82", label = "Toggle Comment (gc)", cmd = "gc", mode = "v", remap = true },
+  { priority = "100.83", label = "Spelling Suggestions (z=)", cmd = "<Cmd>lua _G.spell_suggest_popup()<CR>", mode = "n" },
+  { priority = "100.84", label = "Add Word to Dictionary (zg)", cmd = "zg", mode = "n" },
 })
 
 -- Options / UI Toggles group (<Space>o), Native Undo Tree toggle (<Space>ou) & Restart (<Space>r)

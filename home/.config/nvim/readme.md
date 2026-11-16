@@ -174,6 +174,7 @@ In Normal, Visual, and Operator-pending modes (Insert mode still types `å`, `ä
 | `å` / `ä` | `[` / `]` | **Bracket motions** without needing `Option + 8/9` (e.g., `åb` / `äb` for prev/next tab, `åd` / `äd` for prev/next diagnostic) |
 | `Å` / `Ä` | `{` / `}` | **Jump paragraph up / down** without needing `Option + Shift + 8/9` |
 | `ö` / `Ö` | `^` / `$` | **Jump to start / end of line** without needing dead-key `^` or `Option + 4` |
+| `z=` or `z0` | `z=` | **Floating Spelling Suggestions popup** (UK English + Swedish) at cursor (`z0` avoids needing `Shift + 0` on Swedish keyboards; also in Right-Click menu alongside `zg`) |
 | `Option + i` (`ı`) | `<M-i>` | **Toggle Inlay Hints** on Swedish macOS layout |
 | `Option + å` / `Option + ä` | `<M-[>` / `<M-]>` | **Previous / Next Copilot suggestion** in Insert mode |
 
