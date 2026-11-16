@@ -56,4 +56,8 @@ fi
 
 brew cleanup -s || true
 
+# Ensure Homebrew share directories have secure permissions for Zsh compaudit
+chmod go-w "$(brew --prefix)/share" 2>/dev/null || true
+chmod -R go-w "$(brew --prefix)/share/zsh" "$(brew --prefix)/share/zsh-completions" 2>/dev/null || true
+
 ok "Homebrew packages installed successfully"

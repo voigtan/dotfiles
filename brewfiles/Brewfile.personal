@@ -4,8 +4,6 @@ brew "ncspot"
 cask "bambu-studio"
 # Voice and text chat software
 cask "discord"
-# Team communication and collaboration software
-cask "slack"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
 # Elgato FACECAM configuration tool
@@ -14,9 +12,9 @@ cask "elgato-camera-hub"
 cask "elgato-stream-deck"
 # Client for the Google Drive storage service
 cask "google-drive"
-# Music streaming service
-cask "spotify"
 # Calling and messaging application focusing on security
 cask "viber"
 # Virtual machines UI using QEMU
 cask "utm"
+# Multimedia player
+cask "vlc"

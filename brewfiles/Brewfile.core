@@ -61,8 +61,6 @@ brew "hashcat"
 brew "htop"
 # Apache HTTP server
 brew "httpd"
-# C/C++ and Java libraries for Unicode and globalization
-brew "icu4c@76"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Lazier way to manage everything docker
@@ -149,6 +147,10 @@ brew "zoxide"
 brew "zsh-completions"
 # Web browser focusing on privacy
 cask "brave-browser"
+# Team communication and collaboration software
+cask "slack"
+# Music streaming service
+cask "spotify"
 # Web browser
 cask "firefox"
 cask "font-fira-code"
@@ -170,14 +172,10 @@ cask "iterm2"
 cask "keepassxc"
 # End-to-end encryption software
 cask "keybase"
-# File system integration
-cask "macfuse"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
 # Unpacks archive files
 cask "the-unarchiver"
 # Open-source code editor
 cask "visual-studio-code"
-# Multimedia player
-cask "vlc"
 mas "Yubico Authenticator", id: 1497506650
