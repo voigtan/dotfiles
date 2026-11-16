@@ -1,5 +1,5 @@
-# Deduplicate PATH entries automatically
-typeset -U path PATH
+# Deduplicate PATH and FPATH entries automatically
+typeset -U path PATH fpath FPATH
 
 # Initialize Homebrew (portable across Apple Silicon and Intel Macs)
 if [[ -x /opt/homebrew/bin/brew ]]; then
@@ -19,4 +19,15 @@ path=(
     /usr/local/sbin(N-/)
     $path
 )
+
 export PATH
+
+# Prepend Homebrew Zsh completions to FPATH (silently skipped if not installed)
+fpath=(
+    "${HOMEBREW_PREFIX}/share/zsh-completions"(N-/)
+    "${HOMEBREW_PREFIX}/share/zsh/site-functions"(N-/)
+    $fpath
+)
+
+export FPATH
+

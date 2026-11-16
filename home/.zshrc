@@ -13,11 +13,6 @@ if [[ -z "$HOMEBREW_PREFIX" && -f "$HOME/.zprofile" ]]; then
     source "$HOME/.zprofile"
 fi
 
-# Add Homebrew Zsh completions to FPATH before Oh My Zsh runs compinit
-if [[ -n "$HOMEBREW_PREFIX" ]]; then
-    FPATH="$HOMEBREW_PREFIX/share/zsh-completions:$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH"
-fi
-
 # Which plugins would you like to load?
 # Standard plugins can be found in ~/.oh-my-zsh/plugins/*
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
