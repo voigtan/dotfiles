@@ -7,7 +7,7 @@ help:    ## Show this help.
 
 .PHONY: install
 install: ## Full macOS bootstrap & setup
-	@./install.sh
+	@$(RUN) ./scripts/Bootstrap.sh
 
 .PHONY: link
 link:    ## Symlink dotfiles into ~/ via GNU Stow

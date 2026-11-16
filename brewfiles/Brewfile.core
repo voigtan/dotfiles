@@ -115,10 +115,6 @@ brew "p7zip"
 brew "pango"
 # Pinentry for GPG on Mac
 brew "pinentry-mac"
-# Cross-platform application and UI framework
-brew "qt"
-# Cross-platform application and UI framework
-brew "qt@5"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Utility that provides fast incremental file transfer

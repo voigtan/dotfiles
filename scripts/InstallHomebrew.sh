@@ -10,12 +10,12 @@ if ! appExists brew; then
     sudo -A -v 2>/dev/null || true
 
     # Setup Homebrew envvars for the current install session (persisted via home/.zprofile)
-    if [[ $(arch) == "arm64" ]]; then
+    if [[ -x /opt/homebrew/bin/brew ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ $(arch) == "i386" ]]; then
+    elif [[ -x /usr/local/bin/brew ]]; then
         eval "$(/usr/local/bin/brew shellenv)"
     else
-        error_exit "Invalid CPU arch: $(arch)" >&2
+        error_exit "Homebrew binary not found after installation" >&2
     fi
 
     ok "Homebrew installed"
@@ -26,7 +26,7 @@ fi
 brew update --quiet || warn "brew update encountered a warning, continuing..."
 
 real_brewfile_groups=()
-for file in ~/.dotfiles/brewfiles/Brewfile.*; do
+for file in ./brewfiles/Brewfile.*; do
     if [[ "$file" == *"Brewfile.ignore" ]]; then
         continue
     fi

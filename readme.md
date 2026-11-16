@@ -7,7 +7,7 @@ git clone https://github.com/voigtan/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ```
 
-> **Note:** On a brand-new Mac without `git` or `make` yet, running `git clone` will automatically prompt macOS to install Xcode Command Line Tools (or `scripts/osx.sh` will install them automatically if you run `./install.sh`).
+> **Note:** On a brand-new Mac without `git` or `make` yet, running `git clone` will automatically prompt macOS to install Xcode Command Line Tools (or `scripts/Bootstrap.sh` will install them automatically when you run `make install`).
 
 2. Run the installer (installs Xcode CLI Tools, Oh My Zsh, Homebrew + `brewfile` packages/fonts, symlinks `home/` via GNU Stow, configures Ghostty/iTerm2/Dock/macOS defaults, and sets up `pinentry-mac`):
 
@@ -21,9 +21,9 @@ make install
 
 ```text
 ~/.dotfiles/
-├── brewfile              # Homebrew packages, casks, and Nerd Fonts
-├── install.sh            # Entrypoint script called by `make install`
-├── Makefile              # Make targets (`make install`, `make help`)
+├── brewfile              # Modular Brewfile loader
+├── brewfiles/            # Grouped Brewfiles (core, work, personal, ignore)
+├── Makefile              # Make targets (`make install`, `make help`, etc.)
 ├── home/                 # Dotfiles symlinked into `~/` via GNU Stow
 │   ├── .bash_profile     # Bash profile configuration
 │   ├── .colima/          # Colima container runtime templates
@@ -42,19 +42,25 @@ make install
 │   ├── .docker/          # Docker CLI configuration
 │   ├── .gitconfig        # Git global configuration & aliases
 │   ├── .tmux.conf        # Tmux configuration
-│   └── .zshrc            # Zsh & Oh My Zsh configuration
+│   ├── .zshenv           # XDG base directory & editor environment variables
+│   ├── .zprofile         # Homebrew initialization, PATH & FPATH setup
+│   └── .zshrc            # Interactive Zsh & Oh My Zsh configuration
 ├── iterm2/               # Exported iTerm2 preferences plist
 ├── scripts/              # Modular setup & macOS customization scripts
-│   ├── Bootstrap.sh      # OS detection and main setup orchestrator
-│   ├── osx.sh            # Full macOS bootstrap flow
+│   ├── Bootstrap.sh      # Full macOS bootstrap flow
 │   ├── LinkDotfiles.sh   # Preps directories, backs up conflicts, runs `stow home`
 │   ├── InstallHomebrew.sh
 │   ├── InstallOhMyZSH.sh
-│   ├── DockerPlugins.sh  # Links Docker CLI plugins (buildx, compose)
 │   ├── SetupPinentry.sh  # Configures gpg-agent to use pinentry-mac
 │   ├── CleanDock.sh      # Curates macOS Dock apps
 │   └── tweaks.sh         # macOS system defaults & UI tweaks
-└── tools/                # Shared shell helpers (logging, prompts, OS checks, menus)
+└── tools/                # Shared shell helpers (logging, prompts, sudo, menus)
+    ├── appExists.sh      # Command checks & Homebrew fallback installer
+    ├── ask.sh            # Interactive Y/N prompt
+    ├── menu.sh           # Interactive multi-select terminal menu
+    ├── message.sh        # Logging, status messages & banner
+    ├── scripts.sh        # Entrypoint loader sourced by Makefile targets
+    └── sudo.sh           # Upfront sudo prompt & background keepalive
 ```
 
 ### How `home/` and GNU Stow Work

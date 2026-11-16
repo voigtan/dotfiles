@@ -3,17 +3,7 @@
 # Define the folder containing the files to check
 folder_path_dotfiles_home="home"
 
-# if Stow is not installed, do not proceed
-if ! appExists stow; then
-	warn "stow is not installed. Please install stow before running this script."
-
-	if appExists "brew" && ask "Do you want to download stow?" N; then
-		brew install stow
-		ok "stow installed"
-	else
-		error_exit "stow is required to run this script. Please install stow and run this script again."
-	fi
-fi
+require_brew_app stow
 
 # Check if the folder exists
 if [ ! -d "$folder_path_dotfiles_home" ]; then

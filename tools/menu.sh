@@ -31,6 +31,13 @@ _interactive_menu_render() {
     done
 }
 
+# @description Render an interactive keyboard-navigable multi-select checklist menu.
+#   Controls: Up/Down or k/j to move, Space to toggle, a to toggle all, Enter to confirm, q/Esc to cancel.
+# @arg $1 string Optional "--all" flag to pre-select all items by default.
+# @arg $@ string Menu option strings followed by the output array variable name as the last argument.
+# @exitcode 0 If the user confirms a selection.
+# @exitcode 1 If the user cancels (q/Esc) or no options were provided.
+# @exitcode 2 If the output variable name is missing or invalid.
 interactive_menu() {
     if [[ -n "${ZSH_VERSION:-}" ]]; then
         emulate -L zsh
