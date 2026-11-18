@@ -121,7 +121,7 @@ backup-brewfile() {
     BREWFILES_DIR="$brewfiles_dir" DUMP_FILE="$tmpfile" ruby -e '
       dir = File.expand_path(ENV.fetch("BREWFILES_DIR"))
       dump_file = ENV.fetch("DUMP_FILE")
-      groups = %w[core work personal]
+      groups = Dir.glob(File.join(dir, "Brewfile.*")).map { |f| File.basename(f).split(".")[1] }.reject { |g| g.nil? || g.empty? || g == "ignore" }
       ignore_file = File.join(dir, "Brewfile.ignore")
 
       def parse_entries(path)
@@ -193,7 +193,7 @@ backup-brewfile() {
     local status_code=$?
     rm -f "$tmpfile"
     if (( status_code == 0 )); then
-        echo "Brewfiles backed up and grouped in $brewfiles_dir (core, work, personal; respecting Brewfile.ignore)"
+        echo "Brewfiles backed up and grouped in $brewfiles_dir (respecting Brewfile.ignore)"
     else
         echo "Failed to group Brewfiles" >&2
         return "$status_code"
