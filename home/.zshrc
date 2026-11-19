@@ -46,6 +46,7 @@ setopt HIST_REDUCE_BLANKS      # strip unnecessary blanks before recording a com
 setopt AUTOCD                  # cd into a directory simply by typing its name
 setopt NOBEEP                  # disable terminal bell on errors or tab-completion
 setopt NUMERIC_GLOB_SORT       # sort file10 after file9, not after file1
+[[ -t 0 ]] && stty discard undef 2>/dev/null # prevent macOS TTY from swallowing Ctrl+O (^O)
 
 
 # NVM
