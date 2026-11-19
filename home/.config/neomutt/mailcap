@@ -1,0 +1,12 @@
+# ==============================================================================
+# NeoMutt Mailcap (~/.config/neomutt/mailcap)
+# Note: In mailcap format, ';' is a field separator, so commands cannot contain
+# unescaped semicolons.
+# ==============================================================================
+
+# Render HTML emails inline using macOS built-in textutil with UTF-8 encoding
+text/html; /usr/bin/textutil -convert txt -inputencoding UTF-8 -encoding UTF-8 -stdin -stdout -format html; copiousoutput
+
+# Open images, PDFs, and other attachments with macOS 'open'
+image/*; /usr/bin/open %s
+application/pdf; /usr/bin/open %s

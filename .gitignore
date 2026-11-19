@@ -32,3 +32,11 @@ Temporary Items
 *.key
 *trustlevel.txt
 *ownertrust*.txt
+
+# NeoMutt secrets and local account configurations
+home/.config/neomutt/secrets/
+home/.config/neomutt/accounts/*
+!home/.config/neomutt/accounts/*.example
+home/.config/neomutt/signatures/*
+!home/.config/neomutt/signatures/*.example
+*.enc

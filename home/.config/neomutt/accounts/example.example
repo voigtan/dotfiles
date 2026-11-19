@@ -1,0 +1,43 @@
+# ==============================================================================
+# Account Configuration Template
+# Copy this file to ~/.config/neomutt/accounts/<name>
+# (for example: ~/.config/neomutt/accounts/personal)
+#
+# Optional signature file:
+#   ~/.config/neomutt/signatures/<name>-sign
+#
+# Store the password in KeePassXC SSH Agent encrypted storage:
+#   ~/.config/neomutt/scripts/neomutt-pass.sh set <name>
+# ==============================================================================
+
+# 1. Identity
+set realname         = "Andreas Voigt"
+set from             = "you@example.com"
+set use_from         = yes
+set envelope_from    = yes
+
+# 2. Decrypt password via KeePassXC SSH Agent ($my_account is set by load-accounts.sh)
+set my_pass          = "`~/.config/neomutt/scripts/neomutt-pass.sh get $my_account`"
+
+# 3. Incoming IMAP Configuration
+# Keep $imap_user@ in $folder so multiple accounts on the same IMAP host stay separate.
+# Sidebar folders are discovered automatically from the IMAP server (press 'gr' to refresh).
+set imap_user        = "you@example.com"
+set imap_pass        = "$my_pass"
+set folder           = "imaps://$imap_user@imap.example.com:993"
+set spoolfile        = "+INBOX"
+set postponed        = "+Drafts"
+set record           = "+Sent"
+set trash            = "+Trash"
+
+# 4. Outgoing SMTP Configuration
+# Use smtps://...:465 for implicit TLS, or smtp://...:587 for STARTTLS
+set smtp_url         = "smtps://$imap_user@smtp.example.com:465"
+set smtp_pass        = "$my_pass"
+
+# 5. Local Header & Message Caching (per account)
+set header_cache     = "~/.cache/neomutt/$my_account/headers"
+set message_cachedir = "~/.cache/neomutt/$my_account/bodies"
+
+# 6. Signature (optional: ~/.config/neomutt/signatures/<name>-sign)
+set signature        = "~/.config/neomutt/signatures/$my_account-sign"

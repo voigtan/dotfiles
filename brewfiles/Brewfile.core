@@ -53,6 +53,14 @@ brew "gobject-introspection"
 brew "gpgme"
 # GNU grep, egrep and fgrep
 brew "grep"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# E-mail reader with support for Notmuch, NNTP and much more
+brew "neomutt"
+# Modern and pretty fancy file manager for the terminal
+brew "superfile"
+# UNIX shell (command interpreter)
+brew "zsh"
 # OpenType text shaping engine
 brew "harfbuzz"
 # World's fastest and most advanced password recovery utility

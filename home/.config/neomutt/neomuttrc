@@ -1,0 +1,85 @@
+# ==============================================================================
+# NeoMutt Main Configuration (~/.config/neomutt/neomuttrc)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# General & Paths
+# ------------------------------------------------------------------------------
+set mailcap_path          = "~/.config/neomutt/mailcap"
+set editor                = "nvim"
+set charset               = "utf-8"
+set send_charset          = "utf-8"
+set wait_key              = no        # Do not ask "Press any key to continue"
+set confirmappend         = no        # Do not ask when appending to mailboxes
+set delete                = yes       # Purge deleted messages on sync without asking
+set move                  = no        # Do not move read mail from spoolfile
+set mark_old              = no        # Unread mail stays unread until opened
+set beep_new              = yes       # Bell on new mail
+set pipe_decode           = yes       # Strip headers and eval mimes when piping
+set thorough_search       = yes       # Strip headers and eval mimes before searching
+set sleep_time            = 0         # Instant folder switching
+
+# ------------------------------------------------------------------------------
+# IMAP & Connection Settings
+# ------------------------------------------------------------------------------
+set imap_keepalive        = 300       # Ping IMAP server every 5m
+set imap_passive          = no        # Allow NeoMutt to open new IMAP connections
+set imap_check_subscribed = no        # Use explicit mailboxes list per account
+set mail_check            = 120       # Check for mail every 2m
+set mail_check_stats      = yes       # Calculate unread/total counts for sidebar
+set mail_check_stats_interval = 60    # Update sidebar stats every 60s
+set timeout               = 30        # Idle timeout before checking for new mail
+set ssl_force_tls         = yes       # Require TLS for all connections
+set ssl_starttls          = yes       # Use STARTTLS when available
+
+# ------------------------------------------------------------------------------
+# Index, Pager & Compose Behavior
+# ------------------------------------------------------------------------------
+set sort                  = reverse-threads
+set sort_aux              = last-date-received
+set collapse_all          = no
+set uncollapse_jump       = yes
+set pager_index_lines     = 8         # Show mini-index above message pager (like screenshot)
+set pager_context         = 3         # Context lines when scrolling
+set pager_stop            = yes       # Do not move to next message at end of current message
+set menu_scroll           = yes       # Scroll menu line-by-line
+set tilde                 = yes       # Pad blank lines in pager with ~
+unset markers                         # No '+' markers on wrapped lines
+
+set fast_reply            = yes       # Skip prompts for To/Subject when replying
+set include               = yes       # Include quoted copy of message in replies
+set forward_format        = "Fwd: %s"
+set forward_quote         = yes
+set reverse_name          = yes       # Reply as the address the message was sent to
+set sig_dashes            = yes       # Prepend "-- " before signature
+
+# Prefer plain text, but automatically render HTML via mailcap when needed
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+# Show only relevant headers
+ignore *
+unignore from: to: cc: bcc: date: subject: reply-to:
+unhdr_order *
+hdr_order from: to: cc: bcc: reply-to: date: subject:
+
+# ------------------------------------------------------------------------------
+# Sidebar & Status Bar Layout (macowners.club style)
+# ------------------------------------------------------------------------------
+set sidebar_visible       = yes
+set sidebar_width         = 28
+set sidebar_short_path    = no        # Preserve exact named-mailboxes labels
+set sidebar_folder_indent = no
+set sidebar_format        = "%D%*  %?N?(%N) ?%?S?%S?"
+set status_chars          = " *%A"
+set status_on_top         = no
+set status_format         = "[ Folder: %f ] [ %r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]%>─%?p?( %p postponed )?"
+set date_format           = "%Y-%m-%d %H:%M"
+set index_format          = "[%Z] %D  %-20.20F  %s"
+
+# ------------------------------------------------------------------------------
+# Modular Includes: Keybindings, Colors & Multi-Account Sidebar Loader
+# ------------------------------------------------------------------------------
+source "~/.config/neomutt/bindings"
+source "~/.config/neomutt/colors"
+source "~/.config/neomutt/scripts/load-accounts.sh|"

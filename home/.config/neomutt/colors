@@ -1,0 +1,71 @@
+# ==============================================================================
+# NeoMutt Color Theme — Catppuccin Frappé (256-color compatible)
+# Works seamlessly with TERM=xterm-256color, xterm-ghostty, and tmux-256color
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# General UI
+# ------------------------------------------------------------------------------
+color normal            color252        default
+color indicator         color252        color238
+color tree              color111        default
+color status            color147        color236
+color error             color210        default
+color message           color150        default
+color signature         color103        default
+color attachment        color222        default
+color search            color235        color222
+color tilde             color60         default
+color markers           color210        default
+color prompt            color183        default
+
+# ------------------------------------------------------------------------------
+# Sidebar
+# ------------------------------------------------------------------------------
+color sidebar_ordinary  color146        default
+color sidebar_new       color150        default
+color sidebar_unread    color222        default
+color sidebar_flagged   color210        default
+color sidebar_highlight color252        color238
+color sidebar_indicator color147        color238
+color sidebar_divider   color60         default
+color sidebar_spoolfile color111        default
+
+# ------------------------------------------------------------------------------
+# Message Index (Email List)
+# ------------------------------------------------------------------------------
+color index             color252        default "~A"
+color index             color222        default "~N"
+color index             color222        default "~O"
+color index             color116        default "~P"
+color index             color216        default "~F"
+color index             color183        default "~T"
+color index             color210        default "~D"
+color index             color103        default "~Q"
+
+# Index column highlights
+color index_date        color103        default
+color index_author      color111        default "~A"
+color index_author      color222        default "~N"
+color index_subject     color252        default "~A"
+color index_subject     color224        default "~N"
+color index_flags       color183        default "~A"
+
+# ------------------------------------------------------------------------------
+# Message Headers & Body (Pager)
+# ------------------------------------------------------------------------------
+color hdrdefault        color103        default
+color header            color183        default "^(From):"
+color header            color111        default "^(Subject):"
+color header            color115        default "^(To|Cc|Bcc):"
+color header            color103        default "^(Date):"
+
+color body              color111        default "(https?|ftp|mailto)://[^ >)\"\t]+"
+color body              color115        default "[-a-z_0-9.+]+@[-a-z_0-9.]+"
+
+color quoted            color150        default
+color quoted1           color115        default
+color quoted2           color111        default
+color quoted3           color183        default
+color quoted4           color216        default
+color quoted5           color210        default

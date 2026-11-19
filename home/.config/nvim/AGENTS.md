@@ -14,26 +14,28 @@ Every feature owns its setup, autocommands, user commands, keymaps, Which-Key gr
 
 - `init.lua` — Leader keys, core imports, `vim.pack.add()`, and `require("plugins")`.
 - `lua/core/`
-  - `options.lua` — Core options, `ui2`, spellcheck, yank highlight, comment shortcuts (`<C-k><C-c>`, `<leader>/`, `gcc`/`gc`).
+  - `options.lua` — Core options, `ui2`, spellcheck, yank highlight, Swedish Normal-mode ergonomics (`å`/`ä`/`ö`), `<Space>o` Options/UI Toggles group, and `gcc`/`gc`.
   - `state.lua` — Persistent on-disk UI toggle state keyed by GitHub project (`owner/repo`) in `~/.local/state/nvim/ui-toggles.json`.
   - `modal.lua` — Centered floating confirmation modal (`require("core.modal").confirm(...)` + global `vim.fn.confirm` override) and centered floating Cmdline (`:`, `/`, `?`, `=`, `input()`) powered by native `vim._core.ui2`.
   - `context-menu.lua` — Right-click `PopUp` context menu registry (`require("core.context-menu").register(context, items)`).
   - `filetypes.lua` — `vim.filetype.add()` rules.
   - `navigation.lua` — Smart `<C-h/j/k/l>` window navigation across Neo-tree, Editor, Neotest Summary, and Terminal + `QuitPre` smart `:q`.
-  - `rulers.lua` — 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers + `:ToggleRulers` (`<Space>tr`).
-  - `terminals.lua` — `vim.opt.shell = "/bin/zsh"`, `:Term` (`<Space>tt`), `:TermTmux` (`<Space>tx`), `:LazyDocker` (`<Space>td`), `TermOpen`/`TermClose`.
+  - `rulers.lua` — 80 (`#ff9900`) and 120 (`#9f0af5`) column rulers + `:ToggleRulers` (`<Space>or`).
+  - `terminals.lua` — Unified persistent floating terminal manager (`require("core.terminals")`) with border tab bar for `:Term` (`<Space>tt`), `:TermHost` (`<Space>th`), `:TermTmux` (`<Space>tx`), and ephemeral modals for `:LazyGit` (`<Space>gg`) and `:LazyDocker` (`<Space>td`).
+  - `devcontainer.lua` — Passive `.devcontainer` detection, Lualine state, `:DevcontainerUp` (`<Space>du`), `:DevcontainerRebuild` (`<Space>dR`), `:DevcontainerStop` (`<Space>ds`), `:DevcontainerTerm` (`<Space>dt`), `:DevcontainerLogs` (`<Space>dl`), and `:DevcontainerEdit` (`<Space>dc`).
+  - `vscode.lua` — Toggleable VS Code / macOS keybindings (`:ToggleVSCodeKeys` / `<Space>ov`), `multicursor.nvim` (`<D-d>`), `Shift+Arrow` / `Option+Shift+Arrow` selection (`keymodel = "startsel,stopsel"`), `Option+j/k` line moves, `Option+Shift+Up/Down` line duplication, and `Cmd+S/W/C/X/V/Z/A/`.
   - `pack.lua` — Native `vim.pack` & toolchain commands (`:PackSync`, `:PackUpdate`, `:PackReview`, `:PackClean`, `:PackRestore`, `:PackLog`) and `<Space>p` Which-Key group.
 - `lua/plugins/`
   - `init.lua` — Loads all plugin modules in order.
-  - `theme.lua` — `catppuccin-frappe` + `nvim-web-devicons`.
+  - `theme.lua` — `catppuccin-frappe` (transparent background) + `nvim-web-devicons`.
   - `treesitter.lua` — Parser installation + `nvim-treesitter-context` (sticky scroll).
   - `flash.lua` — `flash.nvim` on-screen jump navigation (`s`, `S`, `r`, `R`, `<C-s>`).
   - `lsp.lua` — Mason (`mason-tool-installer`), `tiny-inline-diagnostic.nvim`, `vtsls`, `biome`, `lua_ls`, `dockerls`, `docker_compose_language_service`, `jsonls` (SchemaStore), `yamlls`, `html`, `cssls`, `copilot`, and IntelliSense keymaps/mouse bindings.
   - `formatting.lua` — `conform.nvim` (Biome in Biome repos, fallback to Prettier, LSP for HTML/JSON).
   - `git.lua` — `gitsigns.nvim`, background `git.autofetch` timer, and floating `:LazyGit` (`<Space>gg`).
-  - `neo-tree.lua` — File explorer, `.test.ts`/`.spec.ts` file nesting, rename `<Esc>` fix, `:restart` session restore, and `"neo-tree"` right-click menu items.
-  - `tabs.lua` — File tabs bar (`bufferline.nvim`), window-safe `_G.close_buffer_tab`, `:ToggleTabs` (`<Space>bt` / `<Space>tf`), and `<S-h>`/`<S-l>` tab cycling.
-  - `telescope.lua` — Fuzzy finder (`<C-p>`, `<Space>ff`, `<Space>fg`, `<Space>fb`, `<Space>fs`) with `<C-h>` live dotfile toggle.
+  - `neo-tree.lua` — File explorer, `.test.ts`/`.spec.ts` file nesting, rename `<Esc>` fix, `:restart` session restore, `<Space>e` / `<Space>E`, and `"neo-tree"` right-click menu items.
+  - `tabs.lua` — File tabs bar (`bufferline.nvim`), window-safe `_G.close_buffer_tab`, `:ToggleTabs` (`<Space>bt` / `<Space>of`), and `<S-h>`/`<S-l>` tab cycling.
+  - `telescope.lua` — Fuzzy finder (`<C-p>`, `<Space>ff`, `<Space>fg`, `<Space>fb`, `<Space>fs`, `<Space>fk`, `<Space>fc`, `<Space>fh`) with `<C-h>` live dotfile toggle.
   - `testing.lua` — Vitest (`neotest` + `neotest-vitest`) + inline coverage (`nvim-coverage` with `coverage-final.json` & `lcov.info` support).
   - `lualine.lua` — Global bottom statusbar with OS icon, mode, git, diagnostics, and active LSP clients.
   - `which-key.lua` — Core `which-key.nvim` setup, action-verb sorter, and `<C-c>` chord support.

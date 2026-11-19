@@ -1,0 +1,70 @@
+# ==============================================================================
+# NeoMutt Keybindings (~/.config/neomutt/bindings)
+# ==============================================================================
+
+# Unbind 'g' so gg / gi / gs / gd / ga / gt / gj / gu / gr / gn / gp / g1..g9 work cleanly
+bind index,pager g noop
+
+# ------------------------------------------------------------------------------
+# Index (Message List) Navigation
+# ------------------------------------------------------------------------------
+bind index       gg      first-entry
+bind index       G       last-entry
+bind index       j       next-entry
+bind index       k       previous-entry
+bind index       r       reply
+bind index       R       group-reply
+bind index       <space> collapse-thread
+bind index       $       sync-mailbox
+
+# ------------------------------------------------------------------------------
+# Pager (Reading Email) Navigation
+# ------------------------------------------------------------------------------
+bind pager       gg      top
+bind pager       G       bottom
+bind pager       j       next-line
+bind pager       k       previous-line
+bind pager       r       reply
+bind pager       R       group-reply
+
+# ------------------------------------------------------------------------------
+# "Go to" Folder Shortcuts (Within Current Account)
+# ------------------------------------------------------------------------------
+macro index      gi      '<change-folder><kill-line>+INBOX<enter>'          "Go to INBOX"
+macro pager      gi      '<exit><change-folder><kill-line>+INBOX<enter>'    "Go to INBOX"
+macro index      gs      '<change-folder><kill-line>+Sent<enter>'           "Go to Sent"
+macro pager      gs      '<exit><change-folder><kill-line>+Sent<enter>'     "Go to Sent"
+macro index      gd      '<change-folder><kill-line>+Drafts<enter>'         "Go to Drafts"
+macro pager      gd      '<exit><change-folder><kill-line>+Drafts<enter>'   "Go to Drafts"
+macro index      ga      '<change-folder><kill-line>+Archive<enter>'        "Go to Archive"
+macro pager      ga      '<exit><change-folder><kill-line>+Archive<enter>'  "Go to Archive"
+macro index      gt      '<change-folder><kill-line>+Trash<enter>'          "Go to Trash"
+macro pager      gt      '<exit><change-folder><kill-line>+Trash<enter>'    "Go to Trash"
+macro index      gj      '<change-folder><kill-line>+Junk<enter>'           "Go to Junk"
+macro pager      gj      '<exit><change-folder><kill-line>+Junk<enter>'     "Go to Junk"
+
+# ------------------------------------------------------------------------------
+# Toggle Unread Only (~U) <-> All Messages (all) with 'gu' or 'U'
+# ------------------------------------------------------------------------------
+set my_filter_unread = '<limit>~U<enter><enter-command>macro index gu "$my_filter_all" "Show all messages"; macro index U "$my_filter_all" "Show all messages"; echo "Filter: Unread messages only (~U)"<enter>'
+set my_filter_all    = '<limit>all<enter><enter-command>macro index gu "$my_filter_unread" "Show unread only"; macro index U "$my_filter_unread" "Show unread only"; echo "Filter: All messages"<enter>'
+macro index      gu      "$my_filter_unread"                                "Toggle unread / all messages"
+macro index      U       "$my_filter_unread"                                "Toggle unread / all messages"
+
+# ------------------------------------------------------------------------------
+# Sidebar Navigation (Ctrl+j / Ctrl+k / Ctrl+o OR Shift+J / Shift+K / Shift+O)
+# ------------------------------------------------------------------------------
+bind index,pager \Ck     sidebar-prev
+bind index,pager \Cj     sidebar-next
+bind index,pager \Co     sidebar-open
+bind index,pager \Cb     sidebar-toggle-visible
+
+bind index,pager K       sidebar-prev
+bind index,pager J       sidebar-next
+bind index,pager O       sidebar-open
+bind index,pager B       sidebar-toggle-visible
+
+# ------------------------------------------------------------------------------
+# Attachments
+# ------------------------------------------------------------------------------
+bind attach      <return> view-mailcap
