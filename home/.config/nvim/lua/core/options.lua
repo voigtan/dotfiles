@@ -78,7 +78,7 @@ pcall(function()
   vim.cmd("runtime plugin/spellfile.lua")
 end)
 opt.spell = true
-opt.spelllang = { "en_gb", "sv" }
+opt.spelllang = { "en_us", "en_gb", "sv" }
 opt.spelloptions = "camel"
 opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
 
